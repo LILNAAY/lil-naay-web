@@ -110,6 +110,16 @@ body {
     color: #888;
     margin-top: 40px;
 }
+
+/* CLIENTE */
+.cliente-box input, .cliente-box select{
+    display:block;
+    margin:8px 0;
+    padding:10px;
+    border-radius:10px;
+    border:none;
+    width: 250px;
+}
 </style>
 </head>
 
@@ -117,6 +127,35 @@ body {
 
 <div class="navbar">
     <a href="index.html" class="back-btn">⬅ Volver</a>
+</div>
+
+<!-- 🔥 DATOS DEL CLIENTE -->
+<div class="section cliente-box">
+    <h2>🧾 Datos del cliente</h2>
+
+    <input type="text" id="nombre" placeholder="Nombre completo" oninput="validarNombre()">
+    <input type="email" id="correo" placeholder="Correo electrónico">
+
+    <select id="pais">
+        <option value="">Selecciona tu país</option>
+        <option>República Dominicana</option>
+        <option>Estados Unidos</option>
+        <option>España</option>
+        <option>México</option>
+        <option>Colombia</option>
+        <option>Argentina</option>
+        <option>Chile</option>
+        <option>Perú</option>
+        <option>Venezuela</option>
+        <option>Puerto Rico</option>
+        <option>Panamá</option>
+        <option>Costa Rica</option>
+        <option>Guatemala</option>
+    </select>
+
+    <button class="btn" onclick="guardarDatos()">Guardar datos ✅</button>
+
+    <p id="estadoDatos" style="color:#00ff99;"></p>
 </div>
 
 <div class="section">
@@ -192,10 +231,48 @@ body {
 
 <script>
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+let datosGuardados = false;
 
-function esSuscrito(){
-    return usuarios.length > 0;
+// VALIDAR NOMBRE
+function validarNombre(){
+    let nombre = document.getElementById("nombre");
+    nombre.value = nombre.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '');
+}
+
+// VALIDAR EMAIL
+function validarCorreo(email){
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
+// GUARDAR DATOS
+function guardarDatos(){
+
+    let nombre = document.getElementById("nombre").value.trim();
+    let correo = document.getElementById("correo").value.trim();
+    let pais = document.getElementById("pais").value;
+
+    if(!nombre || !correo || !pais){
+        alert("Completa todos los datos");
+        return;
+    }
+
+    if(!validarCorreo(correo)){
+        alert("Correo inválido");
+        return;
+    }
+
+    if(nombre.length < 3){
+        alert("Nombre muy corto");
+        return;
+    }
+
+    let cliente = { nombre, correo, pais };
+    localStorage.setItem("cliente", JSON.stringify(cliente));
+
+    datosGuardados = true;
+
+    document.getElementById("estadoDatos").innerText = "Datos guardados correctamente ✅";
 }
 
 function guardarCarrito(){
@@ -203,11 +280,6 @@ function guardarCarrito(){
 }
 
 function agregar(nombre, precio, tallaId, colorId){
-
-    if(!esSuscrito()){
-        alert("Debes suscribirte primero");
-        return;
-    }
 
     let talla = document.getElementById(tallaId).value;
     let color = document.getElementById(colorId).value;
@@ -242,58 +314,43 @@ function mostrar(){
     document.getElementById("total").innerText = total;
 }
 
-// 🔥 STRIPE INTEGRADO SIN ROMPER TU CÓDIGO
+// PAGAR
 async function pagar(){
+
+    if(!datosGuardados){
+        alert("Primero guarda los datos del cliente");
+        return;
+    }
 
     if(carrito.length === 0){
         alert("Carrito vacío");
         return;
     }
 
-    let nombre = document.getElementById("nombre")?.value;
-    let correo = document.getElementById("correo")?.value;
-    let pais = document.getElementById("pais")?.value;
+    let cliente = JSON.parse(localStorage.getItem("cliente"));
 
-    if(!nombre || !correo || !pais){
-        alert("Completa los datos del cliente");
-        return;
-    }
+    const respuesta = await fetch("http://localhost:3000/crear-pago", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            productos: carrito,
+            cliente: cliente
+        })
+    });
 
-    try {
+    const data = await respuesta.json();
 
-        const respuesta = await fetch("http://localhost:3000/crear-pago", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                productos: carrito,
-                cliente: { nombre, correo, pais }
-            })
-        });
-
-        const data = await respuesta.json();
-
-        if(data.url){
-            window.location.href = data.url;
-        } else {
-            alert("Error al crear pago");
-        }
-
-    } catch (error) {
-        console.error(error);
-        alert("Error en el servidor");
+    if(data.url){
+        window.location.href = data.url;
+    } else {
+        alert("Error al crear pago");
     }
 }
 
-// 🔥 RESERVA REAL
 function reservar(){
-    if(!esSuscrito()){
-        alert("Debes suscribirte para reservar");
-        return;
-    }
-
-    alert("Reserva guardada 🔥");
+    alert("Reserva realizada 🔥");
 }
 
 window.onload = mostrar;
