@@ -138,9 +138,14 @@ function guardar() {
 }
 
 function suscribirse() {
-    let valor = document.getElementById("usuario").value;
+    let valor = document.getElementById("usuario").value.trim();
 
-    if(valor.trim() === "") return;
+    if(valor === "") return;
+
+    // 🚫 EVITAR DUPLICADOS
+    if(usuarios.includes(valor)){
+        return;
+    }
 
     usuarios.push(valor);
 
@@ -156,6 +161,6 @@ function actualizar() {
 
 window.onload = actualizar;
 </script>
-
+    
 </body>
 </html>
