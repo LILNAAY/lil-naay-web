@@ -137,13 +137,25 @@ function guardar() {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
 }
 
+// ✅ VALIDAR EMAIL REAL
+function esCorreoValido(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 function suscribirse() {
     let valor = document.getElementById("usuario").value.trim();
 
     if(valor === "") return;
 
-    // 🚫 EVITAR DUPLICADOS
+    // ❌ CORREO INVÁLIDO
+    if(!esCorreoValido(valor)){
+        alert("❌ Ingresa un correo válido");
+        return;
+    }
+
+    // 🚫 DUPLICADO
     if(usuarios.includes(valor)){
+        alert("⚠️ Este correo ya está suscrito");
         return;
     }
 
@@ -153,6 +165,8 @@ function suscribirse() {
     actualizar();
 
     document.getElementById("usuario").value = "";
+
+    alert("✅ Suscripción exitosa");
 }
 
 function actualizar() {
