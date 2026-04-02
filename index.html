@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LIL NAAY - Inicio</title>
 
-    <!-- ICONOS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
@@ -13,7 +12,6 @@
             --rojo: #8b0000;
             --rojo-hover: #b30000;
             --fondo: #1a0f0f;
-            --texto-secundario: #d6a3a3;
         }
 
         body {
@@ -23,7 +21,6 @@
             color: white;
         }
 
-        /* HEADER */
         .header {
             display: flex;
             align-items: center;
@@ -33,29 +30,13 @@
             border-bottom-right-radius: 40px;
         }
 
-        /* 🔥 IMAGEN MEJORADA (PROFUNDIDAD REAL) */
         .header img {
             width: 180px;
             height: 180px;
             border-radius: 20px;
             margin-right: 40px;
             object-fit: cover;
-
-            box-shadow:
-                0 15px 30px rgba(0, 0, 0, 0.8),
-                0 5px 15px rgba(0, 0, 0, 0.6);
-
-            border: 1px solid rgba(255,255,255,0.08);
-
-            transition: all 0.4s ease;
-        }
-
-        .header img:hover {
-            transform: translateY(-5px) scale(1.03);
-
-            box-shadow:
-                0 25px 50px rgba(0, 0, 0, 0.9),
-                0 10px 25px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
         }
 
         .header h1 {
@@ -71,184 +52,112 @@
             border-radius: 25px;
             text-decoration: none;
             color: white;
-            transition: 0.3s;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-main:hover {
             background: var(--rojo-hover);
-            transform: scale(1.1);
         }
 
-        /* CONTENEDOR */
         .container {
             max-width: 1000px;
             margin: auto;
             padding: 20px;
         }
 
-        /* SECCIONES */
         .section {
             background: rgba(255,255,255,0.04);
             padding: 30px;
             margin-top: 30px;
             border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
-        .section h2 {
-            margin-bottom: 20px;
-        }
-
-        /* CARDS */
-        .launches, .albums {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .launch, .album {
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .launch:hover, .album:hover {
-            background: rgba(139,0,0,0.3);
-            transform: scale(1.05);
-        }
-
-        .launch {
-            width: 200px;
-        }
-
-        .album {
-            width: 160px;
-        }
-
-        .launch img, .album img {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        /* REDES */
         .socials {
             text-align: center;
         }
 
         .socials a {
-            display: inline-flex;
-            width: 60px;
-            height: 60px;
             margin: 10px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+            font-size: 25px;
             color: white;
-            transition: 0.3s;
         }
 
-        .socials a:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 15px currentColor;
-        }
-
-        .socials a:nth-child(1):hover { background: #1877f2; }
-        .socials a:nth-child(2):hover { background: #e1306c; }
-        .socials a:nth-child(3):hover { background: #ff0000; }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .header img {
-                margin-bottom: 20px;
-            }
-
-            .launches, .albums {
-                justify-content: center;
-            }
+        input {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            margin-right: 10px;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
-    <div class="header">
-        <img src="Lil Naay.png" alt="LIL NAAY">
-        <div>
-            <h1>LIL NAAY</h1>
-            <p>Artista urbano • Trap</p>
-            <a href="menu.html" class="btn-main">Ver Eventos & Tienda</a>
-        </div>
+<div class="header">
+    <img src="Lil Naay.png">
+    <div>
+        <h1>LIL NAAY</h1>
+        <p>Artista urbano • Trap</p>
+        <a href="menu.html" class="btn-main">Ver Eventos & Tienda</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="section">
+        <h2>Biografía</h2>
+        <p>Lil Naay es un artista emergente del género urbano.</p>
     </div>
 
-    <div class="container">
+    <!-- 🔥 SUSCRIPCIÓN -->
+    <div class="section">
+        <h2>🔥 Comunidad</h2>
 
-        <!-- BIO -->
-        <div class="section">
-            <h2>Biografía</h2>
-            <p>
-                Lil Naay es un artista emergente del género urbano, con un estilo único en el trap latino.
-            </p>
-        </div>
+        <input type="text" id="nombreUsuario" placeholder="Tu nombre">
+        <button onclick="suscribirse()" class="btn-main">Suscribirse</button>
 
-        <!-- LANZAMIENTOS -->
-        <div class="section">
-            <h2>🎵 Nuevos Lanzamientos</h2>
-            <div class="launches">
-                <div class="launch">
-                    <img src="single1.jpg">
-                    <p>Una Baby en Santiago</p>
-                </div>
-                <div class="launch">
-                    <img src="single2.jpg">
-                    <p>Baby Supreme</p>
-                </div>
-                <div class="launch">
-                    <img src="single3.jpg">
-                    <p>Pasao de Farmacia</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ALBUM -->
-        <div class="section">
-            <h2>EP</h2>
-            <div class="albums">
-                <div class="album">
-                    <img src="THE MVP OF THE YEAR.jpg">
-                    <p>The MVP of the Year</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- REDES -->
-        <div class="section socials">
-            <h2>  Síguelo</h2>
-
-            <a href="https://facebook.com/lilnaay" target="_blank">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-
-            <a href="https://www.instagram.com/lilnaay___?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">
-                <i class="fab fa-instagram"></i>
-            </a>
-
-            <a href="https://youtube.com/@lilnaay7366?si=1D68f9gmm5QTwO2L" target="_blank">
-                <i class="fab fa-youtube"></i>
-            </a>
-
-        </div>
-
+        <p>Personas suscritas: <span id="contador">0</span></p>
+        <ul id="listaUsuarios"></ul>
     </div>
+
+</div>
+
+<script>
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+function guardarUsuarios() {
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+}
+
+function suscribirse() {
+    let nombre = document.getElementById("nombreUsuario").value;
+    if(nombre.trim() === "") return;
+
+    usuarios.push(nombre);
+    guardarUsuarios();
+    mostrarUsuarios();
+
+    document.getElementById("nombreUsuario").value = "";
+}
+
+function mostrarUsuarios() {
+    const lista = document.getElementById("listaUsuarios");
+    const contador = document.getElementById("contador");
+
+    lista.innerHTML = "";
+
+    usuarios.forEach(user => {
+        let li = document.createElement("li");
+        li.textContent = user;
+        lista.appendChild(li);
+    });
+
+    contador.textContent = usuarios.length;
+}
+
+window.onload = mostrarUsuarios;
+</script>
 
 </body>
 </html>
