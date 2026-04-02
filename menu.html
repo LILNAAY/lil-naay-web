@@ -197,12 +197,16 @@ body {
 </div>
 
 <script>
-let carrito = [];
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
 // SOLO SUSCRITOS
 function esSuscrito(){
     return usuarios.length > 0;
+}
+
+function guardarCarrito(){
+    localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
 // AGREGAR
@@ -217,12 +221,15 @@ function agregar(nombre, precio, tallaId, colorId){
     let color = document.getElementById(colorId).value;
 
     carrito.push({nombre,precio,talla,color});
+
+    guardarCarrito();
     mostrar();
 }
 
 // ELIMINAR
 function eliminar(index){
     carrito.splice(index,1);
+    guardarCarrito();
     mostrar();
 }
 
@@ -245,6 +252,20 @@ function mostrar(){
     document.getElementById("total").innerText = total;
 }
 
+// 💳 PAGO SIMULADO
+function pagar(){
+    if(carrito.length === 0){
+        alert("Carrito vacío");
+        return;
+    }
+
+    alert("Pago realizado correctamente 🔥");
+
+    carrito = [];
+    guardarCarrito();
+    mostrar();
+}
+
 // EVENTOS
 function reservar(){
     if(!esSuscrito()){
@@ -254,6 +275,8 @@ function reservar(){
 
     alert("Reserva realizada 🔥");
 }
+
+window.onload = mostrar;
 </script>
 
 </body>
