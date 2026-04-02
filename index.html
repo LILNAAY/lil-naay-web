@@ -142,24 +142,41 @@
 <script>
 let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
+// FORMATEAR NÚMEROS (1K, 1.5K, 1M)
+function formatearNumero(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(".0","") + "M";
+    }
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1).replace(".0","") + "K";
+    }
+    return num;
+}
+
 function guardarUsuarios() {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
 }
 
 function suscribirse() {
-    let nombre = document.getElementById("nombreUsuario").value;
-    if(nombre.trim() === "") return;
+    let valor = document.getElementById("nombreUsuario").value;
 
-    usuarios.push(nombre);
+    if(valor.trim() === "") return;
+
+    usuarios.push(valor);
+
     guardarUsuarios();
-    mostrarUsuarios();
+    actualizarContador();
 
     document.getElementById("nombreUsuario").value = "";
 }
 
-function mostrarUsuarios() {
-    const lista = document.getElementById("listaUsuarios");
+function actualizarContador() {
     const contador = document.getElementById("contador");
+    contador.textContent = formatearNumero(usuarios.length);
+}
+
+window.onload = actualizarContador;
+</script>
 
     lista.innerHTML = "";
 
