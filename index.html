@@ -1,203 +1,156 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LIL NAAY - Inicio</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LIL NAAY - Inicio</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- ICONOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<style>
-:root {
-    --rojo: #8b0000;
-    --rojo-hover: #b30000;
-}
+    <style>
+        :root {
+            --rojo: #8b0000;
+            --rojo-hover: #b30000;
+            --fondo: #1a0f0f;
+            --texto-secundario: #d6a3a3;
+        }
 
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #140909, #3a1a1a);
-    color: white;
-}
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #140909, #3a1a1a);
+            color: white;
+        }
 
-.header {
-    display: flex;
-    align-items: center;
-    padding: 50px 30px;
-    background: linear-gradient(90deg, var(--rojo), #1a0f0f);
-}
+        /* HEADER */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 50px 30px;
+            background: linear-gradient(90deg, var(--rojo), var(--fondo));
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
 
-.header img {
-    width: 180px;
-    border-radius: 20px;
-    margin-right: 40px;
-}
+        .header img {
+            width: 180px;
+            height: 180px;
+            border-radius: 20px;
+            margin-right: 40px;
+            object-fit: cover;
+            box-shadow:
+                0 15px 30px rgba(0, 0, 0, 0.8),
+                0 5px 15px rgba(0, 0, 0, 0.6);
+        }
 
-.btn-main {
-    margin-top: 20px;
-    background: var(--rojo);
-    padding: 12px 25px;
-    border-radius: 25px;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
+        .header h1 {
+            font-size: 56px;
+            margin: 0;
+        }
 
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
-}
+        .btn-main {
+            margin-top: 20px;
+            display: inline-block;
+            background: var(--rojo);
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
 
-.section {
-    background: rgba(255,255,255,0.04);
-    padding: 30px;
-    margin-top: 30px;
-    border-radius: 20px;
-}
+        .btn-main:hover {
+            background: var(--rojo-hover);
+        }
 
-/* LANZAMIENTOS */
-.launches {
-    display: flex;
-    gap: 20px;
-}
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
 
-.launch {
-    background: rgba(255,255,255,0.05);
-    padding: 15px;
-    border-radius: 15px;
-    text-align: center;
-}
+        .section {
+            background: rgba(255,255,255,0.04);
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
 
-/* TOAST */
-.toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #000;
-    padding: 15px 20px;
-    border-radius: 10px;
-    display: none;
-}
-
-/* INPUT */
-input {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-}
-
-/* FOOTER */
-.footer {
-    text-align: center;
-    padding: 20px;
-    color: #888;
-}
-</style>
+        input {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="header">
-    <img src="Lil Naay.png">
+    <img src="Lil Naay.png" alt="LIL NAAY">
     <div>
         <h1>LIL NAAY</h1>
         <p>Artista urbano • Trap</p>
-        <a href="menu.html" class="btn-main">Ver Tienda</a>
+        <a href="menu.html" class="btn-main">Ver Eventos & Tienda</a>
     </div>
 </div>
 
 <div class="container">
 
-<div class="section">
-    <h2>Biografía</h2>
-    <p>Artista urbano en crecimiento.</p>
-</div>
-
-<div class="section">
-    <h2>🎵 Nuevos Lanzamientos</h2>
-    <div class="launches">
-        <div class="launch">
-            <img src="single1.jpg" width="100%">
-            <p>Nuevo Tema</p>
-        </div>
-        <div class="launch">
-            <img src="single2.jpg" width="100%">
-            <p>Otro Tema</p>
-        </div>
+    <div class="section">
+        <h2>Biografía</h2>
+        <p>Lil Naay es un artista emergente del género urbano.</p>
     </div>
+
+    <!-- 🔥 SUSCRIPCIÓN MODIFICADA -->
+    <div class="section">
+        <h2>🔥 Comunidad</h2>
+
+        <input type="text" id="usuario" placeholder="Tu correo o nombre">
+        <button onclick="suscribirse()" class="btn-main">Suscribirse</button>
+
+        <p>Suscriptores: <span id="contador">0</span></p>
+    </div>
+
 </div>
-
-<!-- 🔥 SUSCRIPCIÓN PRO -->
-<div class="section">
-    <h2>🔥 Comunidad</h2>
-
-    <input type="email" id="correo" placeholder="Tu correo">
-    <button onclick="suscribirse()" class="btn-main">Suscribirse</button>
-
-    <p>Suscriptores: <span id="contador">0</span></p>
-</div>
-
-</div>
-
-<div class="footer">
-© 2026 LIL NAAY — Página creada por J.D
-</div>
-
-<!-- TOAST -->
-<div id="toast" class="toast"></div>
 
 <script>
 let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-// FORMATO 1K
-function formatear(num){
-    if(num>=1000000) return (num/1000000).toFixed(1).replace(".0","")+"M";
-    if(num>=1000) return (num/1000).toFixed(1).replace(".0","")+"K";
+// FORMATO 1K, 1M
+function formatear(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(".0","") + "M";
+    }
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1).replace(".0","") + "K";
+    }
     return num;
 }
 
-// VALIDAR EMAIL
-function esEmail(email){
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-// TOAST
-function mostrarToast(msg){
-    let t = document.getElementById("toast");
-    t.textContent = msg;
-    t.style.display = "block";
-
-    setTimeout(()=>{
-        t.style.display="none";
-    },2000);
-}
-
-// SUSCRIPCIÓN PRO
-function suscribirse(){
-    let correo = document.getElementById("correo").value.trim();
-
-    if(!esEmail(correo)){
-        mostrarToast("Correo inválido ❌");
-        return;
-    }
-
-    if(usuarios.includes(correo)){
-        mostrarToast("Ya estás suscrito ⚠️");
-        return;
-    }
-
-    usuarios.push(correo);
+function guardar() {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
+}
 
+function suscribirse() {
+    let valor = document.getElementById("usuario").value;
+
+    if(valor.trim() === "") return;
+
+    usuarios.push(valor);
+
+    guardar();
     actualizar();
 
-    document.getElementById("correo").value="";
-    mostrarToast("Suscripción exitosa 🔥");
+    document.getElementById("usuario").value = "";
 }
 
-// ACTUALIZAR CONTADOR
-function actualizar(){
+function actualizar() {
     document.getElementById("contador").textContent = formatear(usuarios.length);
 }
 
