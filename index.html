@@ -137,9 +137,30 @@ function guardar() {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
 }
 
-// ✅ VALIDAR EMAIL REAL
+// VALIDAR EMAIL
 function esCorreoValido(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// 🔥 MENSAJE BONITO
+function mostrarMensaje(texto, tipo) {
+    let mensaje = document.getElementById("mensaje");
+
+    mensaje.textContent = texto;
+
+    if(tipo === "error"){
+        mensaje.style.background = "#b30000";
+    } else if(tipo === "ok"){
+        mensaje.style.background = "#008000";
+    } else {
+        mensaje.style.background = "#000";
+    }
+
+    mensaje.style.display = "block";
+
+    setTimeout(() => {
+        mensaje.style.display = "none";
+    }, 2500);
 }
 
 function suscribirse() {
@@ -147,15 +168,13 @@ function suscribirse() {
 
     if(valor === "") return;
 
-    // ❌ CORREO INVÁLIDO
     if(!esCorreoValido(valor)){
-        alert("❌ Ingresa un correo válido");
+        mostrarMensaje("❌ Correo inválido", "error");
         return;
     }
 
-    // 🚫 DUPLICADO
     if(usuarios.includes(valor)){
-        alert("⚠️ Este correo ya está suscrito");
+        mostrarMensaje("⚠️ Ya estás suscrito", "error");
         return;
     }
 
@@ -166,7 +185,7 @@ function suscribirse() {
 
     document.getElementById("usuario").value = "";
 
-    alert("✅ Suscripción exitosa");
+    mostrarMensaje("✅ Suscripción exitosa", "ok");
 }
 
 function actualizar() {
@@ -175,6 +194,20 @@ function actualizar() {
 
 window.onload = actualizar;
 </script>
+
+<div id="mensaje" style="
+position: fixed;
+bottom: 20px;
+right: 20px;
+background: #000;
+color: white;
+padding: 15px 20px;
+border-radius: 10px;
+display: none;
+box-shadow: 0 0 15px rgba(0,0,0,0.5);
+font-family: 'Segoe UI';
+z-index: 999;
+"></div>
     
 </body>
 </html>
