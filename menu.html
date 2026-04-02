@@ -128,8 +128,15 @@ body {
 <div class="section">
     <h2>🎟️ Eventos</h2>
 
-    <div class="event">📍 Santo Domingo - 10 Abril 2026</div>
-    <div class="event">📍 Santiago - 25 Abril 2026</div>
+    <div class="event">
+        📍 Santo Domingo - 10 Abril 2026 <br><br>
+        <button class="btn" onclick="reservar()">Reservar / Comprar</button>
+    </div>
+
+    <div class="event">
+        📍 Santiago - 25 Abril 2026 <br><br>
+        <button class="btn" onclick="reservar()">Reservar / Comprar</button>
+    </div>
 </div>
 
 <div class="section">
@@ -148,14 +155,38 @@ body {
             <img src="ropa1.jpg">
             <p>Hoodie LIL NAAY</p>
             <p class="price">$25</p>
-            <button class="btn" onclick="agregar('Hoodie',25)">Comprar</button>
+
+            <select id="talla1">
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+            </select>
+
+            <select id="color1">
+                <option>Rojo</option>
+                <option>Negro</option>
+            </select>
+
+            <button class="btn" onclick="agregar('Hoodie',25,'talla1','color1')">Comprar</button>
         </div>
 
         <div class="product">
             <img src="ropa2.jpg">
             <p>T-Shirt LIL NAAY</p>
             <p class="price">$15</p>
-            <button class="btn" onclick="agregar('T-Shirt',15)">Comprar</button>
+
+            <select id="talla2">
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+            </select>
+
+            <select id="color2">
+                <option>Blanco</option>
+                <option>Negro</option>
+            </select>
+
+            <button class="btn" onclick="agregar('T-Shirt',15,'talla2','color2')">Comprar</button>
         </div>
 
     </div>
@@ -167,24 +198,61 @@ body {
 
 <script>
 let carrito = [];
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-function agregar(nombre, precio){
-    carrito.push({nombre,precio});
+// SOLO SUSCRITOS
+function esSuscrito(){
+    return usuarios.length > 0;
+}
+
+// AGREGAR
+function agregar(nombre, precio, tallaId, colorId){
+
+    if(!esSuscrito()){
+        alert("Debes suscribirte primero");
+        return;
+    }
+
+    let talla = document.getElementById(tallaId).value;
+    let color = document.getElementById(colorId).value;
+
+    carrito.push({nombre,precio,talla,color});
     mostrar();
 }
 
+// ELIMINAR
+function eliminar(index){
+    carrito.splice(index,1);
+    mostrar();
+}
+
+// MOSTRAR
 function mostrar(){
     let lista = document.getElementById("carrito");
     let total = 0;
 
     lista.innerHTML = "";
 
-    carrito.forEach(p=>{
-        lista.innerHTML += `<li>${p.nombre} - $${p.precio}</li>`;
+    carrito.forEach((p,i)=>{
+        lista.innerHTML += `
+        <li>
+        ${p.nombre} - $${p.precio} | ${p.talla} | ${p.color}
+        <button onclick="eliminar(${i})">❌</button>
+        </li>`;
         total += p.precio;
     });
 
     document.getElementById("total").innerText = total;
+}
+
+// EVENTOS
+function reservar(){
+    if(!esSuscrito()){
+        alert("Debes suscribirte para reservar");
+        return;
+    }
+
+    alert("Reserva realizada 🔥");
 }
 </script>
 
