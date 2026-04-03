@@ -187,23 +187,19 @@ onmouseup="this.style.transform='scale(1.05)'"
 // ❌ YA NO USAMOS LOCALSTORAGE
 // let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-// FORMATO 1K, 1M
+// 🔥 FORMATO 1K, 1M
 function formatear(num) {
-    if (num >= 1000000) {
-        return (num / 1000000).toFixed(1).replace(".0","") + "M";
-    }
-    if (num >= 1000) {
-        return (num / 1000).toFixed(1).replace(".0","") + "K";
-    }
+    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(".0","") + "M";
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(".0","") + "K";
     return num;
 }
 
-// VALIDAR EMAIL
+// 🔥 VALIDAR EMAIL
 function esCorreoValido(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// 🔥 MENSAJE BONITO (NO CAMBIA)
+// 🔥 MENSAJE BONITO
 function mostrarMensaje(texto, tipo) {
     let mensaje = document.getElementById("mensaje");
 
@@ -211,10 +207,8 @@ function mostrarMensaje(texto, tipo) {
 
     if(tipo === "error"){
         mensaje.style.background = "#b30000";
-    } else if(tipo === "ok"){
-        mensaje.style.background = "#008000";
     } else {
-        mensaje.style.background = "#000";
+        mensaje.style.background = "#008000";
     }
 
     mensaje.style.display = "block";
@@ -224,14 +218,14 @@ function mostrarMensaje(texto, tipo) {
     }, 2500);
 }
 
-// 🔥 SUSCRIPCIÓN REAL CON BACKEND + FIREBASE
+// 🔥 SUSCRIBIRSE REAL (BACKEND)
 async function suscribirse() {
 
-    let valor = document.getElementById("usuario").value.trim();
+    let email = document.getElementById("usuario").value.trim();
 
-    if(valor === "") return;
+    if(email === "") return;
 
-    if(!esCorreoValido(valor)){
+    if(!esCorreoValido(email)){
         mostrarMensaje("❌ Correo inválido", "error");
         return;
     }
@@ -243,31 +237,27 @@ async function suscribirse() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ email: valor })
+            body: JSON.stringify({ email })
         });
 
         const data = await res.json();
-
-        if(data.error){
-            mostrarMensaje("❌ " + data.error, "error");
-            return;
-        }
 
         if(data.mensaje === "Ya suscrito"){
             mostrarMensaje("⚠️ Ya estás suscrito", "error");
         } else {
             mostrarMensaje("✅ Suscripción exitosa", "ok");
             document.getElementById("usuario").value = "";
-            cargarContador();
         }
+
+        cargarContador();
 
     } catch (error) {
         console.error(error);
-        mostrarMensaje("❌ Error del servidor", "error");
+        mostrarMensaje("❌ Error de conexión", "error");
     }
 }
 
-// 🔥 CONTADOR REAL DESDE FIREBASE
+// 🔥 OBTENER CONTADOR REAL
 async function cargarContador(){
 
     try {
@@ -282,10 +272,8 @@ async function cargarContador(){
     }
 }
 
-// INICIALIZAR CONTADOR
-window.onload = function(){
-    cargarContador();
-};
+// 🔥 AL CARGAR LA PÁGINA
+window.onload = cargarContador;
 
 </script>
 
