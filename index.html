@@ -10,16 +10,19 @@
 <style>
 :root {
     --rojo: #8b0000;
+    --rojo-hover: #b30000;
     --fondo: #1a0f0f;
+    --texto-secundario: #d6a3a3;
 }
 
 body {
     margin: 0;
-    font-family: 'Segoe UI';
+    font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #140909, #3a1a1a);
     color: white;
 }
 
+/* HEADER */
 .header {
     display: flex;
     align-items: center;
@@ -30,19 +33,36 @@ body {
 }
 
 .header img {
-    width: 160px;
+    width: 180px;
+    height: 180px;
     border-radius: 20px;
-    margin-right: 30px;
+    margin-right: 40px;
+    object-fit: cover;
+    box-shadow:
+        0 15px 30px rgba(0, 0, 0, 0.8),
+        0 5px 15px rgba(0, 0, 0, 0.6);
+}
+
+.header h1 {
+    font-size: 56px;
+    margin: 0;
 }
 
 .btn-main {
+    margin-top: 20px;
+    display: inline-block;
     background: var(--rojo);
     padding: 12px 25px;
     border-radius: 25px;
-    color: white;
     text-decoration: none;
-    display: inline-block;
-    margin-top: 15px;
+    color: white;
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-main:hover {
+    background: var(--rojo-hover);
 }
 
 .container {
@@ -52,10 +72,18 @@ body {
 }
 
 .section {
-    background: rgba(255,255,255,0.05);
-    padding: 25px;
-    margin-top: 20px;
+    background: rgba(255,255,255,0.04);
+    padding: 30px;
+    margin-top: 30px;
     border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+
+input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    margin-right: 10px;
 }
 </style>
 </head>
@@ -63,7 +91,7 @@ body {
 <body>
 
 <div class="header">
-    <img src="Lil Naay.png">
+    <img src="Lil Naay.png" alt="LIL NAAY">
     <div>
         <h1>LIL NAAY</h1>
         <p>Artista urbano • Trap</p>
@@ -74,33 +102,59 @@ body {
 <div class="container">
 
 <div class="section">
-<h2>Biografía</h2>
-<p>Lil Naay es un artista emergente del Trap Latino.</p>
+    <h2>Biografía</h2>
+    <p>Lil Naay es un artista emergente del Trap Latino.</p>
 </div>
 
+<!-- 🎵 LANZAMIENTOS -->
 <div class="section">
-<h2>🎵 Nuevos Lanzamientos</h2>
+    <h2>🎵 Nuevos Lanzamientos</h2>
 
-<a href="https://youtu.be/e-XAUCdY7eQ" target="_blank">
-<img src="relasionadoconloreal.jpg" width="180">
-</a>
+    <div style="display:flex; gap:20px; flex-wrap:wrap;">
 
-<a href="https://youtube.com" target="_blank">
-<img src="THE MVP OF THE YEAR.jpg" width="180">
-</a>
+        <div style="width:180px; text-align:center;">
+            <a href="https://youtu.be/e-XAUCdY7eQ" target="_blank">
+                <img src="relasionadoconloreal.jpg"
+                style="width:100%; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.7);">
+            </a>
+            <p>RELACIONADO CON LO REAL</p>
+        </div>
 
+        <div style="width:180px; text-align:center;">
+            <a href="https://youtube.com" target="_blank">
+                <img src="THE MVP OF THE YEAR.jpg"
+                style="width:100%; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.7);">
+            </a>
+            <p>THE MVP OF THE YEAR</p>
+        </div>
+
+    </div>
 </div>
 
+<!-- 🔥 COMUNIDAD -->
 <div class="section">
-<h2>🔥 Comunidad</h2>
+    <h2>🔥 Comunidad</h2>
 
-<input type="text" id="usuario" placeholder="Tu correo">
-<button onclick="suscribirse()" class="btn-main">Suscribirse</button>
+    <input type="text" id="usuario" placeholder="Ingresa tu correo">
+    <button onclick="suscribirse()" class="btn-main">Suscribirse</button>
 
-<p>Suscriptores: <span id="contador">0</span></p>
+    <p>Suscriptores: <span id="contador">0</span></p>
 </div>
 
 </div>
+
+<!-- 🔥 MENSAJE BONITO -->
+<div id="mensaje" style="
+position: fixed;
+bottom: 20px;
+right: 20px;
+padding: 15px 20px;
+border-radius: 10px;
+display: none;
+color: white;
+box-shadow: 0 0 15px rgba(0,0,0,0.5);
+z-index: 999;
+"></div>
 
 <!-- 🔥 FIREBASE -->
 <script type="module">
@@ -117,35 +171,59 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// FUNCIONES
+// 🔢 FORMATO
 function formatear(num){
-    if(num >= 1000) return (num/1000).toFixed(1)+"K";
+    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(".0","") + "M";
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(".0","") + "K";
     return num;
 }
 
+// 📧 VALIDAR
 function esCorreoValido(email){
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+// 💬 MENSAJE BONITO
+function mostrarMensaje(texto, tipo){
+    let msg = document.getElementById("mensaje");
+
+    msg.innerText = texto;
+    msg.style.display = "block";
+    msg.style.background = tipo === "error" ? "#b30000" : "#008000";
+
+    setTimeout(()=>{
+        msg.style.display = "none";
+    },2500);
+}
+
+// 🚀 SUSCRIBIR
 window.suscribirse = async function(){
 
-    let email = document.getElementById("usuario").value;
+    let email = document.getElementById("usuario").value.trim();
 
     if(!esCorreoValido(email)){
-        alert("Correo inválido");
+        mostrarMensaje("❌ Correo inválido","error");
         return;
     }
 
-    await addDoc(collection(db, "suscriptores"), {
-        email: email,
-        fecha: new Date()
-    });
+    try{
 
-    alert("Suscrito 🔥");
+        await addDoc(collection(db,"suscriptores"),{
+            email: email,
+            fecha: new Date()
+        });
 
-    cargarContador();
+        mostrarMensaje("✅ Suscripción exitosa","ok");
+        document.getElementById("usuario").value="";
+
+        cargarContador();
+
+    }catch(e){
+        mostrarMensaje("❌ Error","error");
+    }
 }
 
+// 🔢 CONTADOR
 async function cargarContador(){
     const snap = await getDocs(collection(db,"suscriptores"));
     document.getElementById("contador").innerText = formatear(snap.size);
