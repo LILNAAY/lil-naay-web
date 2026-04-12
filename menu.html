@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Eventos & Tienda</title>
 
 <style>
@@ -65,10 +65,6 @@ body {
     padding: 0;
 }
 
-.carrito-box li {
-    margin-bottom: 10px;
-}
-
 .store {
     display: flex;
     gap: 25px;
@@ -110,16 +106,6 @@ body {
     color: #888;
     margin-top: 40px;
 }
-
-/* CLIENTE */
-.cliente-box input, .cliente-box select{
-    display:block;
-    margin:8px 0;
-    padding:10px;
-    border-radius:10px;
-    border:none;
-    width: 250px;
-}
 </style>
 </head>
 
@@ -129,57 +115,31 @@ body {
     <a href="index.html" class="back-btn">⬅ Volver</a>
 </div>
 
-<!-- 🔥 DATOS DEL CLIENTE -->
-<div class="section cliente-box">
-    <h2>🧾 Datos del cliente</h2>
-
-    <input type="text" id="nombre" placeholder="Nombre completo" oninput="validarNombre()">
-    <input type="email" id="correo" placeholder="Correo electrónico">
-
-    <select id="pais">
-        <option value="">Selecciona tu país</option>
-        <option>República Dominicana</option>
-        <option>Estados Unidos</option>
-        <option>España</option>
-        <option>México</option>
-        <option>Colombia</option>
-        <option>Argentina</option>
-        <option>Chile</option>
-        <option>Perú</option>
-        <option>Venezuela</option>
-        <option>Puerto Rico</option>
-        <option>Panamá</option>
-        <option>Costa Rica</option>
-        <option>Guatemala</option>
-    </select>
-
-    <button class="btn" onclick="guardarDatos()">Guardar datos ✅</button>
-
-    <p id="estadoDatos" style="color:#00ff99;"></p>
-</div>
-
+<!-- 🎟️ EVENTOS -->
 <div class="section">
     <h2>🎟️ Eventos</h2>
 
     <div class="event">
         📍 Santo Domingo - 10 Abril 2026 <br><br>
-        <button class="btn" onclick="reservar()">Reservar / Comprar</button>
+        <button class="btn" onclick="reservar()">Reservar</button>
     </div>
 
     <div class="event">
         📍 Santiago - 25 Abril 2026 <br><br>
-        <button class="btn" onclick="reservar()">Reservar / Comprar</button>
+        <button class="btn" onclick="reservar()">Reservar</button>
     </div>
 </div>
 
+<!-- 🛍️ TIENDA -->
 <div class="section">
     <h2>🛍️ Tienda</h2>
 
+    <!-- 🛒 CARRITO -->
     <div class="carrito-box">
         <h3>🛒 Carrito</h3>
         <ul id="carrito"></ul>
         <p>Total: $<span id="total">0</span></p>
-        <button class="btn" onclick="pagar()">Pagar 💳</button>
+        <button class="btn" onclick="pagar()">Guardar Compra 🔥</button>
     </div>
 
     <div class="store">
@@ -189,18 +149,7 @@ body {
             <p>Hoodie LIL NAAY</p>
             <p class="price">$25</p>
 
-            <select id="talla1">
-                <option>S</option>
-                <option>M</option>
-                <option>L</option>
-            </select>
-
-            <select id="color1">
-                <option>Rojo</option>
-                <option>Negro</option>
-            </select>
-
-            <button class="btn" onclick="agregar('Hoodie',25,'talla1','color1')">Comprar</button>
+            <button class="btn" onclick="agregar('Hoodie',25)">Comprar</button>
         </div>
 
         <div class="product">
@@ -208,18 +157,7 @@ body {
             <p>T-Shirt LIL NAAY</p>
             <p class="price">$15</p>
 
-            <select id="talla2">
-                <option>S</option>
-                <option>M</option>
-                <option>L</option>
-            </select>
-
-            <select id="color2">
-                <option>Blanco</option>
-                <option>Negro</option>
-            </select>
-
-            <button class="btn" onclick="agregar('T-Shirt',15,'talla2','color2')">Comprar</button>
+            <button class="btn" onclick="agregar('T-Shirt',15)">Comprar</button>
         </div>
 
     </div>
@@ -229,68 +167,35 @@ body {
     © 2026 LIL NAAY — Página creada por J.D
 </div>
 
-<script>
+<!-- 🔥 FIREBASE -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "lil-naay.firebaseapp.com",
+  projectId: "lil-naay"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🛒 CARRITO
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-let datosGuardados = false;
-
-// VALIDAR NOMBRE
-function validarNombre(){
-    let nombre = document.getElementById("nombre");
-    nombre.value = nombre.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '');
-}
-
-// VALIDAR EMAIL
-function validarCorreo(email){
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-}
-
-// GUARDAR DATOS
-function guardarDatos(){
-
-    let nombre = document.getElementById("nombre").value.trim();
-    let correo = document.getElementById("correo").value.trim();
-    let pais = document.getElementById("pais").value;
-
-    if(!nombre || !correo || !pais){
-        alert("Completa todos los datos");
-        return;
-    }
-
-    if(!validarCorreo(correo)){
-        alert("Correo inválido");
-        return;
-    }
-
-    if(nombre.length < 3){
-        alert("Nombre muy corto");
-        return;
-    }
-
-    let cliente = { nombre, correo, pais };
-    localStorage.setItem("cliente", JSON.stringify(cliente));
-
-    datosGuardados = true;
-
-    document.getElementById("estadoDatos").innerText = "Datos guardados correctamente ✅";
-}
 
 function guardarCarrito(){
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-function agregar(nombre, precio, tallaId, colorId){
-
-    let talla = document.getElementById(tallaId).value;
-    let color = document.getElementById(colorId).value;
-
-    carrito.push({nombre,precio,talla,color});
-
+window.agregar = function(nombre,precio){
+    carrito.push({nombre,precio});
     guardarCarrito();
     mostrar();
 }
 
-function eliminar(index){
+window.eliminar = function(index){
     carrito.splice(index,1);
     guardarCarrito();
     mostrar();
@@ -305,7 +210,7 @@ function mostrar(){
     carrito.forEach((p,i)=>{
         lista.innerHTML += `
         <li>
-        ${p.nombre} - $${p.precio} | ${p.talla} | ${p.color}
+        ${p.nombre} - $${p.precio}
         <button onclick="eliminar(${i})">❌</button>
         </li>`;
         total += p.precio;
@@ -314,46 +219,39 @@ function mostrar(){
     document.getElementById("total").innerText = total;
 }
 
-// PAGAR
-async function pagar(){
-
-    if(!datosGuardados){
-        alert("Primero guarda los datos del cliente");
-        return;
-    }
+// 💾 GUARDAR COMPRA EN FIREBASE
+window.pagar = async function(){
 
     if(carrito.length === 0){
         alert("Carrito vacío");
         return;
     }
 
-    let cliente = JSON.parse(localStorage.getItem("cliente"));
+    try{
 
-    const respuesta = await fetch("http://localhost:3000/crear-pago", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
+        await addDoc(collection(db,"compras"),{
             productos: carrito,
-            cliente: cliente
-        })
-    });
+            fecha: new Date()
+        });
 
-    const data = await respuesta.json();
+        alert("Compra guardada 🔥");
 
-    if(data.url){
-        window.location.href = data.url;
-    } else {
-        alert("Error al crear pago");
+        carrito = [];
+        localStorage.removeItem("carrito");
+        mostrar();
+
+    }catch(e){
+        alert("Error al guardar");
     }
 }
 
-function reservar(){
+// 🎟️ EVENTO
+window.reservar = function(){
     alert("Reserva realizada 🔥");
 }
 
-window.onload = mostrar;
+mostrar();
+
 </script>
 
 </body>
