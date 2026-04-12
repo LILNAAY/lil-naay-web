@@ -1,98 +1,69 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LIL NAAY - Inicio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIL NAAY - Inicio</title>
 
-    <!-- ICONOS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <style>
-        :root {
-            --rojo: #8b0000;
-            --rojo-hover: #b30000;
-            --fondo: #1a0f0f;
-            --texto-secundario: #d6a3a3;
-        }
+<style>
+:root {
+    --rojo: #8b0000;
+    --fondo: #1a0f0f;
+}
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #140909, #3a1a1a);
-            color: white;
-        }
+body {
+    margin: 0;
+    font-family: 'Segoe UI';
+    background: linear-gradient(135deg, #140909, #3a1a1a);
+    color: white;
+}
 
-        /* HEADER */
-        .header {
-            display: flex;
-            align-items: center;
-            padding: 50px 30px;
-            background: linear-gradient(90deg, var(--rojo), var(--fondo));
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
-        }
+.header {
+    display: flex;
+    align-items: center;
+    padding: 50px 30px;
+    background: linear-gradient(90deg, var(--rojo), var(--fondo));
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+}
 
-        .header img {
-            width: 180px;
-            height: 180px;
-            border-radius: 20px;
-            margin-right: 40px;
-            object-fit: cover;
-            box-shadow:
-                0 15px 30px rgba(0, 0, 0, 0.8),
-                0 5px 15px rgba(0, 0, 0, 0.6);
-        }
+.header img {
+    width: 160px;
+    border-radius: 20px;
+    margin-right: 30px;
+}
 
-        .header h1 {
-            font-size: 56px;
-            margin: 0;
-        }
+.btn-main {
+    background: var(--rojo);
+    padding: 12px 25px;
+    border-radius: 25px;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 15px;
+}
 
-        .btn-main {
-            margin-top: 20px;
-            display: inline-block;
-            background: var(--rojo);
-            padding: 12px 25px;
-            border-radius: 25px;
-            text-decoration: none;
-            color: white;
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-        }
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
 
-        .btn-main:hover {
-            background: var(--rojo-hover);
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: auto;
-            padding: 20px;
-        }
-
-        .section {
-            background: rgba(255,255,255,0.04);
-            padding: 30px;
-            margin-top: 30px;
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
-
-        input {
-            padding: 10px;
-            border-radius: 10px;
-            border: none;
-            margin-right: 10px;
-        }
-    </style>
+.section {
+    background: rgba(255,255,255,0.05);
+    padding: 25px;
+    margin-top: 20px;
+    border-radius: 20px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="header">
-    <img src="Lil Naay.png" alt="LIL NAAY">
+    <img src="Lil Naay.png">
     <div>
         <h1>LIL NAAY</h1>
         <p>Artista urbano • Trap</p>
@@ -102,194 +73,87 @@
 
 <div class="container">
 
-    <div class="section">
-        <h2>Biografía</h2>
-        <p>Lil Naay es un artista emergente del Trap Latino.</p>
-    </div>
-
-    <!-- 🎵 NUEVOS LANZAMIENTOS -->
 <div class="section">
-    <h2>🎵 Nuevos Lanzamientos</h2>
-
-    <div style="display:flex; gap:20px; flex-wrap:wrap;">
-
-     <div style="width:180px; text-align:center;">
-
-    <a href="https://youtu.be/e-XAUCdY7eQ?si=VYP6_59KcFDUDG_N">
-       <img src="relasionadoconloreal.jpg" 
-style="
-width:100%;
-border-radius:10px;
-box-shadow: 0 10px 25px rgba(0,0,0,0.7);
-transition: all 0.3s ease;
-"
-onmouseover="this.style.transform='scale(1.05)'"
-onmouseout="this.style.transform='scale(1)'"
-onmousedown="this.style.transform='scale(0.95)'"
-onmouseup="this.style.transform='scale(1.05)'"
->
-    </a>
-
-    <p>RELACIONADO CON LO REAL</p>
+<h2>Biografía</h2>
+<p>Lil Naay es un artista emergente del Trap Latino.</p>
 </div>
 
-<div style="width:180px; text-align:center;">
+<div class="section">
+<h2>🎵 Nuevos Lanzamientos</h2>
 
-    <a href="https://youtube.com/playlist?list=OLAK5uy_kLliadr3oMu871mllneReFU0g8oDsaMwU&si=Dqo6_W3nRHA6P0OM" target="_blank">
-        <img src="THE MVP OF THE YEAR.jpg" 
-        style="
-        width:100%;
-        border-radius:10px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.7);
-        transition: all 0.3s ease;
-        "
-        onmouseover="this.style.transform='scale(1.05)'"
-        onmouseout="this.style.transform='scale(1)'"
-        onmousedown="this.style.transform='scale(0.95)'"
-        onmouseup="this.style.transform='scale(1.05)'"
-        >
-    </a>
+<a href="https://youtu.be/e-XAUCdY7eQ" target="_blank">
+<img src="relasionadoconloreal.jpg" width="180">
+</a>
 
-    <p>THE MVP OF THE YEAR</p>
-
-</div>
-        
-    </div>
-
-    <!-- BOTONES REDES -->
-    <div style="margin-top:20px;">
-
-        <a href="https://www.instagram.com/lilnaay___?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="btn-main">
-            <i class="fab fa-instagram"></i> Instagram
-        </a>
-
-        <a href="https://youtube.com/@lilnaay7366?si=rop3mPVla0WalcgB" target="_blank" class="btn-main">
-            <i class="fab fa-youtube"></i> YouTube
-        </a>
-
-    </div>
-</div>
-
-    <!-- 🔥 SUSCRIPCIÓN MODIFICADA -->
-    <div class="section">
-        <h2>🔥 Comunidad</h2>
-
-        <input type="text" id="usuario" placeholder="Ingresa tu correo">
-        <button onclick="suscribirse()" class="btn-main">Suscribirse</button>
-
-        <p>Suscriptores: <span id="contador">0</span></p>
-    </div>
+<a href="https://youtube.com" target="_blank">
+<img src="THE MVP OF THE YEAR.jpg" width="180">
+</a>
 
 </div>
 
-<script>
+<div class="section">
+<h2>🔥 Comunidad</h2>
 
-// ❌ YA NO USAMOS LOCALSTORAGE
-// let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+<input type="text" id="usuario" placeholder="Tu correo">
+<button onclick="suscribirse()" class="btn-main">Suscribirse</button>
 
-// 🔥 FORMATO 1K, 1M
-function formatear(num) {
-    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(".0","") + "M";
-    if (num >= 1000) return (num / 1000).toFixed(1).replace(".0","") + "K";
+<p>Suscriptores: <span id="contador">0</span></p>
+</div>
+
+</div>
+
+<!-- 🔥 FIREBASE -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "lil-naay.firebaseapp.com",
+  projectId: "lil-naay"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// FUNCIONES
+function formatear(num){
+    if(num >= 1000) return (num/1000).toFixed(1)+"K";
     return num;
 }
 
-// 🔥 VALIDAR EMAIL
-function esCorreoValido(email) {
+function esCorreoValido(email){
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// 🔥 MENSAJE BONITO
-function mostrarMensaje(texto, tipo) {
-    let mensaje = document.getElementById("mensaje");
+window.suscribirse = async function(){
 
-    mensaje.textContent = texto;
-
-    if(tipo === "error"){
-        mensaje.style.background = "#b30000";
-    } else {
-        mensaje.style.background = "#008000";
-    }
-
-    mensaje.style.display = "block";
-
-    setTimeout(() => {
-        mensaje.style.display = "none";
-    }, 2500);
-}
-
-// 🔥 SUSCRIBIRSE REAL (BACKEND)
-async function suscribirse() {
-
-    let email = document.getElementById("usuario").value.trim();
-
-    if(email === "") return;
+    let email = document.getElementById("usuario").value;
 
     if(!esCorreoValido(email)){
-        mostrarMensaje("❌ Correo inválido", "error");
+        alert("Correo inválido");
         return;
     }
 
-    try {
+    await addDoc(collection(db, "suscriptores"), {
+        email: email,
+        fecha: new Date()
+    });
 
-        const res = await fetch("http://localhost:3000/suscribir", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email })
-        });
+    alert("Suscrito 🔥");
 
-        const data = await res.json();
-
-        if(data.mensaje === "Ya suscrito"){
-            mostrarMensaje("⚠️ Ya estás suscrito", "error");
-        } else {
-            mostrarMensaje("✅ Suscripción exitosa", "ok");
-            document.getElementById("usuario").value = "";
-        }
-
-        cargarContador();
-
-    } catch (error) {
-        console.error(error);
-        mostrarMensaje("❌ Error de conexión", "error");
-    }
+    cargarContador();
 }
 
-// 🔥 OBTENER CONTADOR REAL
 async function cargarContador(){
-
-    try {
-
-        const res = await fetch("http://localhost:3000/suscriptores");
-        const data = await res.json();
-
-        document.getElementById("contador").textContent = formatear(data.total);
-
-    } catch (error) {
-        console.error(error);
-    }
+    const snap = await getDocs(collection(db,"suscriptores"));
+    document.getElementById("contador").innerText = formatear(snap.size);
 }
 
-// 🔥 AL CARGAR LA PÁGINA
-window.onload = cargarContador;
+cargarContador();
 
 </script>
 
-<div id="mensaje" style="
-position: fixed;
-bottom: 20px;
-right: 20px;
-background: #000;
-color: white;
-padding: 15px 20px;
-border-radius: 10px;
-display: none;
-box-shadow: 0 0 15px rgba(0,0,0,0.5);
-font-family: 'Segoe UI';
-z-index: 999;
-"></div>
-    
 </body>
 </html>
