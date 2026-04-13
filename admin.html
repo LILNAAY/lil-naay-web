@@ -127,9 +127,12 @@ import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.c
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
+  apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
   authDomain: "lil-naay.firebaseapp.com",
-  projectId: "lil-naay"
+  projectId: "lil-naay",
+  storageBucket: "lil-naay.firebasestorage.app",
+  messagingSenderId: "703644392301",
+  appId: "1:703644392301:web:7338cd5cc4ae6054401864"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -145,8 +148,8 @@ window.login = function(){
     .then(()=>{
         alert("Bienvenido 🔥");
     })
-    .catch(()=>{
-        alert("Error de acceso ❌");
+    .catch((error)=>{
+        alert("Error: " + error.message);
     });
 }
 
@@ -155,7 +158,7 @@ window.logout = function(){
     signOut(auth);
 }
 
-// 🔐 PROTECCIÓN AUTOMÁTICA
+// 🔐 PROTECCIÓN
 onAuthStateChanged(auth,user=>{
     if(user){
         document.getElementById("loginBox").style.display="none";
