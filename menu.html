@@ -171,7 +171,7 @@ body {
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "TU_API_KEY",
@@ -189,18 +189,70 @@ function guardarCarrito(){
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-window.agregar = function(nombre,precio){
-    carrito.push({nombre,precio});
+// 📦 CARGAR PRODUCTOS DINÁMICOS
+async function cargarProductos(){
+
+    const contenedor = document.querySelector(".store");
+    contenedor.innerHTML = "";
+
+    const snapshot = await getDocs(collection(db,"productos"));
+
+    snapshot.forEach(docSnap => {
+
+        const p = docSnap.data();
+
+        // 🔽 GENERAR OPCIONES
+        let opcionesTalla = p.tallas.map(t => `<option>${t}</option>`).join("");
+        let opcionesColor = p.colores.map(c => `<option>${c}</option>`).join("");
+
+        contenedor.innerHTML += `
+        <div class="product">
+            <img src="${p.imagen}">
+            <p>${p.nombre}</p>
+            <p class="price">$${p.precio}</p>
+            <p>Stock: ${p.stock}</p>
+
+            <select id="talla-${docSnap.id}">
+                ${opcionesTalla}
+            </select>
+
+            <select id="color-${docSnap.id}">
+                ${opcionesColor}
+            </select>
+
+            <button class="btn" onclick="agregar('${docSnap.id}','${p.nombre}',${p.precio},${p.stock})">
+                Comprar
+            </button>
+        </div>
+        `;
+    });
+}
+
+// ➕ AGREGAR AL CARRITO
+window.agregar = function(id,nombre,precio,stock){
+
+    if(stock <= 0){
+        alert("Sin stock ❌");
+        return;
+    }
+
+    let talla = document.getElementById(`talla-${id}`).value;
+    let color = document.getElementById(`color-${id}`).value;
+
+    carrito.push({id,nombre,precio,talla,color});
+
     guardarCarrito();
     mostrar();
 }
 
+// ❌ ELIMINAR
 window.eliminar = function(index){
     carrito.splice(index,1);
     guardarCarrito();
     mostrar();
 }
 
+// 🔄 MOSTRAR CARRITO
 function mostrar(){
     let lista = document.getElementById("carrito");
     let total = 0;
@@ -210,7 +262,7 @@ function mostrar(){
     carrito.forEach((p,i)=>{
         lista.innerHTML += `
         <li>
-        ${p.nombre} - $${p.precio}
+        ${p.nombre} - $${p.precio} | ${p.talla} | ${p.color}
         <button onclick="eliminar(${i})">❌</button>
         </li>`;
         total += p.precio;
@@ -219,7 +271,7 @@ function mostrar(){
     document.getElementById("total").innerText = total;
 }
 
-// 💾 GUARDAR COMPRA EN FIREBASE
+// 💳 PAGAR + DESCONTAR STOCK
 window.pagar = async function(){
 
     if(carrito.length === 0){
@@ -234,22 +286,40 @@ window.pagar = async function(){
             fecha: new Date()
         });
 
-        alert("Compra guardada 🔥");
+        // 🔻 DESCONTAR STOCK
+        for(let item of carrito){
+
+            const ref = doc(db,"productos",item.id);
+
+            const snap = await getDocs(collection(db,"productos"));
+            snap.forEach(async d=>{
+                if(d.id === item.id){
+                    let nuevoStock = d.data().stock - 1;
+                    await updateDoc(ref,{stock:nuevoStock});
+                }
+            });
+        }
+
+        alert("Compra realizada 🔥");
 
         carrito = [];
         localStorage.removeItem("carrito");
         mostrar();
+        cargarProductos();
 
     }catch(e){
-        alert("Error al guardar");
+        console.error(e);
+        alert("Error en compra");
     }
 }
 
-// 🎟️ EVENTO
+// 🎟️ EVENTOS
 window.reservar = function(){
     alert("Reserva realizada 🔥");
 }
 
+// INIT
+cargarProductos();
 mostrar();
 
 </script>
