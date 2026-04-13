@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Admin LIL NAAY</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#0f0a0a;
+    color:white;
+    margin:0;
+}
+
+.navbar{
+    padding:20px;
+    background:#140909;
+    display:flex;
+    justify-content:space-between;
+}
+
+.section{
+    padding:20px;
+}
+
+.box{
+    background:rgba(255,255,255,0.05);
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+button{
+    padding:8px;
+    background:#8b0000;
+    border:none;
+    color:white;
+    cursor:pointer;
+}
+
+input{
+    padding:8px;
+    margin:5px 0;
+    width:200px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="navbar">
+    <h2>⚙️ Panel Admin</h2>
+    <a href="index.html" style="color:white;">⬅ Volver</a>
+</div>
+
+<!-- 📊 SUSCRIPTORES -->
+<div class="section">
+    <div class="box">
+        <h3>👥 Suscriptores</h3>
+        <ul id="suscriptores"></ul>
+    </div>
+
+<!-- 🛒 COMPRAS -->
+    <div class="box">
+        <h3>💳 Compras</h3>
+        <ul id="compras"></ul>
+    </div>
+
+<!-- 🧠 ACTIVIDAD -->
+    <div class="box">
+        <h3>📡 Actividad</h3>
+        <ul id="actividad"></ul>
+    </div>
+
+<!-- 🎨 EDITAR PRODUCTOS -->
+    <div class="box">
+        <h3>🛍️ Crear Producto</h3>
+
+        <input id="nombre" placeholder="Nombre">
+        <input id="precio" placeholder="Precio">
+        <input id="imagen" placeholder="URL Imagen">
+
+        <button onclick="crearProducto()">Crear</button>
+    </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "lil-naay.firebaseapp.com",
+  projectId: "lil-naay"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 📊 CARGAR SUSCRIPTORES
+async function cargarSuscriptores(){
+    const lista = document.getElementById("suscriptores");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"suscriptores"));
+
+    snap.forEach(doc=>{
+        let d = doc.data();
+        lista.innerHTML += `<li>${d.email}</li>`;
+    });
+}
+
+// 🛒 CARGAR COMPRAS
+async function cargarCompras(){
+    const lista = document.getElementById("compras");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"compras"));
+
+    snap.forEach(doc=>{
+        let d = doc.data();
+        lista.innerHTML += `<li>${JSON.stringify(d.productos)}</li>`;
+    });
+}
+
+// 📡 ACTIVIDAD
+async function cargarActividad(){
+    const lista = document.getElementById("actividad");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"actividad"));
+
+    snap.forEach(doc=>{
+        let d = doc.data();
+        lista.innerHTML += `<li>${d.accion} - ${d.fecha}</li>`;
+    });
+}
+
+// 🛍️ CREAR PRODUCTO
+window.crearProducto = async function(){
+
+    let nombre = document.getElementById("nombre").value;
+    let precio = Number(document.getElementById("precio").value);
+    let imagen = document.getElementById("imagen").value;
+
+    if(!nombre || !precio){
+        alert("Completa datos");
+        return;
+    }
+
+    await addDoc(collection(db,"productos"),{
+        nombre,
+        precio,
+        imagen,
+        stock: 10
+    });
+
+    alert("Producto creado 🔥");
+}
+
+// INIT
+cargarSuscriptores();
+cargarCompras();
+cargarActividad();
+
+</script>
+
+</body>
+</html>
