@@ -89,30 +89,26 @@ li{
 
 <div class="container">
 
-    <!-- SUSCRIPTORES -->
     <div class="card">
         <h3>👥 Suscriptores</h3>
         <ul id="suscriptores"></ul>
     </div>
 
-    <!-- COMPRAS -->
     <div class="card">
         <h3>💳 Compras</h3>
         <ul id="compras"></ul>
     </div>
 
-    <!-- ACTIVIDAD -->
     <div class="card">
         <h3>📡 Actividad</h3>
         <ul id="actividad"></ul>
     </div>
 
     <div class="card">
-    <h3>🛍️ Productos</h3>
-    <ul id="productos"></ul>
-</div>
+        <h3>🛍️ Productos</h3>
+        <ul id="productos"></ul>
+    </div>
 
-    <!-- CREAR PRODUCTO -->
     <div class="card">
         <h3>🛍️ Crear Producto</h3>
         <input id="nombre" placeholder="Nombre">
@@ -180,12 +176,11 @@ function cargarTodo(){
     cargarSuscriptores();
     cargarCompras();
     cargarActividad();
-    cargarProductos(); //NUEVO
+    cargarProductos();
 }
 
-    //NUEVA AGREGADA 
-
-    async function cargarProductos(){
+// 🛍️ PRODUCTOS
+async function cargarProductos(){
     const lista = document.getElementById("productos");
     lista.innerHTML = "";
 
@@ -204,7 +199,7 @@ function cargarTodo(){
         </li>`;
     });
 }
-    
+
 // 👥 SUSCRIPTORES
 async function cargarSuscriptores(){
     const lista = document.getElementById("suscriptores");
@@ -212,20 +207,50 @@ async function cargarSuscriptores(){
 
     const snap = await getDocs(collection(db,"suscriptores"));
 
-    snap.forEach(doc=>{
-        let d = doc.data();
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
         lista.innerHTML += `<li>${d.email}</li>`;
     });
 }
 
-//EDITAR PRODUCTOS 
+// 💳 COMPRAS
+async function cargarCompras(){
+    const lista = document.getElementById("compras");
+    lista.innerHTML = "";
 
-    window.editarProducto = async function(id, nombreActual, precioActual){
+    const snap = await getDocs(collection(db,"compras"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+
+        let productos = d.productos.map(p=>
+            `${p.nombre} | Talla: ${p.talla || "-"} | Color: ${p.color || "-"} | $${p.precio}`
+        ).join("<br>");
+
+        lista.innerHTML += `<li>${productos}</li>`;
+    });
+}
+
+// 📡 ACTIVIDAD
+async function cargarActividad(){
+    const lista = document.getElementById("actividad");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"actividad"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+        lista.innerHTML += `<li>${d.accion} - ${d.fecha || ""}</li>`;
+    });
+}
+
+// ✏️ EDITAR PRODUCTO
+window.editarProducto = async function(id, nombreActual, precioActual){
 
     let nuevoNombre = prompt("Nuevo nombre:", nombreActual);
     let nuevoPrecio = prompt("Nuevo precio:", precioActual);
 
-    if(!nuevoNombre || !nuevoPrecio) return;
+    if(!nuevoNombre || isNaN(nuevoPrecio) || nuevoPrecio <= 0) return;
 
     await updateDoc(doc(db,"productos",id),{
         nombre: nuevoNombre,
@@ -239,28 +264,9 @@ async function cargarSuscriptores(){
 
     cargarProductos();
 }
-    
-// 💳 COMPRAS BONITAS
-async function cargarCompras(){
-    const lista = document.getElementById("compras");
-    lista.innerHTML = "";
 
-    const snap = await getDocs(collection(db,"compras"));
-
-    snap.forEach(doc=>{
-        let d = doc.data();
-
-        let productos = d.productos.map(p=>
-            `${p.nombre} | Talla: ${p.talla || "-"} | Color: ${p.color || "-"} | $${p.precio}`
-        ).join("<br>");
-
-        lista.innerHTML += `<li>${productos}</li>`;
-    });
-}
-
-//BORRAR PRODUCTO
-
-    window.eliminarProducto = async function(id){
+// 🗑️ ELIMINAR PRODUCTO
+window.eliminarProducto = async function(id){
 
     if(!confirm("¿Eliminar producto?")) return;
 
@@ -273,19 +279,6 @@ async function cargarCompras(){
 
     cargarProductos();
 }
-    
-// 📡 ACTIVIDAD
-async function cargarActividad(){
-    const lista = document.getElementById("actividad");
-    lista.innerHTML = "";
-
-    const snap = await getDocs(collection(db,"actividad"));
-
-    snap.forEach(doc=>{
-        let d = doc.data();
-        lista.innerHTML += `<li>${d.accion} - ${d.fecha || ""}</li>`;
-    });
-}
 
 // 🛍️ CREAR PRODUCTO
 window.crearProducto = async function(){
@@ -294,23 +287,31 @@ window.crearProducto = async function(){
     let precio = Number(document.getElementById("precio").value);
     let imagen = document.getElementById("imagen").value;
 
-    if(!nombre || !precio){
-        alert("Completa datos");
+    if(!nombre || isNaN(precio) || precio <= 0){
+        alert("Completa datos correctamente");
         return;
     }
 
-  await addDoc(collection(db,"productos"),{
-    nombre,
-    precio,
-    imagen,
-    stock:10
-});
+    await addDoc(collection(db,"productos"),{
+        nombre,
+        precio,
+        imagen,
+        stock:10
+    });
 
-await addDoc(collection(db,"actividad"),{
-    accion: "Producto creado: " + nombre,
-    fecha: new Date().toLocaleString()
-});
+    await addDoc(collection(db,"actividad"),{
+        accion: "Producto creado: " + nombre,
+        fecha: new Date().toLocaleString()
+    });
+
     alert("Producto creado 🔥");
+
+    // limpiar inputs
+    document.getElementById("nombre").value = "";
+    document.getElementById("precio").value = "";
+    document.getElementById("imagen").value = "";
+
+    cargarProductos();
 }
 
 </script>
