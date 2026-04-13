@@ -78,97 +78,57 @@ body {
     border-radius: 20px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.5);
 }
-
-input {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    margin-right: 10px;
-}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-    <img src="Lil Naay.png">
+    <img src="Lil Naay.png" alt="LIL NAAY">
     <div>
         <h1>LIL NAAY</h1>
         <p>Artista urbano • Trap</p>
-
-        <!-- 🔐 BOTÓN PROTEGIDO -->
-        <button onclick="entrarTienda()" class="btn-main">
-            Ver Eventos & Tienda
-        </button>
-
-        <!-- 🔐 LOGIN GOOGLE -->
-        <button onclick="loginGoogle()" class="btn-main">
-            <i class="fab fa-google"></i> Iniciar con Google
-        </button>
+        <button onclick="entrarTienda()" class="btn-main">Ver Eventos & Tienda</button>
     </div>
 </div>
 
 <div class="container">
 
 <div class="section">
-    <h2>Biografía</h2>
-    <p>Lil Naay es un artista emergente del Trap Latino.</p>
-</div>
-
-<!-- 🎵 LANZAMIENTOS -->
-<div class="section">
-    <h2>🎵 Nuevos Lanzamientos</h2>
-
-    <div style="display:flex; gap:20px; flex-wrap:wrap;">
-
-        <div style="width:180px; text-align:center;">
-            <a href="https://youtu.be/e-XAUCdY7eQ" target="_blank">
-                <img src="relasionadoconloreal.jpg"
-                style="width:100%; border-radius:10px;">
-            </a>
-            <p>RELACIONADO CON LO REAL</p>
-        </div>
-
-        <div style="width:180px; text-align:center;">
-            <a href="https://youtube.com" target="_blank">
-                <img src="THE MVP OF THE YEAR.jpg"
-                style="width:100%; border-radius:10px;">
-            </a>
-            <p>THE MVP OF THE YEAR</p>
-        </div>
-
-    </div>
-</div>
-
-<!-- 🔥 COMUNIDAD -->
-<div class="section">
     <h2>🔥 Comunidad</h2>
 
-    <p>Suscriptores: <span id="contador">0</span></p>
+    <button onclick="loginGoogle()" class="btn-main">
+        <i class="fab fa-google"></i> Iniciar con Google
+    </button>
+
+    <p style="margin-top:15px;">
+        Suscriptores: <span id="contador">0</span>
+    </p>
 </div>
 
 </div>
 
-<!-- 🔥 MENSAJE -->
+<!-- MENSAJE -->
 <div id="mensaje" style="
-position:fixed;
-bottom:20px;
-right:20px;
-padding:15px;
-border-radius:10px;
-display:none;
-color:white;
-z-index:999;">
+position: fixed;
+bottom: 20px;
+right: 20px;
+padding: 15px 20px;
+border-radius: 10px;
+display: none;
+color: white;
+box-shadow: 0 0 15px rgba(0,0,0,0.5);
+z-index: 999;">
 </div>
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
+  apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
   authDomain: "lil-naay.firebaseapp.com",
   projectId: "lil-naay"
 };
@@ -178,54 +138,57 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// 🔐 MENSAJE
+// MENSAJE
 function mostrarMensaje(texto, tipo){
-    const msg = document.getElementById("mensaje");
+    let msg = document.getElementById("mensaje");
     msg.innerText = texto;
     msg.style.display = "block";
     msg.style.background = tipo === "error" ? "#b30000" : "#008000";
-    setTimeout(()=> msg.style.display="none", 2500);
+
+    setTimeout(()=>{
+        msg.style.display = "none";
+    },2500);
 }
 
-// 🔐 LOGIN GOOGLE (CORREGIDO)
+// LOGIN GOOGLE (ARREGLADO)
 window.loginGoogle = async function(){
-    try {
+    try{
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        localStorage.setItem("usuario", user.email);
+        const email = user.email;
+        localStorage.setItem("usuario", email);
 
         const snap = await getDocs(collection(db,"suscriptores"));
-        const existe = snap.docs.some(d => d.data().email === user.email);
+        const existe = snap.docs.some(doc => doc.data().email === email);
 
         if(!existe){
             await addDoc(collection(db,"suscriptores"),{
-                email: user.email,
+                email: email,
                 fecha: new Date()
             });
         }
 
-        mostrarMensaje("✅ Bienvenido " + user.displayName, "ok");
+        mostrarMensaje("✅ Bienvenido " + user.displayName,"ok");
         cargarContador();
 
-    } catch (e) {
-        console.log(e);
-        mostrarMensaje("❌ Error al iniciar sesión (revisa Firebase Auth)", "error");
+    }catch(e){
+        console.error(e); // 👈 IMPORTANTE
+        mostrarMensaje("❌ Error: activa Google en Firebase","error");
     }
 }
 
-// 🔐 ACCESO A TIENDA
+// ENTRAR TIENDA
 window.entrarTienda = async function(){
-
-    const email = localStorage.getItem("usuario");
+    let email = localStorage.getItem("usuario");
 
     if(!email){
-        mostrarMensaje("⚠️ Inicia sesión con Google primero","error");
+        mostrarMensaje("⚠️ Inicia sesión primero","error");
         return;
     }
 
     const snap = await getDocs(collection(db,"suscriptores"));
-    const autorizado = snap.docs.some(d => d.data().email === email);
+    let autorizado = snap.docs.some(doc => doc.data().email === email);
 
     if(autorizado){
         window.location.href = "menu.html";
@@ -234,14 +197,13 @@ window.entrarTienda = async function(){
     }
 }
 
-// 🔢 CONTADOR
+// CONTADOR
 async function cargarContador(){
     const snap = await getDocs(collection(db,"suscriptores"));
     document.getElementById("contador").innerText = snap.size;
 }
 
 cargarContador();
-
 </script>
 
 </body>
