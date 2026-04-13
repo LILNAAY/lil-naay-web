@@ -95,7 +95,7 @@ input {
     <div>
         <h1>LIL NAAY</h1>
         <p>Artista urbano • Trap</p>
-        <a href="menu.html" class="btn-main">Ver Eventos & Tienda</a>
+       <button onclick="entrarTienda()" class="btn-main">Ver Eventos & Tienda</button>
     </div>
 </div>
 
@@ -208,11 +208,13 @@ window.suscribirse = async function(){
 
     try{
 
-        await addDoc(collection(db,"suscriptores"),{
-            email: email,
-            fecha: new Date()
-        });
+     await addDoc(collection(db,"suscriptores"),{
+    email: email,
+    fecha: new Date()
+});
 
+localStorage.setItem("usuario", email);
+ 
         mostrarMensaje("✅ Suscripción exitosa","ok");
         document.getElementById("usuario").value="";
 
@@ -223,6 +225,27 @@ window.suscribirse = async function(){
     }
 }
 
+//ENTRADA DE TIENDA 
+
+window.entrarTienda = async function(){
+
+    let email = localStorage.getItem("usuario");
+
+    if(!email){
+        mostrarMensaje("⚠️ Debes suscribirte primero","error");
+        return;
+    }
+
+    const snap = await getDocs(collection(db,"suscriptores"));
+    let autorizado = snap.docs.some(docSnap => docSnap.data().email === email);
+
+    if(autorizado){
+        window.location.href = "menu.html";
+    }else{
+        mostrarMensaje("❌ No autorizado","error");
+    }
+}
+    
 // 🔢 CONTADOR
 async function cargarContador(){
     const snap = await getDocs(collection(db,"suscriptores"));
