@@ -2,251 +2,135 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eventos & Tienda</title>
+<title>Tienda LIL NAAY</title>
 
 <style>
-:root {
-    --rojo: #8b0000;
-    --fondo: #0f0a0a;
-}
-
 body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(180deg, #140909, #0f0a0a);
+    font-family: Arial;
+    background: #111;
     color: white;
-}
-
-/* NAVBAR */
-.navbar {
-    display: flex;
-    align-items: center;
-    padding: 20px 30px;
-    background: rgba(20, 9, 9, 0.8);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
-}
-
-.back-btn {
-    background: rgba(255,255,255,0.05);
-    padding: 10px 18px;
-    border-radius: 20px;
-    text-decoration: none;
-    color: white;
-    transition: 0.3s;
-}
-
-.back-btn:hover {
-    background: rgba(139, 0, 0, 0.5);
-}
-
-.section {
-    padding: 40px;
-}
-
-.event {
-    background: rgba(255,255,255,0.05);
-    padding: 20px;
-    margin-bottom: 15px;
-    border-radius: 15px;
-}
-
-.carrito-box {
-    background: rgba(255,255,255,0.05);
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-}
-
-.carrito-box ul {
-    list-style: none;
-    padding: 0;
+    text-align: center;
 }
 
 .store {
     display: flex;
-    gap: 25px;
+    justify-content: center;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
 .product {
-    background: rgba(255,255,255,0.05);
-    border-radius: 15px;
+    background: #222;
     padding: 15px;
-    width: 180px;
-    text-align: center;
-}
-
-.product img {
-    width: 100%;
     border-radius: 10px;
 }
 
-.price {
-    color: #ff4d4d;
-    font-weight: bold;
+.product img {
+    width: 150px;
 }
 
-.btn {
+button {
     margin-top: 10px;
     padding: 10px;
-    background: var(--rojo);
-    border-radius: 20px;
+    background: red;
     border: none;
     color: white;
     cursor: pointer;
 }
 
-.footer {
-    background: #0a0505;
-    padding: 20px;
-    text-align: center;
-    color: #888;
-    margin-top: 40px;
+select {
+    margin-top: 5px;
+    padding: 5px;
+    width: 100%;
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<div class="navbar">
-    <a href="index.html" class="back-btn">⬅ Volver</a>
-</div>
+<h1>🔥 Tienda LIL NAAY</h1>
 
-<!-- 🎟️ EVENTOS -->
-<div class="section">
-    <h2>🎟️ Eventos</h2>
+<div class="store">
 
-    <div class="event">
-        📍 Santo Domingo - 10 Abril 2026 <br><br>
-        <button class="btn" onclick="reservar()">Reservar</button>
+    <!-- PRODUCTO 1 -->
+    <div class="product">
+        <img src="ropa1.jpg">
+        <p>Hoodie LIL NAAY</p>
+        <p>$25</p>
+
+        <select id="talla1">
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+        </select>
+
+        <select id="color1">
+            <option value="Rojo">Rojo</option>
+            <option value="Negro">Negro</option>
+        </select>
+
+        <button onclick="agregar('Hoodie LIL NAAY',25,'talla1','color1')">
+            Comprar
+        </button>
     </div>
 
-    <div class="event">
-        📍 Santiago - 25 Abril 2026 <br><br>
-        <button class="btn" onclick="reservar()">Reservar</button>
+    <!-- PRODUCTO 2 -->
+    <div class="product">
+        <img src="ropa2.jpg">
+        <p>T-Shirt LIL NAAY</p>
+        <p>$15</p>
+
+        <select id="talla2">
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+        </select>
+
+        <select id="color2">
+            <option value="Blanco">Blanco</option>
+            <option value="Negro">Negro</option>
+        </select>
+
+        <button onclick="agregar('T-Shirt LIL NAAY',15,'talla2','color2')">
+            Comprar
+        </button>
     </div>
+
 </div>
 
-<!-- 🛍️ TIENDA -->
-<div class="section">
-    <h2>🛍️ Tienda</h2>
+<h2>🛒 Carrito</h2>
+<ul id="carrito"></ul>
+<h3>Total: $<span id="total">0</span></h3>
 
-    <!-- 🛒 CARRITO -->
-    <div class="carrito-box">
-        <h3>🛒 Carrito</h3>
-        <ul id="carrito"></ul>
-        <p>Total: $<span id="total">0</span></p>
-        <button class="btn" onclick="pagar()">Guardar Compra 🔥</button>
-    </div>
+<button onclick="pagar()">Pagar</button>
 
-    <div class="store">
+<script>
 
-        <div class="product">
-            <img src="ropa1.jpg">
-            <p>Hoodie LIL NAAY</p>
-            <p class="price">$25</p>
-
-            <button class="btn" onclick="agregar('Hoodie',25)">Comprar</button>
-        </div>
-
-        <div class="product">
-            <img src="ropa2.jpg">
-            <p>T-Shirt LIL NAAY</p>
-            <p class="price">$15</p>
-
-            <button class="btn" onclick="agregar('T-Shirt',15)">Comprar</button>
-        </div>
-
-    </div>
-</div>
-
-<div class="footer">
-    © 2026 LIL NAAY — Página creada por J.D
-</div>
-
-<!-- 🔥 FIREBASE -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "lil-naay.firebaseapp.com",
-  projectId: "lil-naay"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// 🛒 CARRITO
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 function guardarCarrito(){
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// 📦 CARGAR PRODUCTOS DINÁMICOS
-async function cargarProductos(){
+// ➕ AGREGAR PRODUCTO
+function agregar(nombre, precio, tallaId, colorId){
 
-    const contenedor = document.querySelector(".store");
-    contenedor.innerHTML = "";
+    let talla = document.getElementById(tallaId).value;
+    let color = document.getElementById(colorId).value;
 
-    const snapshot = await getDocs(collection(db,"productos"));
-
-    snapshot.forEach(docSnap => {
-
-        const p = docSnap.data();
-
-        // 🔽 GENERAR OPCIONES
-        let opcionesTalla = p.tallas.map(t => `<option>${t}</option>`).join("");
-        let opcionesColor = p.colores.map(c => `<option>${c}</option>`).join("");
-
-        contenedor.innerHTML += `
-        <div class="product">
-            <img src="${p.imagen}">
-            <p>${p.nombre}</p>
-            <p class="price">$${p.precio}</p>
-            <p>Stock: ${p.stock}</p>
-
-            <select id="talla-${docSnap.id}">
-                ${opcionesTalla}
-            </select>
-
-            <select id="color-${docSnap.id}">
-                ${opcionesColor}
-            </select>
-
-            <button class="btn" onclick="agregar('${docSnap.id}','${p.nombre}',${p.precio},${p.stock})">
-                Comprar
-            </button>
-        </div>
-        `;
+    carrito.push({
+        nombre,
+        precio,
+        talla,
+        color
     });
-}
-
-// ➕ AGREGAR AL CARRITO
-window.agregar = function(id,nombre,precio,stock){
-
-    if(stock <= 0){
-        alert("Sin stock ❌");
-        return;
-    }
-
-    let talla = document.getElementById(`talla-${id}`).value;
-    let color = document.getElementById(`color-${id}`).value;
-
-    carrito.push({id,nombre,precio,talla,color});
 
     guardarCarrito();
     mostrar();
 }
 
 // ❌ ELIMINAR
-window.eliminar = function(index){
+function eliminar(index){
     carrito.splice(index,1);
     guardarCarrito();
     mostrar();
@@ -271,55 +155,22 @@ function mostrar(){
     document.getElementById("total").innerText = total;
 }
 
-// 💳 PAGAR + DESCONTAR STOCK
-window.pagar = async function(){
+// 💳 PAGAR
+function pagar(){
 
     if(carrito.length === 0){
-        alert("Carrito vacío");
+        alert("Carrito vacío ❌");
         return;
     }
 
-    try{
+    alert("Compra realizada 🔥");
 
-        await addDoc(collection(db,"compras"),{
-            productos: carrito,
-            fecha: new Date()
-        });
-
-        // 🔻 DESCONTAR STOCK
-        for(let item of carrito){
-
-            const ref = doc(db,"productos",item.id);
-
-            const snap = await getDocs(collection(db,"productos"));
-            snap.forEach(async d=>{
-                if(d.id === item.id){
-                    let nuevoStock = d.data().stock - 1;
-                    await updateDoc(ref,{stock:nuevoStock});
-                }
-            });
-        }
-
-        alert("Compra realizada 🔥");
-
-        carrito = [];
-        localStorage.removeItem("carrito");
-        mostrar();
-        cargarProductos();
-
-    }catch(e){
-        console.error(e);
-        alert("Error en compra");
-    }
-}
-
-// 🎟️ EVENTOS
-window.reservar = function(){
-    alert("Reserva realizada 🔥");
+    carrito = [];
+    localStorage.removeItem("carrito");
+    mostrar();
 }
 
 // INIT
-cargarProductos();
 mostrar();
 
 </script>
