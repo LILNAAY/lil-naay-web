@@ -6,82 +6,117 @@
 
 <style>
 body{
-    font-family: Arial;
-    background:#0f0a0a;
-    color:white;
     margin:0;
+    font-family:Arial;
+    background:#0d0d0d;
+    color:white;
 }
 
+/* LOGIN */
+.login{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+input{
+    padding:10px;
+    margin:5px;
+    width:250px;
+}
+
+/* NAVBAR */
 .navbar{
-    padding:20px;
-    background:#140909;
     display:flex;
     justify-content:space-between;
+    padding:15px 20px;
+    background:#140909;
 }
 
-.section{
+/* GRID */
+.container{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap:20px;
     padding:20px;
 }
 
-.box{
+/* CARDS */
+.card{
     background:rgba(255,255,255,0.05);
     padding:15px;
     border-radius:10px;
-    margin-bottom:20px;
+    max-height:300px;
+    overflow:auto;
 }
 
 button{
-    padding:8px;
+    padding:10px;
     background:#8b0000;
     border:none;
     color:white;
     cursor:pointer;
 }
 
-input{
-    padding:8px;
-    margin:5px 0;
-    width:200px;
+li{
+    font-size:13px;
+    margin-bottom:5px;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    padding-bottom:5px;
 }
 </style>
 
 </head>
 <body>
 
-<div class="navbar">
-    <h2>⚙️ Panel Admin</h2>
-    <a href="index.html" style="color:white;">⬅ Volver</a>
+<!-- 🔐 LOGIN -->
+<div id="loginBox" class="login">
+    <h2>🔐 Acceso Admin</h2>
+    <input id="email" placeholder="Correo">
+    <input id="pass" type="password" placeholder="Contraseña">
+    <button onclick="login()">Entrar</button>
 </div>
 
-<!-- 📊 SUSCRIPTORES -->
-<div class="section">
-    <div class="box">
+<!-- 🔥 PANEL -->
+<div id="panel" style="display:none;">
+
+<div class="navbar">
+    <h2>⚙️ Panel Admin</h2>
+    <button onclick="logout()">Cerrar sesión</button>
+</div>
+
+<div class="container">
+
+    <!-- SUSCRIPTORES -->
+    <div class="card">
         <h3>👥 Suscriptores</h3>
         <ul id="suscriptores"></ul>
     </div>
 
-<!-- 🛒 COMPRAS -->
-    <div class="box">
+    <!-- COMPRAS -->
+    <div class="card">
         <h3>💳 Compras</h3>
         <ul id="compras"></ul>
     </div>
 
-<!-- 🧠 ACTIVIDAD -->
-    <div class="box">
+    <!-- ACTIVIDAD -->
+    <div class="card">
         <h3>📡 Actividad</h3>
         <ul id="actividad"></ul>
     </div>
 
-<!-- 🎨 EDITAR PRODUCTOS -->
-    <div class="box">
+    <!-- CREAR PRODUCTO -->
+    <div class="card">
         <h3>🛍️ Crear Producto</h3>
-
         <input id="nombre" placeholder="Nombre">
         <input id="precio" placeholder="Precio">
         <input id="imagen" placeholder="URL Imagen">
-
         <button onclick="crearProducto()">Crear</button>
     </div>
+
+</div>
 
 </div>
 
@@ -89,6 +124,7 @@ input{
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "TU_API_KEY",
@@ -98,8 +134,47 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-// 📊 CARGAR SUSCRIPTORES
+// 🔐 LOGIN
+window.login = function(){
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("pass").value;
+
+    signInWithEmailAndPassword(auth,email,pass)
+    .then(()=>{
+        alert("Bienvenido 🔥");
+    })
+    .catch(()=>{
+        alert("Error de acceso ❌");
+    });
+}
+
+// 🔐 LOGOUT
+window.logout = function(){
+    signOut(auth);
+}
+
+// 🔐 PROTECCIÓN AUTOMÁTICA
+onAuthStateChanged(auth,user=>{
+    if(user){
+        document.getElementById("loginBox").style.display="none";
+        document.getElementById("panel").style.display="block";
+        cargarTodo();
+    }else{
+        document.getElementById("loginBox").style.display="flex";
+        document.getElementById("panel").style.display="none";
+    }
+});
+
+// 📊 CARGAR TODO
+function cargarTodo(){
+    cargarSuscriptores();
+    cargarCompras();
+    cargarActividad();
+}
+
+// 👥 SUSCRIPTORES
 async function cargarSuscriptores(){
     const lista = document.getElementById("suscriptores");
     lista.innerHTML = "";
@@ -112,7 +187,7 @@ async function cargarSuscriptores(){
     });
 }
 
-// 🛒 CARGAR COMPRAS
+// 💳 COMPRAS BONITAS
 async function cargarCompras(){
     const lista = document.getElementById("compras");
     lista.innerHTML = "";
@@ -121,7 +196,12 @@ async function cargarCompras(){
 
     snap.forEach(doc=>{
         let d = doc.data();
-        lista.innerHTML += `<li>${JSON.stringify(d.productos)}</li>`;
+
+        let productos = d.productos.map(p=>
+            `${p.nombre} | Talla: ${p.talla || "-"} | Color: ${p.color || "-"} | $${p.precio}`
+        ).join("<br>");
+
+        lista.innerHTML += `<li>${productos}</li>`;
     });
 }
 
@@ -134,7 +214,7 @@ async function cargarActividad(){
 
     snap.forEach(doc=>{
         let d = doc.data();
-        lista.innerHTML += `<li>${d.accion} - ${d.fecha}</li>`;
+        lista.innerHTML += `<li>${d.accion} - ${d.fecha || ""}</li>`;
     });
 }
 
@@ -154,16 +234,11 @@ window.crearProducto = async function(){
         nombre,
         precio,
         imagen,
-        stock: 10
+        stock:10
     });
 
     alert("Producto creado 🔥");
 }
-
-// INIT
-cargarSuscriptores();
-cargarCompras();
-cargarActividad();
 
 </script>
 
