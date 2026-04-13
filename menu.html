@@ -133,39 +133,75 @@ select {
 
 <button onclick="pagar()">Pagar</button>
 
-<script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+  authDomain: "lil-naay.firebaseapp.com",
+  projectId: "lil-naay"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-function guardarCarrito(){
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+// 🔥 CARGAR PRODUCTOS DESDE FIREBASE
+async function cargarProductos(){
+    const contenedor = document.querySelector(".store");
+    contenedor.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"productos"));
+
+    snap.forEach(doc=>{
+        let p = doc.data();
+
+        contenedor.innerHTML += `
+        <div class="product">
+            <img src="${p.imagen}" width="150">
+            <p>${p.nombre}</p>
+            <p>$${p.precio}</p>
+
+            <select id="talla-${doc.id}">
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+            </select>
+
+            <select id="color-${doc.id}">
+                <option>Rojo</option>
+                <option>Negro</option>
+            </select>
+
+            <button onclick="agregar('${p.nombre}',${p.precio},'talla-${doc.id}','color-${doc.id}')">
+                Comprar
+            </button>
+        </div>`;
+    });
 }
 
-// ➕ AGREGAR PRODUCTO
-function agregar(nombre, precio, tallaId, colorId){
-
+// ➕ AGREGAR
+window.agregar = function(nombre, precio, tallaId, colorId){
     let talla = document.getElementById(tallaId).value;
     let color = document.getElementById(colorId).value;
 
-    carrito.push({
-        nombre,
-        precio,
-        talla,
-        color
-    });
+    carrito.push({ nombre, precio, talla, color });
 
-    guardarCarrito();
+    localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrar();
 }
 
 // ❌ ELIMINAR
-function eliminar(index){
-    carrito.splice(index,1);
-    guardarCarrito();
+window.eliminar = function(i){
+    carrito.splice(i,1);
+    localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrar();
 }
 
-// 🔄 MOSTRAR CARRITO
+// 🔄 MOSTRAR
 function mostrar(){
     let lista = document.getElementById("carrito");
     let total = 0;
@@ -185,14 +221,18 @@ function mostrar(){
 }
 
 // 💳 PAGAR
-function pagar(){
-
+window.pagar = async function(){
     if(carrito.length === 0){
         alert("Carrito vacío ❌");
         return;
     }
 
-    alert("Compra realizada 🔥");
+    await addDoc(collection(db,"compras"),{
+        productos: carrito,
+        fecha: new Date()
+    });
+
+    alert("Compra guardada 🔥");
 
     carrito = [];
     localStorage.removeItem("carrito");
@@ -200,6 +240,7 @@ function pagar(){
 }
 
 // INIT
+cargarProductos();
 mostrar();
 
 </script>
