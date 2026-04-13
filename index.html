@@ -12,6 +12,7 @@
     --rojo: #8b0000;
     --rojo-hover: #b30000;
     --fondo: #1a0f0f;
+    --texto-secundario: #d6a3a3;
 }
 
 body {
@@ -21,6 +22,7 @@ body {
     color: white;
 }
 
+/* HEADER */
 .header {
     display: flex;
     align-items: center;
@@ -36,17 +38,27 @@ body {
     border-radius: 20px;
     margin-right: 40px;
     object-fit: cover;
+    box-shadow:
+        0 15px 30px rgba(0, 0, 0, 0.8),
+        0 5px 15px rgba(0, 0, 0, 0.6);
+}
+
+.header h1 {
+    font-size: 56px;
+    margin: 0;
 }
 
 .btn-main {
     margin-top: 20px;
+    display: inline-block;
     background: var(--rojo);
     padding: 12px 25px;
     border-radius: 25px;
+    text-decoration: none;
     color: white;
+    transition: 0.3s;
     border: none;
     cursor: pointer;
-    transition: 0.3s;
 }
 
 .btn-main:hover {
@@ -64,6 +76,14 @@ body {
     padding: 30px;
     margin-top: 30px;
     border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+
+input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    margin-right: 10px;
 }
 </style>
 </head>
@@ -75,27 +95,61 @@ body {
     <div>
         <h1>LIL NAAY</h1>
         <p>Artista urbano • Trap</p>
-        <button onclick="entrarTienda()" class="btn-main">Ver Tienda</button>
+
+        <!-- 🔐 BOTÓN PROTEGIDO -->
+        <button onclick="entrarTienda()" class="btn-main">
+            Ver Eventos & Tienda
+        </button>
+
+        <!-- 🔐 LOGIN GOOGLE -->
+        <button onclick="loginGoogle()" class="btn-main">
+            <i class="fab fa-google"></i> Iniciar con Google
+        </button>
     </div>
 </div>
 
 <div class="container">
 
 <div class="section">
+    <h2>Biografía</h2>
+    <p>Lil Naay es un artista emergente del Trap Latino.</p>
+</div>
+
+<!-- 🎵 LANZAMIENTOS -->
+<div class="section">
+    <h2>🎵 Nuevos Lanzamientos</h2>
+
+    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+
+        <div style="width:180px; text-align:center;">
+            <a href="https://youtu.be/e-XAUCdY7eQ" target="_blank">
+                <img src="relasionadoconloreal.jpg"
+                style="width:100%; border-radius:10px;">
+            </a>
+            <p>RELACIONADO CON LO REAL</p>
+        </div>
+
+        <div style="width:180px; text-align:center;">
+            <a href="https://youtube.com" target="_blank">
+                <img src="THE MVP OF THE YEAR.jpg"
+                style="width:100%; border-radius:10px;">
+            </a>
+            <p>THE MVP OF THE YEAR</p>
+        </div>
+
+    </div>
+</div>
+
+<!-- 🔥 COMUNIDAD -->
+<div class="section">
     <h2>🔥 Comunidad</h2>
 
-    <button onclick="loginGoogle()" class="btn-main">
-        <i class="fab fa-google"></i> Iniciar con Google
-    </button>
-
-    <p style="margin-top:15px;">
-        Suscriptores: <span id="contador">0</span>
-    </p>
+    <p>Suscriptores: <span id="contador">0</span></p>
 </div>
 
 </div>
 
-<!-- MENSAJE -->
+<!-- 🔥 MENSAJE -->
 <div id="mensaje" style="
 position:fixed;
 bottom:20px;
@@ -107,76 +161,71 @@ color:white;
 z-index:999;">
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } 
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+  apiKey: "TU_API_KEY",
   authDomain: "lil-naay.firebaseapp.com",
   projectId: "lil-naay"
 };
 
-// INICIALIZAR
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// MENSAJE
+// 🔐 MENSAJE
 function mostrarMensaje(texto, tipo){
-    let msg = document.getElementById("mensaje");
+    const msg = document.getElementById("mensaje");
     msg.innerText = texto;
     msg.style.display = "block";
     msg.style.background = tipo === "error" ? "#b30000" : "#008000";
-
-    setTimeout(()=>{
-        msg.style.display = "none";
-    },2500);
+    setTimeout(()=> msg.style.display="none", 2500);
 }
 
-// LOGIN GOOGLE
+// 🔐 LOGIN GOOGLE (CORREGIDO)
 window.loginGoogle = async function(){
-    try{
+    try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        let email = user.email;
-        localStorage.setItem("usuario", email);
+        localStorage.setItem("usuario", user.email);
 
         const snap = await getDocs(collection(db,"suscriptores"));
-        let existe = snap.docs.some(doc => doc.data().email === email);
+        const existe = snap.docs.some(d => d.data().email === user.email);
 
         if(!existe){
             await addDoc(collection(db,"suscriptores"),{
-                email: email,
+                email: user.email,
                 fecha: new Date()
             });
         }
 
-        mostrarMensaje("✅ Bienvenido " + user.displayName,"ok");
+        mostrarMensaje("✅ Bienvenido " + user.displayName, "ok");
         cargarContador();
 
-    }catch(e){
-        mostrarMensaje("❌ Error al iniciar sesión","error");
+    } catch (e) {
+        console.log(e);
+        mostrarMensaje("❌ Error al iniciar sesión (revisa Firebase Auth)", "error");
     }
 }
 
-// ENTRAR TIENDA
+// 🔐 ACCESO A TIENDA
 window.entrarTienda = async function(){
 
-    let email = localStorage.getItem("usuario");
+    const email = localStorage.getItem("usuario");
 
     if(!email){
-        mostrarMensaje("⚠️ Inicia sesión primero","error");
+        mostrarMensaje("⚠️ Inicia sesión con Google primero","error");
         return;
     }
 
     const snap = await getDocs(collection(db,"suscriptores"));
-    let autorizado = snap.docs.some(doc => doc.data().email === email);
+    const autorizado = snap.docs.some(d => d.data().email === email);
 
     if(autorizado){
         window.location.href = "menu.html";
@@ -185,13 +234,14 @@ window.entrarTienda = async function(){
     }
 }
 
-// CONTADOR
+// 🔢 CONTADOR
 async function cargarContador(){
     const snap = await getDocs(collection(db,"suscriptores"));
     document.getElementById("contador").innerText = snap.size;
 }
 
 cargarContador();
+
 </script>
 
 </body>
