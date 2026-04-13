@@ -46,6 +46,11 @@ body {
     color: white;
     border: none;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-main:hover {
+    background: var(--rojo-hover);
 }
 
 .container {
@@ -60,7 +65,6 @@ body {
     margin-top: 30px;
     border-radius: 20px;
 }
-
 </style>
 </head>
 
@@ -80,18 +84,30 @@ body {
 <div class="section">
     <h2>🔥 Comunidad</h2>
 
-    <!-- BOTÓN NUEVO -->
     <button onclick="loginGoogle()" class="btn-main">
-        Entrar con Google
+        <i class="fab fa-google"></i> Iniciar con Google
     </button>
 
-    <p>Suscriptores: <span id="contador">0</span></p>
+    <p style="margin-top:15px;">
+        Suscriptores: <span id="contador">0</span>
+    </p>
 </div>
 
 </div>
 
-<div id="mensaje" style="position:fixed;bottom:20px;right:20px;padding:15px;border-radius:10px;display:none;color:white;"></div>
+<!-- MENSAJE -->
+<div id="mensaje" style="
+position:fixed;
+bottom:20px;
+right:20px;
+padding:15px;
+border-radius:10px;
+display:none;
+color:white;
+z-index:999;">
+</div>
 
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -104,6 +120,7 @@ const firebaseConfig = {
   projectId: "lil-naay"
 };
 
+// INICIALIZAR
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -115,10 +132,13 @@ function mostrarMensaje(texto, tipo){
     msg.innerText = texto;
     msg.style.display = "block";
     msg.style.background = tipo === "error" ? "#b30000" : "#008000";
-    setTimeout(()=> msg.style.display="none", 2500);
+
+    setTimeout(()=>{
+        msg.style.display = "none";
+    },2500);
 }
 
-// 🔐 LOGIN REAL
+// LOGIN GOOGLE
 window.loginGoogle = async function(){
     try{
         const result = await signInWithPopup(auth, provider);
@@ -145,8 +165,9 @@ window.loginGoogle = async function(){
     }
 }
 
-// 🚪 ENTRAR TIENDA
+// ENTRAR TIENDA
 window.entrarTienda = async function(){
+
     let email = localStorage.getItem("usuario");
 
     if(!email){
