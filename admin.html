@@ -107,6 +107,11 @@ li{
         <ul id="actividad"></ul>
     </div>
 
+    <div class="card">
+    <h3>🛍️ Productos</h3>
+    <ul id="productos"></ul>
+</div>
+
     <!-- CREAR PRODUCTO -->
     <div class="card">
         <h3>🛍️ Crear Producto</h3>
@@ -123,7 +128,7 @@ li{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -175,8 +180,31 @@ function cargarTodo(){
     cargarSuscriptores();
     cargarCompras();
     cargarActividad();
+    cargarProductos(); //NUEVO
 }
 
+    //NUEVA AGREGADA 
+
+    async function cargarProductos(){
+    const lista = document.getElementById("productos");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"productos"));
+
+    snap.forEach(docSnap=>{
+        let p = docSnap.data();
+        let id = docSnap.id;
+
+        lista.innerHTML += `
+        <li>
+            <b>${p.nombre}</b> - $${p.precio}
+            <br>
+            <button onclick="editarProducto('${id}','${p.nombre}',${p.precio})">✏️</button>
+            <button onclick="eliminarProducto('${id}')">🗑️</button>
+        </li>`;
+    });
+}
+    
 // 👥 SUSCRIPTORES
 async function cargarSuscriptores(){
     const lista = document.getElementById("suscriptores");
@@ -190,6 +218,28 @@ async function cargarSuscriptores(){
     });
 }
 
+//EDITAR PRODUCTOS 
+
+    window.editarProducto = async function(id, nombreActual, precioActual){
+
+    let nuevoNombre = prompt("Nuevo nombre:", nombreActual);
+    let nuevoPrecio = prompt("Nuevo precio:", precioActual);
+
+    if(!nuevoNombre || !nuevoPrecio) return;
+
+    await updateDoc(doc(db,"productos",id),{
+        nombre: nuevoNombre,
+        precio: Number(nuevoPrecio)
+    });
+
+    await addDoc(collection(db,"actividad"),{
+        accion: "Producto editado: " + nuevoNombre,
+        fecha: new Date().toLocaleString()
+    });
+
+    cargarProductos();
+}
+    
 // 💳 COMPRAS BONITAS
 async function cargarCompras(){
     const lista = document.getElementById("compras");
@@ -208,6 +258,22 @@ async function cargarCompras(){
     });
 }
 
+//BORRAR PRODUCTO
+
+    window.eliminarProducto = async function(id){
+
+    if(!confirm("¿Eliminar producto?")) return;
+
+    await deleteDoc(doc(db,"productos",id));
+
+    await addDoc(collection(db,"actividad"),{
+        accion: "Producto eliminado",
+        fecha: new Date().toLocaleString()
+    });
+
+    cargarProductos();
+}
+    
 // 📡 ACTIVIDAD
 async function cargarActividad(){
     const lista = document.getElementById("actividad");
@@ -233,13 +299,17 @@ window.crearProducto = async function(){
         return;
     }
 
-    await addDoc(collection(db,"productos"),{
-        nombre,
-        precio,
-        imagen,
-        stock:10
-    });
+  await addDoc(collection(db,"productos"),{
+    nombre,
+    precio,
+    imagen,
+    stock:10
+});
 
+await addDoc(collection(db,"actividad"),{
+    accion: "Producto creado: " + nombre,
+    fecha: new Date().toLocaleString()
+});
     alert("Producto creado 🔥");
 }
 
