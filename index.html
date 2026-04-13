@@ -12,7 +12,6 @@
     --rojo: #8b0000;
     --rojo-hover: #b30000;
     --fondo: #1a0f0f;
-    --texto-secundario: #d6a3a3;
 }
 
 body {
@@ -22,7 +21,6 @@ body {
     color: white;
 }
 
-/* HEADER */
 .header {
     display: flex;
     align-items: center;
@@ -38,31 +36,16 @@ body {
     border-radius: 20px;
     margin-right: 40px;
     object-fit: cover;
-    box-shadow:
-        0 15px 30px rgba(0, 0, 0, 0.8),
-        0 5px 15px rgba(0, 0, 0, 0.6);
-}
-
-.header h1 {
-    font-size: 56px;
-    margin: 0;
 }
 
 .btn-main {
     margin-top: 20px;
-    display: inline-block;
     background: var(--rojo);
     padding: 12px 25px;
     border-radius: 25px;
-    text-decoration: none;
     color: white;
-    transition: 0.3s;
     border: none;
     cursor: pointer;
-}
-
-.btn-main:hover {
-    background: var(--rojo-hover);
 }
 
 .container {
@@ -76,168 +59,103 @@ body {
     padding: 30px;
     margin-top: 30px;
     border-radius: 20px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
 }
 
-input {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    margin-right: 10px;
-}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-    <img src="Lil Naay.png" alt="LIL NAAY">
+    <img src="Lil Naay.png">
     <div>
         <h1>LIL NAAY</h1>
         <p>Artista urbano • Trap</p>
-       <button onclick="entrarTienda()" class="btn-main">Ver Eventos & Tienda</button>
+        <button onclick="entrarTienda()" class="btn-main">Ver Tienda</button>
     </div>
 </div>
 
 <div class="container">
 
 <div class="section">
-    <h2>Biografía</h2>
-    <p>Lil Naay es un artista emergente del Trap Latino.</p>
-</div>
-
-<!-- 🎵 LANZAMIENTOS -->
-<div class="section">
-    <h2>🎵 Nuevos Lanzamientos</h2>
-
-    <div style="display:flex; gap:20px; flex-wrap:wrap;">
-
-        <div style="width:180px; text-align:center;">
-            <a href="https://youtu.be/e-XAUCdY7eQ" target="_blank">
-                <img src="relasionadoconloreal.jpg"
-                style="width:100%; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.7);">
-            </a>
-            <p>RELACIONADO CON LO REAL</p>
-        </div>
-
-        <div style="width:180px; text-align:center;">
-            <a href="https://youtube.com" target="_blank">
-                <img src="THE MVP OF THE YEAR.jpg"
-                style="width:100%; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.7);">
-            </a>
-            <p>THE MVP OF THE YEAR</p>
-        </div>
-
-    </div>
-</div>
-
-<!-- 🔥 COMUNIDAD -->
-<div class="section">
     <h2>🔥 Comunidad</h2>
 
-    <input type="text" id="usuario" placeholder="Ingresa tu correo">
-    <button onclick="suscribirse()" class="btn-main">Suscribirse</button>
+    <!-- BOTÓN NUEVO -->
+    <button onclick="loginGoogle()" class="btn-main">
+        Entrar con Google
+    </button>
 
     <p>Suscriptores: <span id="contador">0</span></p>
 </div>
 
 </div>
 
-<!-- 🔥 MENSAJE BONITO -->
-<div id="mensaje" style="
-position: fixed;
-bottom: 20px;
-right: 20px;
-padding: 15px 20px;
-border-radius: 10px;
-display: none;
-color: white;
-box-shadow: 0 0 15px rgba(0,0,0,0.5);
-z-index: 999;
-"></div>
+<div id="mensaje" style="position:fixed;bottom:20px;right:20px;padding:15px;border-radius:10px;display:none;color:white;"></div>
 
-<!-- 🔥 FIREBASE -->
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+  apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
   authDomain: "lil-naay.firebaseapp.com",
   projectId: "lil-naay"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-// 🔢 FORMATO
-function formatear(num){
-    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(".0","") + "M";
-    if (num >= 1000) return (num / 1000).toFixed(1).replace(".0","") + "K";
-    return num;
-}
-
-// 📧 VALIDAR
-function esCorreoValido(email){
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-// 💬 MENSAJE BONITO
+// MENSAJE
 function mostrarMensaje(texto, tipo){
     let msg = document.getElementById("mensaje");
-
     msg.innerText = texto;
     msg.style.display = "block";
     msg.style.background = tipo === "error" ? "#b30000" : "#008000";
-
-    setTimeout(()=>{
-        msg.style.display = "none";
-    },2500);
+    setTimeout(()=> msg.style.display="none", 2500);
 }
 
-// 🚀 SUSCRIBIR
-window.suscribirse = async function(){
-
-    let email = document.getElementById("usuario").value.trim();
-
-    if(!esCorreoValido(email)){
-        mostrarMensaje("❌ Correo inválido","error");
-        return;
-    }
-
+// 🔐 LOGIN REAL
+window.loginGoogle = async function(){
     try{
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
 
-     await addDoc(collection(db,"suscriptores"),{
-    email: email,
-    fecha: new Date()
-});
+        let email = user.email;
+        localStorage.setItem("usuario", email);
 
-localStorage.setItem("usuario", email);
- 
-        mostrarMensaje("✅ Suscripción exitosa","ok");
-        document.getElementById("usuario").value="";
+        const snap = await getDocs(collection(db,"suscriptores"));
+        let existe = snap.docs.some(doc => doc.data().email === email);
 
+        if(!existe){
+            await addDoc(collection(db,"suscriptores"),{
+                email: email,
+                fecha: new Date()
+            });
+        }
+
+        mostrarMensaje("✅ Bienvenido " + user.displayName,"ok");
         cargarContador();
 
     }catch(e){
-        mostrarMensaje("❌ Error","error");
+        mostrarMensaje("❌ Error al iniciar sesión","error");
     }
 }
 
-//ENTRADA DE TIENDA 
-
+// 🚪 ENTRAR TIENDA
 window.entrarTienda = async function(){
-
     let email = localStorage.getItem("usuario");
 
     if(!email){
-        mostrarMensaje("⚠️ Debes suscribirte primero","error");
+        mostrarMensaje("⚠️ Inicia sesión primero","error");
         return;
     }
 
     const snap = await getDocs(collection(db,"suscriptores"));
-    let autorizado = snap.docs.some(docSnap => docSnap.data().email === email);
+    let autorizado = snap.docs.some(doc => doc.data().email === email);
 
     if(autorizado){
         window.location.href = "menu.html";
@@ -245,15 +163,14 @@ window.entrarTienda = async function(){
         mostrarMensaje("❌ No autorizado","error");
     }
 }
-    
-// 🔢 CONTADOR
+
+// CONTADOR
 async function cargarContador(){
     const snap = await getDocs(collection(db,"suscriptores"));
-    document.getElementById("contador").innerText = formatear(snap.size);
+    document.getElementById("contador").innerText = snap.size;
 }
 
 cargarContador();
-
 </script>
 
 </body>
