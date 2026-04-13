@@ -78,13 +78,21 @@ body {
     border-radius: 20px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.5);
 }
+
+input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    margin-right: 10px;
+}
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
-    <img src="Lil Naay.png" alt="LIL NAAY">
+    <img src="Lil Naay.png">
     <div>
         <h1>LIL NAAY</h1>
         <p>Artista urbano • Trap</p>
@@ -94,9 +102,42 @@ body {
 
 <div class="container">
 
+<!-- BIOGRAFÍA -->
+<div class="section">
+    <h2>Biografía</h2>
+    <p>Lil Naay es un artista emergente del Trap Latino.</p>
+</div>
+
+<!-- LANZAMIENTOS (TU DISEÑO ORIGINAL) -->
+<div class="section">
+    <h2>🎵 Nuevos Lanzamientos</h2>
+
+    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+
+        <div style="width:180px; text-align:center;">
+            <a href="https://youtu.be/e-XAUCdY7eQ" target="_blank">
+                <img src="relasionadoconloreal.jpg"
+                style="width:100%; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.7);">
+            </a>
+            <p>RELACIONADO CON LO REAL</p>
+        </div>
+
+        <div style="width:180px; text-align:center;">
+            <a href="https://youtube.com" target="_blank">
+                <img src="THE MVP OF THE YEAR.jpg"
+                style="width:100%; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.7);">
+            </a>
+            <p>THE MVP OF THE YEAR</p>
+        </div>
+
+    </div>
+</div>
+
+<!-- COMUNIDAD + LOGIN -->
 <div class="section">
     <h2>🔥 Comunidad</h2>
 
+    <!-- LOGIN GOOGLE -->
     <button onclick="loginGoogle()" class="btn-main">
         <i class="fab fa-google"></i> Iniciar con Google
     </button>
@@ -121,14 +162,16 @@ box-shadow: 0 0 15px rgba(0,0,0,0.5);
 z-index: 999;">
 </div>
 
+<!-- FIREBASE -->
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } 
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+  apiKey: "TU_API_KEY",
   authDomain: "lil-naay.firebaseapp.com",
   projectId: "lil-naay"
 };
@@ -138,33 +181,30 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// MENSAJE
+/* ================= MENSAJE ================= */
 function mostrarMensaje(texto, tipo){
     let msg = document.getElementById("mensaje");
     msg.innerText = texto;
     msg.style.display = "block";
     msg.style.background = tipo === "error" ? "#b30000" : "#008000";
 
-    setTimeout(()=>{
-        msg.style.display = "none";
-    },2500);
+    setTimeout(()=> msg.style.display="none", 2500);
 }
 
-// LOGIN GOOGLE (ARREGLADO)
+/* ================= GOOGLE LOGIN ================= */
 window.loginGoogle = async function(){
     try{
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        const email = user.email;
-        localStorage.setItem("usuario", email);
+        localStorage.setItem("usuario", user.email);
 
         const snap = await getDocs(collection(db,"suscriptores"));
-        const existe = snap.docs.some(doc => doc.data().email === email);
+        const existe = snap.docs.some(d => d.data().email === user.email);
 
         if(!existe){
             await addDoc(collection(db,"suscriptores"),{
-                email: email,
+                email: user.email,
                 fecha: new Date()
             });
         }
@@ -173,22 +213,23 @@ window.loginGoogle = async function(){
         cargarContador();
 
     }catch(e){
-        console.error(e); // 👈 IMPORTANTE
-        mostrarMensaje("❌ Error: activa Google en Firebase","error");
+        console.error(e);
+        mostrarMensaje("❌ Error de Google Login","error");
     }
 }
 
-// ENTRAR TIENDA
+/* ================= ACCESO TIENDA ================= */
 window.entrarTienda = async function(){
+
     let email = localStorage.getItem("usuario");
 
     if(!email){
-        mostrarMensaje("⚠️ Inicia sesión primero","error");
+        mostrarMensaje("⚠️ Inicia sesión con Google","error");
         return;
     }
 
     const snap = await getDocs(collection(db,"suscriptores"));
-    let autorizado = snap.docs.some(doc => doc.data().email === email);
+    let autorizado = snap.docs.some(d => d.data().email === email);
 
     if(autorizado){
         window.location.href = "menu.html";
@@ -197,13 +238,14 @@ window.entrarTienda = async function(){
     }
 }
 
-// CONTADOR
+/* ================= CONTADOR ================= */
 async function cargarContador(){
     const snap = await getDocs(collection(db,"suscriptores"));
     document.getElementById("contador").innerText = snap.size;
 }
 
 cargarContador();
+
 </script>
 
 </body>
