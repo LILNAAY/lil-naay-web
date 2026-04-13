@@ -6,44 +6,67 @@
 
 <style>
 body {
+    margin:0;
     font-family: Arial;
-    background: #111;
-    color: white;
-    text-align: center;
+    background:#111;
+    color:white;
+    text-align:center;
 }
 
-/* 🔥 BOTONES DE SECCIÓN */
-.tab-btn{
-    padding:10px 20px;
-    margin:5px;
+/* 🔥 FONDO PRINCIPAL */
+.fondo{
+    background: url('https://i.imgur.com/8Km9tLL.jpg') no-repeat center;
+    background-size: cover;
+    height: 100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+/* 🔙 BOTÓN VOLVER */
+.volver{
+    position:absolute;
+    top:20px;
+    left:20px;
+    background:rgba(0,0,0,0.5);
+    padding:10px 15px;
+    border-radius:10px;
+    color:white;
+    text-decoration:none;
+}
+
+/* LOGO */
+.logo{
+    font-size:60px;
+    margin-bottom:30px;
+}
+
+/* BOTONES PRINCIPALES */
+.menu-principal{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.btn-menu{
+    padding:20px 50px;
+    font-size:25px;
     background:#8b0000;
     border:none;
     color:white;
+    border-radius:10px;
     cursor:pointer;
-    border-radius:20px;
 }
 
-.tab-btn:hover{
+.btn-menu:hover{
     background:#b30000;
 }
 
-/* 🔥 NAVBAR */
-.navbar {
-    display: flex;
-    align-items: center;
-    padding: 20px 30px;
-    background: rgba(20, 9, 9, 0.8);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
-}
-
-.back-btn {
-    background: rgba(255,255,255,0.05);
-    padding: 10px 18px;
-    border-radius: 20px;
-    text-decoration: none;
-    color: white;
+/* PANTALLAS */
+.pantalla{
+    display:none;
+    padding:20px;
 }
 
 /* PRODUCTOS */
@@ -78,51 +101,59 @@ select {
     padding: 5px;
     width: 100%;
 }
+
+/* BOTÓN VOLVER DENTRO */
+.btn-volver{
+    margin-top:20px;
+}
 </style>
 
 </head>
 <body>
 
-<!-- 🔥 NAVBAR -->
-<div class="navbar">
-    <a href="index.html" class="back-btn">⬅ Volver</a>
-</div>
+<!-- 🔥 MENU PRINCIPAL -->
+<div class="fondo">
 
-<!-- 🔥 MENÚ -->
-<div style="margin:20px;">
-    <button onclick="mostrarSeccion('eventos')" class="tab-btn">🎤 Eventos</button>
-    <button onclick="mostrarSeccion('tienda')" class="tab-btn">🛍️ Tienda</button>
+    <a href="index.html" class="volver">⬅ Volver</a>
+
+    <h1 class="logo">LIL NAAY</h1>
+
+    <div class="menu-principal">
+        <button onclick="mostrarSeccion('tienda')" class="btn-menu">🛍️ Tienda</button>
+        <button onclick="mostrarSeccion('eventos')" class="btn-menu">🎤 Eventos</button>
+    </div>
+
 </div>
 
 <!-- 🎤 EVENTOS -->
-<div id="eventos" style="display:none;">
+<div id="eventos" class="pantalla">
 
-<h1>🎤 Eventos LIL NAAY</h1>
+<h1>🎤 Eventos</h1>
 
 <div class="store">
 
     <div class="product">
         <img src="https://via.placeholder.com/150">
-        <p>Concierto en Santo Domingo</p>
+        <p>Concierto Santo Domingo</p>
         <p>📅 25 Abril 2026</p>
-        <button onclick="verEvento('Concierto Santo Domingo')">Ver Evento</button>
     </div>
 
     <div class="product">
         <img src="https://via.placeholder.com/150">
         <p>Festival Urbano</p>
         <p>📅 10 Mayo 2026</p>
-        <button onclick="verEvento('Festival Urbano')">Ver Evento</button>
     </div>
 
 </div>
 
+<button onclick="volverMenu()" class="btn-volver">⬅ Volver</button>
+
 </div>
 
 <!-- 🛍️ TIENDA -->
-<div id="tienda">
+<div id="tienda" class="pantalla">
 
-<h1>🔥 Tienda LIL NAAY</h1>
+<h1>🛍️ Tienda</h1>
 
 <div class="store"></div>
 
@@ -131,6 +162,7 @@ select {
 <h3>Total: $<span id="total">0</span></h3>
 
 <button onclick="pagar()">Pagar</button>
+<button onclick="volverMenu()" class="btn-volver">⬅ Volver</button>
 
 </div>
 
@@ -152,14 +184,18 @@ let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 // 🔄 CAMBIAR SECCIÓN
 window.mostrarSeccion = function(seccion){
+    document.querySelector(".fondo").style.display = "none";
     document.getElementById("eventos").style.display = "none";
     document.getElementById("tienda").style.display = "none";
+
     document.getElementById(seccion).style.display = "block";
 }
 
-// 🎤 EVENTO
-window.verEvento = function(nombre){
-    alert("🔥 Próximamente info de: " + nombre);
+// 🔙 VOLVER AL MENÚ
+window.volverMenu = function(){
+    document.querySelector(".fondo").style.display = "flex";
+    document.getElementById("eventos").style.display = "none";
+    document.getElementById("tienda").style.display = "none";
 }
 
 // 🛍️ CARGAR PRODUCTOS
@@ -253,7 +289,6 @@ window.pagar = async function(){
 }
 
 // INIT
-mostrarSeccion("tienda");
 cargarProductos();
 mostrar();
 
