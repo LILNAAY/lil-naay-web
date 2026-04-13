@@ -12,7 +12,22 @@ body {
     text-align: center;
 }
 
-/* 🔥 NAVBAR IGUAL AL MENU */
+/* 🔥 BOTONES DE SECCIÓN */
+.tab-btn{
+    padding:10px 20px;
+    margin:5px;
+    background:#8b0000;
+    border:none;
+    color:white;
+    cursor:pointer;
+    border-radius:20px;
+}
+
+.tab-btn:hover{
+    background:#b30000;
+}
+
+/* 🔥 NAVBAR */
 .navbar {
     display: flex;
     align-items: center;
@@ -29,13 +44,9 @@ body {
     border-radius: 20px;
     text-decoration: none;
     color: white;
-    transition: 0.3s;
 }
 
-.back-btn:hover {
-    background: rgba(139, 0, 0, 0.5);
-}
-
+/* PRODUCTOS */
 .store {
     display: flex;
     justify-content: center;
@@ -72,66 +83,56 @@ select {
 </head>
 <body>
 
-<!-- 🔥 NAVBAR CON BOTÓN EXACTO -->
+<!-- 🔥 NAVBAR -->
 <div class="navbar">
     <a href="index.html" class="back-btn">⬅ Volver</a>
 </div>
 
-<h1>🔥 Tienda LIL NAAY</h1>
+<!-- 🔥 MENÚ -->
+<div style="margin:20px;">
+    <button onclick="mostrarSeccion('eventos')" class="tab-btn">🎤 Eventos</button>
+    <button onclick="mostrarSeccion('tienda')" class="tab-btn">🛍️ Tienda</button>
+</div>
+
+<!-- 🎤 EVENTOS -->
+<div id="eventos" style="display:none;">
+
+<h1>🎤 Eventos LIL NAAY</h1>
 
 <div class="store">
 
-    <!-- PRODUCTO 1 -->
     <div class="product">
-        <img src="ropa1.jpg">
-        <p>Hoodie LIL NAAY</p>
-        <p>$25</p>
-
-        <select id="talla1">
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-        </select>
-
-        <select id="color1">
-            <option value="Rojo">Rojo</option>
-            <option value="Negro">Negro</option>
-        </select>
-
-        <button onclick="agregar('Hoodie LIL NAAY',25,'talla1','color1')">
-            Comprar
-        </button>
+        <img src="https://via.placeholder.com/150">
+        <p>Concierto en Santo Domingo</p>
+        <p>📅 25 Abril 2026</p>
+        <button onclick="verEvento('Concierto Santo Domingo')">Ver Evento</button>
     </div>
 
-    <!-- PRODUCTO 2 -->
     <div class="product">
-        <img src="ropa2.jpg">
-        <p>T-Shirt LIL NAAY</p>
-        <p>$15</p>
-
-        <select id="talla2">
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-        </select>
-
-        <select id="color2">
-            <option value="Blanco">Blanco</option>
-            <option value="Negro">Negro</option>
-        </select>
-
-        <button onclick="agregar('T-Shirt LIL NAAY',15,'talla2','color2')">
-            Comprar
-        </button>
+        <img src="https://via.placeholder.com/150">
+        <p>Festival Urbano</p>
+        <p>📅 10 Mayo 2026</p>
+        <button onclick="verEvento('Festival Urbano')">Ver Evento</button>
     </div>
 
 </div>
+
+</div>
+
+<!-- 🛍️ TIENDA -->
+<div id="tienda">
+
+<h1>🔥 Tienda LIL NAAY</h1>
+
+<div class="store"></div>
 
 <h2>🛒 Carrito</h2>
 <ul id="carrito"></ul>
 <h3>Total: $<span id="total">0</span></h3>
 
 <button onclick="pagar()">Pagar</button>
+
+</div>
 
 <script type="module">
 
@@ -149,7 +150,19 @@ const db = getFirestore(app);
 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// 🔥 CARGAR PRODUCTOS DESDE FIREBASE
+// 🔄 CAMBIAR SECCIÓN
+window.mostrarSeccion = function(seccion){
+    document.getElementById("eventos").style.display = "none";
+    document.getElementById("tienda").style.display = "none";
+    document.getElementById(seccion).style.display = "block";
+}
+
+// 🎤 EVENTO
+window.verEvento = function(nombre){
+    alert("🔥 Próximamente info de: " + nombre);
+}
+
+// 🛍️ CARGAR PRODUCTOS
 async function cargarProductos(){
     const contenedor = document.querySelector(".store");
     contenedor.innerHTML = "";
@@ -161,7 +174,7 @@ async function cargarProductos(){
 
         contenedor.innerHTML += `
         <div class="product">
-            <img src="${p.imagen}" width="150">
+            <img src="${p.imagen}">
             <p>${p.nombre}</p>
             <p>$${p.precio}</p>
 
@@ -240,6 +253,7 @@ window.pagar = async function(){
 }
 
 // INIT
+mostrarSeccion("tienda");
 cargarProductos();
 mostrar();
 
