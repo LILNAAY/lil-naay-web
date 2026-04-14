@@ -5,7 +5,7 @@
 <title>LIL NAAY - Menu</title>
 
 <style>
-body {
+body{
     margin:0;
     font-family: Arial;
     background:#111;
@@ -17,29 +17,30 @@ body {
 /* 🔥 FONDO */
 .fondo{
     position:relative;
-    background: url('Fondopaisaje(1).png') no-repeat center;
-    background-size: cover;
-    height: 100vh;
+    background:url('Fondopaisaje(1).png') no-repeat center;
+    background-size:cover;
+    height:100vh;
 
     display:flex;
     flex-direction:column;
-    align-items:center;
     justify-content:center;
+    align-items:center;
+    gap:20px;
 }
 
-/* 🌇 LUZ */
+/* 🌟 LUZ */
 .fondo::after{
     content:"";
     position:absolute;
-    width:600px;
-    height:600px;
+    width:500px;
+    height:500px;
     background: radial-gradient(circle, rgba(255,200,100,0.3), transparent 70%);
     top:40%;
     right:20%;
-    filter: blur(60px);
+    filter:blur(60px);
 }
 
-/* 🔙 VOLVER */
+/* 🔙 BOTÓN VOLVER */
 .volver{
     position:absolute;
     top:20px;
@@ -54,10 +55,9 @@ body {
 
 /* 🧠 LOGO */
 .logo-img{
-    width:850px;
-    max-width:98%;
-    margin-bottom:10px;
-    filter: drop-shadow(0 0 30px rgba(255,255,255,0.7));
+    width:700px;
+    max-width:95%;
+    filter:drop-shadow(0 0 25px rgba(255,255,255,0.6));
     z-index:2;
 }
 
@@ -66,25 +66,25 @@ body {
     display:flex;
     flex-direction:column;
     align-items:center;
-}
-
-.btn-img{
-    width:330px;
-    margin:10px;
-    cursor:pointer;
-    transition:0.3s;
-    filter: drop-shadow(0 10px 25px rgba(0,0,0,0.8));
+    gap:15px;
     z-index:2;
 }
 
-.btn-img:hover{
-    transform: scale(1.1);
+.btn-img{
+    width:300px;
+    cursor:pointer;
+    transition:0.3s;
+    filter:drop-shadow(0 10px 20px rgba(0,0,0,0.8));
 }
 
-/* 🧩 PANTALLAS */
+.btn-img:hover{
+    transform:scale(1.08);
+}
+
+/* 🧩 SECCIONES */
 .pantalla{
     display:none;
-    padding:20px;
+    padding:30px;
 }
 
 /* 🛍️ PRODUCTOS */
@@ -99,26 +99,21 @@ body {
     background:#222;
     padding:15px;
     border-radius:10px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.7);
+    width:180px;
+    box-shadow:0 10px 20px rgba(0,0,0,0.6);
 }
 
 .product img{
-    width:150px;
+    width:100%;
 }
 
 button{
     margin-top:10px;
     padding:10px;
-    background:red;
+    background:#8b0000;
     border:none;
     color:white;
     cursor:pointer;
-}
-
-select{
-    margin-top:5px;
-    padding:5px;
-    width:100%;
 }
 
 /* ✨ PARTICULAS */
@@ -129,37 +124,14 @@ select{
     width:100%;
     height:100%;
     z-index:0;
-    pointer-events:none;
-}
-
-/* 🕷️ ARAÑAS */
-.spider{
-    position:fixed;
-    width:40px;
-    pointer-events:none;
-    z-index:1;
-    animation: caminar linear infinite;
-}
-
-@keyframes caminar{
-    0%{ transform: translateX(-100px) translateY(0px); }
-    50%{ transform: translateX(50vw) translateY(40px); }
-    100%{ transform: translateX(120vw) translateY(0px); }
 }
 </style>
 
 </head>
 <body>
 
-<audio id="clickSound" src="click.mp3"></audio>
-
 <!-- ✨ PARTICULAS -->
 <canvas id="particles"></canvas>
-
-<!-- 🕷️ ARAÑAS -->
-<img src="https://i.imgur.com/Z7AzH2c.png" class="spider" style="top:20%; animation-duration:18s;">
-<img src="https://i.imgur.com/Z7AzH2c.png" class="spider" style="top:60%; animation-duration:22s;">
-<img src="https://i.imgur.com/Z7AzH2c.png" class="spider" style="top:80%; animation-duration:25s;">
 
 <!-- 🔥 MENU -->
 <div class="fondo">
@@ -211,42 +183,42 @@ const db = getFirestore(app);
 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// 🔄 CAMBIO
+/* 🔄 CAMBIAR SECCIÓN */
 window.irSeccion = function(seccion){
-    document.querySelector(".fondo").style.display = "none";
-    document.getElementById(seccion).style.display = "block";
+    document.querySelector(".fondo").style.display="none";
+    document.getElementById(seccion).style.display="block";
 }
 
 window.volverMenu = function(){
-    document.querySelector(".fondo").style.display = "flex";
-    document.getElementById("eventos").style.display = "none";
-    document.getElementById("tienda").style.display = "none";
+    document.querySelector(".fondo").style.display="flex";
+    document.getElementById("eventos").style.display="none";
+    document.getElementById("tienda").style.display="none";
 }
 
-// 📡 EVENTOS
+/* 📡 EVENTOS */
 async function cargarEventos(){
-    const contenedor = document.getElementById("listaEventos");
+    const cont = document.getElementById("listaEventos");
     const snap = await getDocs(collection(db,"eventos"));
 
     snap.forEach(doc=>{
         let e = doc.data();
-        contenedor.innerHTML += `
+        cont.innerHTML += `
         <div class="product">
             <img src="${e.imagen}">
             <p>${e.nombre}</p>
-            <p>📅 ${e.fecha}</p>
+            <p>${e.fecha}</p>
         </div>`;
     });
 }
 
-// 🛍️ PRODUCTOS
+/* 🛍️ PRODUCTOS */
 async function cargarProductos(){
-    const contenedor = document.getElementById("listaProductos");
+    const cont = document.getElementById("listaProductos");
     const snap = await getDocs(collection(db,"productos"));
 
     snap.forEach(doc=>{
         let p = doc.data();
-        contenedor.innerHTML += `
+        cont.innerHTML += `
         <div class="product">
             <img src="${p.imagen}">
             <p>${p.nombre}</p>
@@ -256,9 +228,9 @@ async function cargarProductos(){
     });
 }
 
-// 🛒 CARRITO
+/* 🛒 CARRITO */
 window.agregar = function(nombre, precio){
-    carrito.push({ nombre, precio });
+    carrito.push({nombre, precio});
     localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrar();
 }
@@ -266,9 +238,9 @@ window.agregar = function(nombre, precio){
 function mostrar(){
     let lista = document.getElementById("carrito");
     let total = 0;
-    lista.innerHTML = "";
+    lista.innerHTML="";
 
-    carrito.forEach((p)=>{
+    carrito.forEach(p=>{
         lista.innerHTML += `<li>${p.nombre} - $${p.precio}</li>`;
         total += p.precio;
     });
@@ -276,35 +248,40 @@ function mostrar(){
     document.getElementById("total").innerText = total;
 }
 
-// 💳 PAGAR
+/* 💳 PAGAR */
 window.pagar = async function(){
+    if(carrito.length===0){
+        alert("Carrito vacío");
+        return;
+    }
+
     await addDoc(collection(db,"compras"),{
         productos: carrito,
         fecha: new Date()
     });
 
-    alert("Compra guardada 🔥");
+    alert("Compra realizada 🔥");
 
-    carrito = [];
+    carrito=[];
     localStorage.removeItem("carrito");
     mostrar();
 }
 
-// ✨ PARTICULAS
+/* ✨ PARTICULAS */
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let particles = [];
+let particles=[];
 
-for(let i=0;i<60;i++){
+for(let i=0;i<50;i++){
     particles.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
-        size: Math.random()*3,
-        speedY: Math.random()*1
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        size:Math.random()*2,
+        speedY:Math.random()
     });
 }
 
@@ -313,14 +290,15 @@ function animar(){
 
     particles.forEach(p=>{
         p.y += p.speedY;
+
         if(p.y > canvas.height){
             p.y = 0;
             p.x = Math.random()*canvas.width;
         }
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-        ctx.fillStyle = "white";
+        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fillStyle="white";
         ctx.fill();
     });
 
@@ -329,6 +307,7 @@ function animar(){
 
 animar();
 
+/* INIT */
 cargarProductos();
 cargarEventos();
 mostrar();
