@@ -25,13 +25,13 @@ body {
     animation: aparecer 1s ease;
 }
 
-/* ✨ ANIMACIÓN */
+/* ✨ ANIMACIÓN GENERAL */
 @keyframes aparecer{
     from{opacity:0; transform: scale(1.1);}
     to{opacity:1; transform: scale(1);}
 }
 
-/* 🔙 VOLVER */
+/* 🔙 BOTÓN VOLVER */
 .volver{
     position:absolute;
     top:20px;
@@ -43,10 +43,24 @@ body {
     text-decoration:none;
 }
 
-/* LOGO */
-.logo{
-    font-size:60px;
+/* 🧠 LOGO IMAGEN */
+.logo-img{
+    width:500px;
+    max-width:90%;
     margin-bottom:30px;
+    animation: logoEntrada 1s ease;
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));
+}
+
+@keyframes logoEntrada{
+    from{
+        opacity:0;
+        transform: translateY(-50px) scale(0.8);
+    }
+    to{
+        opacity:1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* 🎮 BOTONES IMAGEN */
@@ -100,6 +114,7 @@ button {
     cursor: pointer;
 }
 
+/* SELECT */
 select {
     margin-top: 5px;
     padding: 5px;
@@ -118,12 +133,13 @@ select {
 <!-- 🔊 SONIDO -->
 <audio id="clickSound" src="click.mp3"></audio>
 
-<!-- 🔥 MENU -->
+<!-- 🔥 MENU PRINCIPAL -->
 <div class="fondo">
 
     <a href="index.html" class="volver">⬅ Volver</a>
 
-      <img src="diosloquisoasi.png" class="logo-img">
+    <!-- 🔥 LOGO NUEVO -->
+    <img src="diosloquisoasi.png" class="logo-img">
 
     <div class="menu-principal">
         <img src="botontienda.png" class="btn-img" onclick="irSeccion('tienda')">
@@ -199,7 +215,7 @@ window.volverMenu = function(){
     document.getElementById("tienda").style.display = "none";
 }
 
-// 📡 EVENTOS DINÁMICOS
+// 📡 EVENTOS
 async function cargarEventos(){
     const contenedor = document.getElementById("listaEventos");
     contenedor.innerHTML = "";
