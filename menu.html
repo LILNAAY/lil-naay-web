@@ -2,169 +2,118 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>LIL NAAY - Menu</title>
+<title>Tienda LIL NAAY</title>
 
 <style>
-body{
-    margin:0;
+body {
     font-family: Arial;
-    background:#111;
-    color:white;
-    text-align:center;
-    overflow:hidden;
+    background: #111;
+    color: white;
+    text-align: center;
+    margin: 0;
 }
 
-/* 🔥 FONDO */
-.fondo{
-    position:relative;
-    background:url('Fondopaisaje(1).png') no-repeat center;
-    background-size:cover;
-    height:100vh;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:20px;
+/* 🔥 NAVBAR */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 20px 30px;
+    background: rgba(20, 9, 9, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
 }
 
-/* 🌟 LUZ */
-.fondo::after{
-    content:"";
-    position:absolute;
-    width:500px;
-    height:500px;
-    background: radial-gradient(circle, rgba(255,200,100,0.3), transparent 70%);
-    top:40%;
-    right:20%;
-    filter:blur(60px);
+.back-btn {
+    background: rgba(255,255,255,0.05);
+    padding: 10px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
 }
 
-/* 🔙 BOTÓN VOLVER */
-.volver{
-    position:absolute;
-    top:20px;
-    left:20px;
-    background:rgba(0,0,0,0.5);
-    padding:10px 15px;
-    border-radius:10px;
-    color:white;
-    text-decoration:none;
-    z-index:2;
-}
-
-/* 🧠 LOGO */
-.logo-img{
-    width:700px;
-    max-width:95%;
-    filter:drop-shadow(0 0 25px rgba(255,255,255,0.6));
-    z-index:2;
-}
-
-/* 🎮 BOTONES */
-.menu-principal{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:15px;
-    z-index:2;
-}
-
-.btn-img{
-    width:300px;
-    cursor:pointer;
-    transition:0.3s;
-    filter:drop-shadow(0 10px 20px rgba(0,0,0,0.8));
-}
-
-.btn-img:hover{
-    transform:scale(1.08);
-}
-
-/* 🧩 SECCIONES */
-.pantalla{
-    display:none;
-    padding:30px;
+.back-btn:hover {
+    background: rgba(139, 0, 0, 0.5);
 }
 
 /* 🛍️ PRODUCTOS */
-.store{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:20px;
+.store {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
 }
 
-.product{
-    background:#222;
-    padding:15px;
-    border-radius:10px;
-    width:180px;
-    box-shadow:0 10px 20px rgba(0,0,0,0.6);
+.product {
+    background: #222;
+    padding: 15px;
+    border-radius: 10px;
+    width: 200px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
 }
 
-.product img{
-    width:100%;
+.product img {
+    width: 100%;
 }
 
-button{
-    margin-top:10px;
-    padding:10px;
-    background:#8b0000;
-    border:none;
-    color:white;
-    cursor:pointer;
+/* 🔘 BOTONES */
+button {
+    margin-top: 10px;
+    padding: 10px;
+    background: red;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
-/* ✨ PARTICULAS */
-#particles{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index:0;
+button:hover {
+    background: #b30000;
+}
+
+select {
+    margin-top: 5px;
+    padding: 5px;
+    width: 100%;
+}
+
+/* 📄 COPYRIGHT */
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.6);
+    padding: 10px;
+    font-size: 14px;
+    color: #ccc;
+    text-align: center;
+    backdrop-filter: blur(5px);
 }
 </style>
 
 </head>
 <body>
 
-<!-- ✨ PARTICULAS -->
-<canvas id="particles"></canvas>
-
-<!-- 🔥 MENU -->
-<div class="fondo">
-
-<a href="index.html" class="volver">⬅ Volver</a>
-
-<img src="diosloquisoasi.png" class="logo-img">
-
-<div class="menu-principal">
-    <img src="botontienda.png" class="btn-img" onclick="irSeccion('tienda')">
-    <img src="botonevento.png" class="btn-img" onclick="irSeccion('eventos')">
+<!-- 🔥 NAVBAR -->
+<div class="navbar">
+    <a href="index.html" class="back-btn">⬅ Volver</a>
 </div>
 
-</div>
+<h1>🔥 Tienda LIL NAAY</h1>
 
-<!-- 🎤 EVENTOS -->
-<div id="eventos" class="pantalla">
-<h1>🎤 Eventos</h1>
-<div class="store" id="listaEventos"></div>
-<button onclick="volverMenu()">⬅ Volver</button>
-</div>
-
-<!-- 🛍️ TIENDA -->
-<div id="tienda" class="pantalla">
-<h1>🛍️ Tienda</h1>
-<div class="store" id="listaProductos"></div>
+<div class="store" id="productos"></div>
 
 <h2>🛒 Carrito</h2>
 <ul id="carrito"></ul>
 <h3>Total: $<span id="total">0</span></h3>
 
 <button onclick="pagar()">Pagar</button>
-<button onclick="volverMenu()">⬅ Volver</button>
+
+<!-- 📄 COPYRIGHT -->
+<div class="footer">
+    © <span id="year"></span> LIL NAAY - Todos los derechos reservados
 </div>
 
 <script type="module">
@@ -183,65 +132,71 @@ const db = getFirestore(app);
 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-/* 🔄 CAMBIAR SECCIÓN */
-window.irSeccion = function(seccion){
-    document.querySelector(".fondo").style.display="none";
-    document.getElementById(seccion).style.display="block";
-}
-
-window.volverMenu = function(){
-    document.querySelector(".fondo").style.display="flex";
-    document.getElementById("eventos").style.display="none";
-    document.getElementById("tienda").style.display="none";
-}
-
-/* 📡 EVENTOS */
-async function cargarEventos(){
-    const cont = document.getElementById("listaEventos");
-    const snap = await getDocs(collection(db,"eventos"));
-
-    snap.forEach(doc=>{
-        let e = doc.data();
-        cont.innerHTML += `
-        <div class="product">
-            <img src="${e.imagen}">
-            <p>${e.nombre}</p>
-            <p>${e.fecha}</p>
-        </div>`;
-    });
-}
-
-/* 🛍️ PRODUCTOS */
+/* 🔥 CARGAR PRODUCTOS */
 async function cargarProductos(){
-    const cont = document.getElementById("listaProductos");
+    const contenedor = document.getElementById("productos");
+    contenedor.innerHTML = "";
+
     const snap = await getDocs(collection(db,"productos"));
 
     snap.forEach(doc=>{
         let p = doc.data();
-        cont.innerHTML += `
+
+        contenedor.innerHTML += `
         <div class="product">
             <img src="${p.imagen}">
             <p>${p.nombre}</p>
             <p>$${p.precio}</p>
-            <button onclick="agregar('${p.nombre}',${p.precio})">Comprar</button>
+
+            <select id="talla-${doc.id}">
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+            </select>
+
+            <select id="color-${doc.id}">
+                <option>Rojo</option>
+                <option>Negro</option>
+            </select>
+
+            <button onclick="agregar('${p.nombre}',${p.precio},'talla-${doc.id}','color-${doc.id}')">
+                Comprar
+            </button>
         </div>`;
     });
 }
 
-/* 🛒 CARRITO */
-window.agregar = function(nombre, precio){
-    carrito.push({nombre, precio});
+/* ➕ AGREGAR */
+window.agregar = function(nombre, precio, tallaId, colorId){
+    let talla = document.getElementById(tallaId).value;
+    let color = document.getElementById(colorId).value;
+
+    carrito.push({ nombre, precio, talla, color });
+
     localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrar();
 }
 
+/* ❌ ELIMINAR */
+window.eliminar = function(i){
+    carrito.splice(i,1);
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    mostrar();
+}
+
+/* 🔄 MOSTRAR */
 function mostrar(){
     let lista = document.getElementById("carrito");
     let total = 0;
-    lista.innerHTML="";
 
-    carrito.forEach(p=>{
-        lista.innerHTML += `<li>${p.nombre} - $${p.precio}</li>`;
+    lista.innerHTML = "";
+
+    carrito.forEach((p,i)=>{
+        lista.innerHTML += `
+        <li>
+        ${p.nombre} - $${p.precio} | ${p.talla} | ${p.color}
+        <button onclick="eliminar(${i})">❌</button>
+        </li>`;
         total += p.precio;
     });
 
@@ -250,8 +205,8 @@ function mostrar(){
 
 /* 💳 PAGAR */
 window.pagar = async function(){
-    if(carrito.length===0){
-        alert("Carrito vacío");
+    if(carrito.length === 0){
+        alert("Carrito vacío ❌");
         return;
     }
 
@@ -260,56 +215,18 @@ window.pagar = async function(){
         fecha: new Date()
     });
 
-    alert("Compra realizada 🔥");
+    alert("Compra guardada 🔥");
 
-    carrito=[];
+    carrito = [];
     localStorage.removeItem("carrito");
     mostrar();
 }
 
-/* ✨ PARTICULAS */
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles=[];
-
-for(let i=0;i<50;i++){
-    particles.push({
-        x:Math.random()*canvas.width,
-        y:Math.random()*canvas.height,
-        size:Math.random()*2,
-        speedY:Math.random()
-    });
-}
-
-function animar(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    particles.forEach(p=>{
-        p.y += p.speedY;
-
-        if(p.y > canvas.height){
-            p.y = 0;
-            p.x = Math.random()*canvas.width;
-        }
-
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-        ctx.fillStyle="white";
-        ctx.fill();
-    });
-
-    requestAnimationFrame(animar);
-}
-
-animar();
+/* 📅 AÑO AUTOMÁTICO */
+document.getElementById("year").innerText = new Date().getFullYear();
 
 /* INIT */
 cargarProductos();
-cargarEventos();
 mostrar();
 
 </script>
