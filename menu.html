@@ -20,10 +20,13 @@ body {
     background: url('Fondopaisaje(1).png') no-repeat center;
     background-size: cover;
     height: 100vh;
+
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
+    gap:20px;
+
     animation: aparecer 1s ease;
 }
 
@@ -80,14 +83,19 @@ body {
     z-index:2;
 }
 
-/* 🧠 LOGO */
+/* 🧠 LOGO GRANDE */
 .logo-img{
-    width:500px;
-    max-width:90%;
-    margin-bottom:30px;
+    width:650px;
+    max-width:95%;
+    margin-bottom:20px;
     animation: logoEntrada 1s ease;
-    filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));
+    filter: drop-shadow(0 0 25px rgba(255,255,255,0.6));
+    transition:0.3s;
     z-index:2;
+}
+
+.logo-img:hover{
+    transform: scale(1.05);
 }
 
 @keyframes logoEntrada{
@@ -96,16 +104,26 @@ body {
 }
 
 /* 🎮 BOTONES */
+.menu-principal{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
 .btn-img{
-    width:300px;
+    width:320px;
     margin:10px;
     cursor:pointer;
     transition:0.3s;
+
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.7));
     z-index:2;
 }
 
 .btn-img:hover{
     transform: scale(1.1);
+    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.9)) brightness(1.2);
 }
 
 .btn-img:active{
@@ -136,7 +154,12 @@ body {
     background:#222;
     padding:15px;
     border-radius:10px;
-    box-shadow:0 0 15px rgba(255,0,0,0.2);
+    box-shadow:0 10px 25px rgba(0,0,0,0.7);
+    transition:0.3s;
+}
+
+.product:hover{
+    transform: translateY(-5px);
 }
 
 .product img{
@@ -190,8 +213,10 @@ select{
 
 <img src="diosloquisoasi.png" class="logo-img">
 
-<img src="botontienda.png" class="btn-img" onclick="irSeccion('tienda')">
-<img src="botonevento.png" class="btn-img" onclick="irSeccion('eventos')">
+<div class="menu-principal">
+    <img src="botontienda.png" class="btn-img" onclick="irSeccion('tienda')">
+    <img src="botonevento.png" class="btn-img" onclick="irSeccion('eventos')">
+</div>
 
 </div>
 
@@ -235,7 +260,6 @@ let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 window.irSeccion = function(seccion){
     let audio = document.getElementById("clickSound");
     if(audio) audio.play();
-
     mostrarSeccion(seccion);
 }
 
@@ -247,7 +271,6 @@ window.mostrarSeccion = function(seccion){
         document.querySelector(".fondo").style.display = "none";
         document.getElementById("eventos").style.display = "none";
         document.getElementById("tienda").style.display = "none";
-
         document.getElementById(seccion).style.display = "block";
     },300);
 }
@@ -266,7 +289,6 @@ async function cargarEventos(){
 
     snap.forEach(doc=>{
         let e = doc.data();
-
         contenedor.innerHTML += `
         <div class="product">
             <img src="${e.imagen}">
@@ -283,7 +305,6 @@ async function cargarProductos(){
 
     snap.forEach(doc=>{
         let p = doc.data();
-
         contenedor.innerHTML += `
         <div class="product">
             <img src="${p.imagen}">
@@ -354,6 +375,7 @@ window.pagar = async function(){
     });
 
     alert("Compra guardada 🔥");
+
     carrito = [];
     localStorage.removeItem("carrito");
     mostrar();
