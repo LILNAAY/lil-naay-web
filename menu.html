@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Tienda LIL NAAY</title>
+<title>LIL NAAY - Menu</title>
 
 <style>
 body {
@@ -11,10 +11,12 @@ body {
     background:#111;
     color:white;
     text-align:center;
+    overflow-x:hidden;
 }
 
 /* 🔥 FONDO */
 .fondo{
+    position:relative;
     background: url('Fondopaisaje(1).png') no-repeat center;
     background-size: cover;
     height: 100vh;
@@ -25,13 +27,47 @@ body {
     animation: aparecer 1s ease;
 }
 
-/* ✨ ANIMACIÓN GENERAL */
+/* 🌫️ HUMO */
+.fondo::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background: url('https://i.imgur.com/8IhZ6sP.png');
+    opacity:0.1;
+    animation: humo 20s linear infinite;
+}
+
+/* 🌇 LUZ */
+.fondo::after{
+    content:"";
+    position:absolute;
+    width:500px;
+    height:500px;
+    background: radial-gradient(circle, rgba(255,200,100,0.4), transparent 70%);
+    top:40%;
+    right:20%;
+    filter: blur(50px);
+    animation: sol 6s infinite alternate;
+}
+
+/* ✨ ANIMACIONES */
 @keyframes aparecer{
     from{opacity:0; transform: scale(1.1);}
     to{opacity:1; transform: scale(1);}
 }
 
-/* 🔙 BOTÓN VOLVER */
+@keyframes humo{
+    from{transform: translateX(0);}
+    to{transform: translateX(-500px);}
+}
+
+@keyframes sol{
+    from{transform: scale(1);}
+    to{transform: scale(1.2);}
+}
+
+/* 🔙 VOLVER */
 .volver{
     position:absolute;
     top:20px;
@@ -41,89 +77,100 @@ body {
     border-radius:10px;
     color:white;
     text-decoration:none;
+    z-index:2;
 }
 
-/* 🧠 LOGO IMAGEN */
+/* 🧠 LOGO */
 .logo-img{
     width:500px;
     max-width:90%;
     margin-bottom:30px;
     animation: logoEntrada 1s ease;
     filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));
+    z-index:2;
 }
 
 @keyframes logoEntrada{
-    from{
-        opacity:0;
-        transform: translateY(-50px) scale(0.8);
-    }
-    to{
-        opacity:1;
-        transform: translateY(0) scale(1);
-    }
+    from{opacity:0; transform: translateY(-50px);}
+    to{opacity:1; transform: translateY(0);}
 }
 
-/* 🎮 BOTONES IMAGEN */
+/* 🎮 BOTONES */
 .btn-img{
     width:300px;
     margin:10px;
     cursor:pointer;
     transition:0.3s;
+    z-index:2;
 }
 
 .btn-img:hover{
     transform: scale(1.1);
-    filter: brightness(1.2);
 }
 
 .btn-img:active{
     transform: scale(0.95);
 }
 
-/* PANTALLAS */
+/* 🧩 PANTALLAS */
 .pantalla{
     display:none;
     padding:20px;
+    animation: fadeIn 0.5s ease;
 }
 
-/* PRODUCTOS */
-.store {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
+@keyframes fadeIn{
+    from{opacity:0; transform: translateY(30px);}
+    to{opacity:1; transform: translateY(0);}
 }
 
-.product {
-    background: #222;
-    padding: 15px;
-    border-radius: 10px;
+/* 🛍️ PRODUCTOS */
+.store{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
 }
 
-.product img {
-    width: 150px;
+.product{
+    background:#222;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(255,0,0,0.2);
 }
 
-/* BOTONES */
-button {
-    margin-top: 10px;
-    padding: 10px;
-    background: red;
-    border: none;
-    color: white;
-    cursor: pointer;
+.product img{
+    width:150px;
 }
 
-/* SELECT */
-select {
-    margin-top: 5px;
-    padding: 5px;
-    width: 100%;
+button{
+    margin-top:10px;
+    padding:10px;
+    background:red;
+    border:none;
+    color:white;
+    cursor:pointer;
 }
 
-/* VOLVER INTERNO */
+select{
+    margin-top:5px;
+    padding:5px;
+    width:100%;
+}
+
 .btn-volver{
     margin-top:20px;
+}
+
+/* ✨ PARTICULAS */
+#particles{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
 }
 </style>
 
@@ -133,37 +180,31 @@ select {
 <!-- 🔊 SONIDO -->
 <audio id="clickSound" src="click.mp3"></audio>
 
-<!-- 🔥 MENU PRINCIPAL -->
+<!-- ✨ PARTICULAS -->
+<canvas id="particles"></canvas>
+
+<!-- 🔥 MENU -->
 <div class="fondo">
 
-    <a href="index.html" class="volver">⬅ Volver</a>
+<a href="index.html" class="volver">⬅ Volver</a>
 
-    <!-- 🔥 LOGO NUEVO -->
-    <img src="diosloquisoasi.png" class="logo-img">
+<img src="diosloquisoasi.png" class="logo-img">
 
-    <div class="menu-principal">
-        <img src="botontienda.png" class="btn-img" onclick="irSeccion('tienda')">
-        <img src="botonevento.png" class="btn-img" onclick="irSeccion('eventos')">
-    </div>
+<img src="botontienda.png" class="btn-img" onclick="irSeccion('tienda')">
+<img src="botonevento.png" class="btn-img" onclick="irSeccion('eventos')">
 
 </div>
 
 <!-- 🎤 EVENTOS -->
 <div id="eventos" class="pantalla">
-
 <h1>🎤 Eventos</h1>
-
 <div class="store" id="listaEventos"></div>
-
 <button onclick="volverMenu()" class="btn-volver">⬅ Volver</button>
-
 </div>
 
 <!-- 🛍️ TIENDA -->
 <div id="tienda" class="pantalla">
-
 <h1>🛍️ Tienda</h1>
-
 <div class="store" id="listaProductos"></div>
 
 <h2>🛒 Carrito</h2>
@@ -172,7 +213,6 @@ select {
 
 <button onclick="pagar()">Pagar</button>
 <button onclick="volverMenu()" class="btn-volver">⬅ Volver</button>
-
 </div>
 
 <script type="module">
@@ -199,18 +239,22 @@ window.irSeccion = function(seccion){
     mostrarSeccion(seccion);
 }
 
-// 🔄 CAMBIAR SECCIÓN
+// 🎮 TRANSICIÓN
 window.mostrarSeccion = function(seccion){
-    document.querySelector(".fondo").style.display = "none";
-    document.getElementById("eventos").style.display = "none";
-    document.getElementById("tienda").style.display = "none";
+    document.querySelector(".fondo").style.opacity = "0";
 
-    document.getElementById(seccion).style.display = "block";
+    setTimeout(()=>{
+        document.querySelector(".fondo").style.display = "none";
+        document.getElementById("eventos").style.display = "none";
+        document.getElementById("tienda").style.display = "none";
+
+        document.getElementById(seccion).style.display = "block";
+    },300);
 }
 
-// 🔙 VOLVER
 window.volverMenu = function(){
     document.querySelector(".fondo").style.display = "flex";
+    document.querySelector(".fondo").style.opacity = "1";
     document.getElementById("eventos").style.display = "none";
     document.getElementById("tienda").style.display = "none";
 }
@@ -218,8 +262,6 @@ window.volverMenu = function(){
 // 📡 EVENTOS
 async function cargarEventos(){
     const contenedor = document.getElementById("listaEventos");
-    contenedor.innerHTML = "";
-
     const snap = await getDocs(collection(db,"eventos"));
 
     snap.forEach(doc=>{
@@ -237,8 +279,6 @@ async function cargarEventos(){
 // 🛍️ PRODUCTOS
 async function cargarProductos(){
     const contenedor = document.getElementById("listaProductos");
-    contenedor.innerHTML = "";
-
     const snap = await getDocs(collection(db,"productos"));
 
     snap.forEach(doc=>{
@@ -268,7 +308,7 @@ async function cargarProductos(){
     });
 }
 
-// ➕ AGREGAR
+// 🛒 CARRITO
 window.agregar = function(nombre, precio, tallaId, colorId){
     let talla = document.getElementById(tallaId).value;
     let color = document.getElementById(colorId).value;
@@ -278,24 +318,21 @@ window.agregar = function(nombre, precio, tallaId, colorId){
     mostrar();
 }
 
-// ❌ ELIMINAR
 window.eliminar = function(i){
     carrito.splice(i,1);
     localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrar();
 }
 
-// 🔄 MOSTRAR
 function mostrar(){
     let lista = document.getElementById("carrito");
     let total = 0;
-
     lista.innerHTML = "";
 
     carrito.forEach((p,i)=>{
         lista.innerHTML += `
         <li>
-        ${p.nombre} - $${p.precio} | ${p.talla} | ${p.color}
+        ${p.nombre} - $${p.precio}
         <button onclick="eliminar(${i})">❌</button>
         </li>`;
         total += p.precio;
@@ -317,11 +354,50 @@ window.pagar = async function(){
     });
 
     alert("Compra guardada 🔥");
-
     carrito = [];
     localStorage.removeItem("carrito");
     mostrar();
 }
+
+// ✨ PARTICULAS
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<80;i++){
+    particles.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        size: Math.random()*3,
+        speedY: Math.random()*1 + 0.2
+    });
+}
+
+function animar(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach(p=>{
+        p.y += p.speedY;
+
+        if(p.y > canvas.height){
+            p.y = 0;
+            p.x = Math.random()*canvas.width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(255,255,255,0.3)";
+        ctx.fill();
+    });
+
+    requestAnimationFrame(animar);
+}
+
+animar();
 
 // INIT
 cargarProductos();
