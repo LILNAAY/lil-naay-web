@@ -11,7 +11,7 @@ body {
     background:#111;
     color:white;
     text-align:center;
-    overflow-x:hidden;
+    overflow:hidden;
 }
 
 /* 🔥 FONDO */
@@ -25,49 +25,18 @@ body {
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:20px;
-
-    animation: aparecer 1s ease;
-}
-
-/* 🌫️ HUMO */
-.fondo::before{
-    content:"";
-    position:absolute;
-    width:100%;
-    height:100%;
-    background: url('https://i.imgur.com/8IhZ6sP.png');
-    opacity:0.1;
-    animation: humo 20s linear infinite;
 }
 
 /* 🌇 LUZ */
 .fondo::after{
     content:"";
     position:absolute;
-    width:500px;
-    height:500px;
-    background: radial-gradient(circle, rgba(255,200,100,0.4), transparent 70%);
+    width:600px;
+    height:600px;
+    background: radial-gradient(circle, rgba(255,200,100,0.3), transparent 70%);
     top:40%;
     right:20%;
-    filter: blur(50px);
-    animation: sol 6s infinite alternate;
-}
-
-/* ✨ ANIMACIONES */
-@keyframes aparecer{
-    from{opacity:0; transform: scale(1.1);}
-    to{opacity:1; transform: scale(1);}
-}
-
-@keyframes humo{
-    from{transform: translateX(0);}
-    to{transform: translateX(-500px);}
-}
-
-@keyframes sol{
-    from{transform: scale(1);}
-    to{transform: scale(1.2);}
+    filter: blur(60px);
 }
 
 /* 🔙 VOLVER */
@@ -83,24 +52,13 @@ body {
     z-index:2;
 }
 
-/* 🧠 LOGO GRANDE */
+/* 🧠 LOGO */
 .logo-img{
-    width:650px;
-    max-width:95%;
-    margin-bottom:20px;
-    animation: logoEntrada 1s ease;
-    filter: drop-shadow(0 0 25px rgba(255,255,255,0.6));
-    transition:0.3s;
+    width:850px;
+    max-width:98%;
+    margin-bottom:10px;
+    filter: drop-shadow(0 0 30px rgba(255,255,255,0.7));
     z-index:2;
-}
-
-.logo-img:hover{
-    transform: scale(1.05);
-}
-
-@keyframes logoEntrada{
-    from{opacity:0; transform: translateY(-50px);}
-    to{opacity:1; transform: translateY(0);}
 }
 
 /* 🎮 BOTONES */
@@ -108,38 +66,25 @@ body {
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
 }
 
 .btn-img{
-    width:320px;
+    width:330px;
     margin:10px;
     cursor:pointer;
     transition:0.3s;
-
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.7));
+    filter: drop-shadow(0 10px 25px rgba(0,0,0,0.8));
     z-index:2;
 }
 
 .btn-img:hover{
     transform: scale(1.1);
-    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.9)) brightness(1.2);
-}
-
-.btn-img:active{
-    transform: scale(0.95);
 }
 
 /* 🧩 PANTALLAS */
 .pantalla{
     display:none;
     padding:20px;
-    animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn{
-    from{opacity:0; transform: translateY(30px);}
-    to{opacity:1; transform: translateY(0);}
 }
 
 /* 🛍️ PRODUCTOS */
@@ -155,11 +100,6 @@ body {
     padding:15px;
     border-radius:10px;
     box-shadow:0 10px 25px rgba(0,0,0,0.7);
-    transition:0.3s;
-}
-
-.product:hover{
-    transform: translateY(-5px);
 }
 
 .product img{
@@ -181,10 +121,6 @@ select{
     width:100%;
 }
 
-.btn-volver{
-    margin-top:20px;
-}
-
 /* ✨ PARTICULAS */
 #particles{
     position:fixed;
@@ -195,16 +131,35 @@ select{
     z-index:0;
     pointer-events:none;
 }
+
+/* 🕷️ ARAÑAS */
+.spider{
+    position:fixed;
+    width:40px;
+    pointer-events:none;
+    z-index:1;
+    animation: caminar linear infinite;
+}
+
+@keyframes caminar{
+    0%{ transform: translateX(-100px) translateY(0px); }
+    50%{ transform: translateX(50vw) translateY(40px); }
+    100%{ transform: translateX(120vw) translateY(0px); }
+}
 </style>
 
 </head>
 <body>
 
-<!-- 🔊 SONIDO -->
 <audio id="clickSound" src="click.mp3"></audio>
 
 <!-- ✨ PARTICULAS -->
 <canvas id="particles"></canvas>
+
+<!-- 🕷️ ARAÑAS -->
+<img src="https://i.imgur.com/Z7AzH2c.png" class="spider" style="top:20%; animation-duration:18s;">
+<img src="https://i.imgur.com/Z7AzH2c.png" class="spider" style="top:60%; animation-duration:22s;">
+<img src="https://i.imgur.com/Z7AzH2c.png" class="spider" style="top:80%; animation-duration:25s;">
 
 <!-- 🔥 MENU -->
 <div class="fondo">
@@ -224,7 +179,7 @@ select{
 <div id="eventos" class="pantalla">
 <h1>🎤 Eventos</h1>
 <div class="store" id="listaEventos"></div>
-<button onclick="volverMenu()" class="btn-volver">⬅ Volver</button>
+<button onclick="volverMenu()">⬅ Volver</button>
 </div>
 
 <!-- 🛍️ TIENDA -->
@@ -237,7 +192,7 @@ select{
 <h3>Total: $<span id="total">0</span></h3>
 
 <button onclick="pagar()">Pagar</button>
-<button onclick="volverMenu()" class="btn-volver">⬅ Volver</button>
+<button onclick="volverMenu()">⬅ Volver</button>
 </div>
 
 <script type="module">
@@ -256,28 +211,14 @@ const db = getFirestore(app);
 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// 🔊 SONIDO + CAMBIO
+// 🔄 CAMBIO
 window.irSeccion = function(seccion){
-    let audio = document.getElementById("clickSound");
-    if(audio) audio.play();
-    mostrarSeccion(seccion);
-}
-
-// 🎮 TRANSICIÓN
-window.mostrarSeccion = function(seccion){
-    document.querySelector(".fondo").style.opacity = "0";
-
-    setTimeout(()=>{
-        document.querySelector(".fondo").style.display = "none";
-        document.getElementById("eventos").style.display = "none";
-        document.getElementById("tienda").style.display = "none";
-        document.getElementById(seccion).style.display = "block";
-    },300);
+    document.querySelector(".fondo").style.display = "none";
+    document.getElementById(seccion).style.display = "block";
 }
 
 window.volverMenu = function(){
     document.querySelector(".fondo").style.display = "flex";
-    document.querySelector(".fondo").style.opacity = "1";
     document.getElementById("eventos").style.display = "none";
     document.getElementById("tienda").style.display = "none";
 }
@@ -310,37 +251,14 @@ async function cargarProductos(){
             <img src="${p.imagen}">
             <p>${p.nombre}</p>
             <p>$${p.precio}</p>
-
-            <select id="talla-${doc.id}">
-                <option>S</option>
-                <option>M</option>
-                <option>L</option>
-            </select>
-
-            <select id="color-${doc.id}">
-                <option>Rojo</option>
-                <option>Negro</option>
-            </select>
-
-            <button onclick="agregar('${p.nombre}',${p.precio},'talla-${doc.id}','color-${doc.id}')">
-                Comprar
-            </button>
+            <button onclick="agregar('${p.nombre}',${p.precio})">Comprar</button>
         </div>`;
     });
 }
 
 // 🛒 CARRITO
-window.agregar = function(nombre, precio, tallaId, colorId){
-    let talla = document.getElementById(tallaId).value;
-    let color = document.getElementById(colorId).value;
-
-    carrito.push({ nombre, precio, talla, color });
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-    mostrar();
-}
-
-window.eliminar = function(i){
-    carrito.splice(i,1);
+window.agregar = function(nombre, precio){
+    carrito.push({ nombre, precio });
     localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrar();
 }
@@ -350,12 +268,8 @@ function mostrar(){
     let total = 0;
     lista.innerHTML = "";
 
-    carrito.forEach((p,i)=>{
-        lista.innerHTML += `
-        <li>
-        ${p.nombre} - $${p.precio}
-        <button onclick="eliminar(${i})">❌</button>
-        </li>`;
+    carrito.forEach((p)=>{
+        lista.innerHTML += `<li>${p.nombre} - $${p.precio}</li>`;
         total += p.precio;
     });
 
@@ -364,11 +278,6 @@ function mostrar(){
 
 // 💳 PAGAR
 window.pagar = async function(){
-    if(carrito.length === 0){
-        alert("Carrito vacío ❌");
-        return;
-    }
-
     await addDoc(collection(db,"compras"),{
         productos: carrito,
         fecha: new Date()
@@ -390,12 +299,12 @@ canvas.height = window.innerHeight;
 
 let particles = [];
 
-for(let i=0;i<80;i++){
+for(let i=0;i<60;i++){
     particles.push({
         x: Math.random()*canvas.width,
         y: Math.random()*canvas.height,
         size: Math.random()*3,
-        speedY: Math.random()*1 + 0.2
+        speedY: Math.random()*1
     });
 }
 
@@ -404,7 +313,6 @@ function animar(){
 
     particles.forEach(p=>{
         p.y += p.speedY;
-
         if(p.y > canvas.height){
             p.y = 0;
             p.x = Math.random()*canvas.width;
@@ -412,7 +320,7 @@ function animar(){
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-        ctx.fillStyle = "rgba(255,255,255,0.3)";
+        ctx.fillStyle = "white";
         ctx.fill();
     });
 
@@ -421,7 +329,6 @@ function animar(){
 
 animar();
 
-// INIT
 cargarProductos();
 cargarEventos();
 mostrar();
