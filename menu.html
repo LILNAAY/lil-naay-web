@@ -13,18 +13,25 @@ body {
     text-align:center;
 }
 
-/* 🔥 FONDO PRINCIPAL */
+/* 🔥 FONDO */
 .fondo{
-    background: url('https://i.imgur.com/8Km9tLL.jpg') no-repeat center;
+    background: url('Fondopaisaje(1).png') no-repeat center;
     background-size: cover;
     height: 100vh;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
+    animation: aparecer 1s ease;
 }
 
-/* 🔙 BOTÓN VOLVER */
+/* ✨ ANIMACIÓN */
+@keyframes aparecer{
+    from{opacity:0; transform: scale(1.1);}
+    to{opacity:1; transform: scale(1);}
+}
+
+/* 🔙 VOLVER */
 .volver{
     position:absolute;
     top:20px;
@@ -42,25 +49,21 @@ body {
     margin-bottom:30px;
 }
 
-/* BOTONES PRINCIPALES */
-.menu-principal{
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-}
-
-.btn-menu{
-    padding:20px 50px;
-    font-size:25px;
-    background:#8b0000;
-    border:none;
-    color:white;
-    border-radius:10px;
+/* 🎮 BOTONES IMAGEN */
+.btn-img{
+    width:300px;
+    margin:10px;
     cursor:pointer;
+    transition:0.3s;
 }
 
-.btn-menu:hover{
-    background:#b30000;
+.btn-img:hover{
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.btn-img:active{
+    transform: scale(0.95);
 }
 
 /* PANTALLAS */
@@ -87,6 +90,7 @@ body {
     width: 150px;
 }
 
+/* BOTONES */
 button {
     margin-top: 10px;
     padding: 10px;
@@ -102,7 +106,7 @@ select {
     width: 100%;
 }
 
-/* BOTÓN VOLVER DENTRO */
+/* VOLVER INTERNO */
 .btn-volver{
     margin-top:20px;
 }
@@ -111,7 +115,10 @@ select {
 </head>
 <body>
 
-<!-- 🔥 MENU PRINCIPAL -->
+<!-- 🔊 SONIDO -->
+<audio id="clickSound" src="click.mp3"></audio>
+
+<!-- 🔥 MENU -->
 <div class="fondo">
 
     <a href="index.html" class="volver">⬅ Volver</a>
@@ -119,8 +126,8 @@ select {
     <h1 class="logo">LIL NAAY</h1>
 
     <div class="menu-principal">
-        <button onclick="mostrarSeccion('tienda')" class="btn-menu">🛍️ Tienda</button>
-        <button onclick="mostrarSeccion('eventos')" class="btn-menu">🎤 Eventos</button>
+        <img src="botontienda.png" class="btn-img" onclick="irSeccion('tienda')">
+        <img src="botonevento.png" class="btn-img" onclick="irSeccion('eventos')">
     </div>
 
 </div>
@@ -130,21 +137,7 @@ select {
 
 <h1>🎤 Eventos</h1>
 
-<div class="store">
-
-    <div class="product">
-        <img src="https://via.placeholder.com/150">
-        <p>Concierto Santo Domingo</p>
-        <p>📅 25 Abril 2026</p>
-    </div>
-
-    <div class="product">
-        <img src="https://via.placeholder.com/150">
-        <p>Festival Urbano</p>
-        <p>📅 10 Mayo 2026</p>
-    </div>
-
-</div>
+<div class="store" id="listaEventos"></div>
 
 <button onclick="volverMenu()" class="btn-volver">⬅ Volver</button>
 
@@ -155,7 +148,7 @@ select {
 
 <h1>🛍️ Tienda</h1>
 
-<div class="store"></div>
+<div class="store" id="listaProductos"></div>
 
 <h2>🛒 Carrito</h2>
 <ul id="carrito"></ul>
@@ -182,6 +175,14 @@ const db = getFirestore(app);
 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
+// 🔊 SONIDO + CAMBIO
+window.irSeccion = function(seccion){
+    let audio = document.getElementById("clickSound");
+    if(audio) audio.play();
+
+    mostrarSeccion(seccion);
+}
+
 // 🔄 CAMBIAR SECCIÓN
 window.mostrarSeccion = function(seccion){
     document.querySelector(".fondo").style.display = "none";
@@ -191,16 +192,35 @@ window.mostrarSeccion = function(seccion){
     document.getElementById(seccion).style.display = "block";
 }
 
-// 🔙 VOLVER AL MENÚ
+// 🔙 VOLVER
 window.volverMenu = function(){
     document.querySelector(".fondo").style.display = "flex";
     document.getElementById("eventos").style.display = "none";
     document.getElementById("tienda").style.display = "none";
 }
 
-// 🛍️ CARGAR PRODUCTOS
+// 📡 EVENTOS DINÁMICOS
+async function cargarEventos(){
+    const contenedor = document.getElementById("listaEventos");
+    contenedor.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"eventos"));
+
+    snap.forEach(doc=>{
+        let e = doc.data();
+
+        contenedor.innerHTML += `
+        <div class="product">
+            <img src="${e.imagen}">
+            <p>${e.nombre}</p>
+            <p>📅 ${e.fecha}</p>
+        </div>`;
+    });
+}
+
+// 🛍️ PRODUCTOS
 async function cargarProductos(){
-    const contenedor = document.querySelector(".store");
+    const contenedor = document.getElementById("listaProductos");
     contenedor.innerHTML = "";
 
     const snap = await getDocs(collection(db,"productos"));
@@ -238,7 +258,6 @@ window.agregar = function(nombre, precio, tallaId, colorId){
     let color = document.getElementById(colorId).value;
 
     carrito.push({ nombre, precio, talla, color });
-
     localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrar();
 }
@@ -290,6 +309,7 @@ window.pagar = async function(){
 
 // INIT
 cargarProductos();
+cargarEventos();
 mostrar();
 
 </script>
