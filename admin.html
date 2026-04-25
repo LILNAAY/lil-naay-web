@@ -2,364 +2,188 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Tienda LIL NAAY</title>
+<title>Admin - LIL NAAY</title>
 
 <style>
 body {
     font-family: Arial;
     background: #111;
     color: white;
-    text-align: center;
     margin: 0;
 }
 
 .navbar {
-    display: flex;
-    align-items: center;
-    padding: 20px 30px;
-    background: rgba(20, 9, 9, 0.8);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
+    padding: 20px;
+    background: #000;
 }
 
 .back-btn {
-    background: rgba(255,255,255,0.05);
-    padding: 10px 18px;
-    border-radius: 20px;
+    color: white;
     text-decoration: none;
-    color: white;
 }
 
-.store {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.product {
-    background: #222;
-    padding: 15px;
+.chat-box {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #1a1a1a;
+    padding: 20px;
     border-radius: 10px;
-    width: 200px;
-}
-
-.product img { width: 100%; }
-
-button {
-    margin-top: 10px;
-    padding: 8px;
-    background: red;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.6);
-    padding: 10px;
 }
 
 .msg {
-    text-align:left;
-    margin-bottom:8px;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #222;
+    border-radius: 8px;
+}
+
+button {
+    margin: 3px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* BOTONES ADMIN */
+.warn-btn { background: orange; }
+.ban-btn { background: red; color:white; }
+.vip-btn { background: green; color:white; }
+.del-btn { background: #555; color:white; }
+
+.admin-controls {
+    margin-top: 5px;
 }
 </style>
-</head>
 
+</head>
 <body>
 
 <div class="navbar">
-<a href="index.html" class="back-btn">⬅ Volver</a>
+    <a href="index.html" class="back-btn">⬅ Volver</a>
 </div>
 
-<h1>🔥 Tienda LIL NAAY</h1>
+<div class="chat-box">
+    <h2>💬 Panel Admin</h2>
 
-<!-- CHAT -->
-<div style="max-width:800px;margin:30px auto;background:#1a1a1a;padding:20px;border-radius:15px;">
-<h2>💬 Chat en vivo</h2>
+    <div id="chatBox"></div>
 
-<div id="chatBox" style="height:300px;overflow-y:auto;background:#0d0d0d;padding:10px;border-radius:10px;"></div>
-
-<input id="mensajeInput" placeholder="Escribe..." style="width:70%;padding:10px;">
-<button onclick="enviarMensaje()">Enviar</button>
-
-<p id="cooldown"></p>
+    <input id="mensajeInput" placeholder="Mensaje admin..." style="width:70%;padding:10px;">
+    <button onclick="enviarMensaje()">Enviar</button>
 </div>
-
-<!-- ADMIN -->
-<div id="adminPanel" style="display:none;max-width:800px;margin:auto;background:#1a1a1a;padding:20px;border-radius:15px;">
-<h2>🛠️ Panel Admin</h2>
-<div id="listaUsuarios"></div>
-</div>
-
-<div class="store" id="productos"></div>
-
-<h2>🛒 Carrito</h2>
-<ul id="carrito"></ul>
-<h3>Total: $<span id="total">0</span></h3>
-
-<button onclick="pagar()">Pagar</button>
-
-<div class="footer">© <span id="year"></span> LIL NAAY</div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-getFirestore, collection, getDocs, addDoc,
-onSnapshot, query, orderBy, serverTimestamp,
-updateDoc, doc, deleteDoc
+getFirestore, collection, addDoc, onSnapshot,
+query, orderBy, serverTimestamp,
+deleteDoc, doc, updateDoc, getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
-apiKey:"TU_API_KEY",
-authDomain:"lil-naay.firebaseapp.com",
-projectId:"lil-naay"
+  apiKey: "TU_API_KEY",
+  authDomain: "lil-naay.firebaseapp.com",
+  projectId: "lil-naay"
 });
 
 const db = getFirestore(app);
 
-/* ================= USUARIO ================= */
-
-async function obtenerUsuarioData(email){
-    const snap = await getDocs(collection(db,"usuarios"));
-    let user = null;
-    snap.forEach(doc=>{
-        let d = doc.data();
-        if(d.email === email) user = {...d, id: doc.id};
-    });
-    return user;
-}
-
 /* ================= CHAT ================= */
 
-let tiempoEspera = 90;
-let ultimoEnvio = Number(localStorage.getItem("ultimoEnvio")) || 0;
-let intervalo;
-
-function mensajeValido(t){
-    return !(t.includes("http") || t.includes("www") || /\d{7,}/.test(t));
-}
-
-function iniciarCooldown(t = tiempoEspera){
-    clearInterval(intervalo);
-    let el = document.getElementById("cooldown");
-
-    intervalo = setInterval(()=>{
-        t--;
-        el.innerText = "Puedes enviar en " + t + "s";
-        if(t<=0){ clearInterval(intervalo); el.innerText=""; }
-    },1000);
-}
-
-window.addEventListener("load", ()=>{
-    let restante = tiempoEspera - Math.floor((Date.now()-ultimoEnvio)/1000);
-    if(restante > 0) iniciarCooldown(restante);
-});
-
-/* REALTIME CHAT */
 const q = query(collection(db,"chat"), orderBy("fecha"));
 
 onSnapshot(q,(snap)=>{
     let chat = document.getElementById("chatBox");
     chat.innerHTML = "";
 
-    let usuarioActual = localStorage.getItem("usuario");
-
     snap.forEach(d=>{
         let m = d.data();
 
-        let color = "#fff";
-        if(m.rol==="vip") color="#ffd700";
-        if(m.rol==="artista") color="#00ffcc";
-        if(m.rol==="admin") color="#ff4d4d";
-
-        let botones = "";
-
-        if(usuarioActual === "TU CORREO"){
-            botones += `<button onclick="borrarMsg('${d.id}')">🗑️</button>`;
-        }
-
-        botones += `<button onclick="reportar('${d.id}','${m.usuario}')">⚠️</button>`;
-
         chat.innerHTML += `
-        <div class="msg" style="color:${color}">
-        <b>${m.usuario}</b>: ${m.texto}
-        ${botones}
+        <div class="msg">
+            <b>${m.usuario}</b>: ${m.texto}
+
+            <div class="admin-controls">
+                <button class="warn-btn" onclick="advertir('${m.usuario}')">⚠️</button>
+                <button class="ban-btn" onclick="banear('${m.usuario}')">🔒</button>
+                <button class="vip-btn" onclick="vip('${m.usuario}')">👑</button>
+                <button class="del-btn" onclick="eliminarMensaje('${d.id}')">❌</button>
+            </div>
         </div>`;
     });
 
     chat.scrollTop = chat.scrollHeight;
 });
 
-/* ENVIAR */
-window.enviarMensaje = async function(){
+/* ================= ACCIONES ADMIN ================= */
 
-    let ahora = Date.now();
-    if(ahora - ultimoEnvio < tiempoEspera * 1000){
-        alert("Espera ⏱️");
-        return;
-    }
-
-    let texto = mensajeInput.value.trim();
-    let usuario = localStorage.getItem("usuario");
-
-    let userData = await obtenerUsuarioData(usuario);
-
-    if(!userData) return alert("No registrado");
-
-    if(userData.ban && Date.now() < userData.banHasta){
-        return alert("Baneado 🚫");
-    }
-
-    if(!mensajeValido(texto)) return alert("No permitido");
-
-    await addDoc(collection(db,"chat"),{
-        usuario,
-        texto,
-        rol: userData.rol || "user",
-        fecha: serverTimestamp()
-    });
-
-    mensajeInput.value="";
-    ultimoEnvio = Date.now();
-    localStorage.setItem("ultimoEnvio", ultimoEnvio);
-    iniciarCooldown();
-
-    await log("envió mensaje");
-};
-
-/* BORRAR */
-window.borrarMsg = async function(id){
+// eliminar mensaje
+window.eliminarMensaje = async function(id){
     await deleteDoc(doc(db,"chat",id));
-    await log("borró mensaje");
 }
 
-/* REPORTAR */
-window.reportar = async function(id, u){
-    let usuario = localStorage.getItem("usuario");
-    await addDoc(collection(db,"reportes"),{
-        mensajeId:id,
-        reportado:u,
-        reportador:usuario,
-        fecha:new Date()
-    });
-    alert("Reporte enviado");
-};
-
-/* LOGS */
-async function log(a){
-    let usuario = localStorage.getItem("usuario");
-    await addDoc(collection(db,"logs"),{
-        usuario,
-        accion:a,
-        fecha:new Date()
-    });
+// advertir usuario
+window.advertir = async function(email){
+    alert("Usuario advertido ⚠️: " + email);
 }
 
-/* ================= ADMIN ================= */
+// dar VIP
+window.vip = async function(email){
+    const snap = await getDocs(collection(db,"usuarios"));
 
-async function cargarAdmin(){
-    let usuario = localStorage.getItem("usuario");
-    let user = await obtenerUsuarioData(usuario);
+    snap.forEach(async d=>{
+        if(d.data().email === email){
+            await updateDoc(doc(db,"usuarios",d.id),{
+                vip:true
+            });
+        }
+    });
 
-    if(!user || user.rol !== "admin") return;
+    alert("Usuario VIP 👑");
+}
 
-    adminPanel.style.display="block";
+// banear usuario
+window.banear = async function(email){
+    let tiempo = prompt("Minutos de ban:");
 
-    let cont = document.getElementById("listaUsuarios");
-    cont.innerHTML="";
+    if(!tiempo) return;
+
+    let banHasta = Date.now() + (tiempo * 60000);
 
     const snap = await getDocs(collection(db,"usuarios"));
 
-    snap.forEach(docu=>{
-        let u = docu.data();
-
-        cont.innerHTML += `
-        <div style="background:#111;margin:10px;padding:10px;">
-        <b>${u.email}</b><br>
-
-        <button onclick="setRol('${docu.id}','vip')">VIP</button>
-        <button onclick="setRol('${docu.id}','artista')">Artista</button>
-        <button onclick="setRol('${docu.id}','user')">User</button>
-
-        <button onclick="ban('${docu.id}')">Ban</button>
-        <button onclick="unban('${docu.id}')">Unban</button>
-        </div>`;
+    snap.forEach(async d=>{
+        if(d.data().email === email){
+            await updateDoc(doc(db,"usuarios",d.id),{
+                ban:true,
+                banHasta: banHasta
+            });
+        }
     });
+
+    alert("Usuario baneado 🔒");
 }
 
-window.setRol = async function(id,rol){
-    await updateDoc(doc(db,"usuarios",id),{rol});
-    cargarAdmin();
-}
+/* ================= ENVIAR MENSAJE ADMIN ================= */
 
-window.ban = async function(id){
-    await updateDoc(doc(db,"usuarios",id),{
-        ban:true,
-        banHasta: Date.now()+60000
+window.enviarMensaje = async function(){
+
+    let texto = document.getElementById("mensajeInput").value.trim();
+
+    if(!texto) return;
+
+    await addDoc(collection(db,"chat"),{
+        usuario: "ADMIN",
+        texto,
+        tipo:"admin",
+        fecha: serverTimestamp()
     });
+
+    document.getElementById("mensajeInput").value="";
 }
-
-window.unban = async function(id){
-    await updateDoc(doc(db,"usuarios",id),{
-        ban:false,
-        banHasta:0
-    });
-}
-
-/* ================= TIENDA ================= */
-
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-async function cargarProductos(){
-    let c = document.getElementById("productos");
-    let snap = await getDocs(collection(db,"productos"));
-    snap.forEach(doc=>{
-        let p = doc.data();
-        c.innerHTML += `<div class="product">
-        <img src="${p.imagen}">
-        <p>${p.nombre}</p>
-        <p>$${p.precio}</p>
-        <button onclick="agregar('${p.nombre}',${p.precio})">Comprar</button>
-        </div>`;
-    });
-}
-
-window.agregar = function(n,p){
-    carrito.push({nombre:n,precio:p});
-    localStorage.setItem("carrito",JSON.stringify(carrito));
-    mostrar();
-}
-
-function mostrar(){
-    let total=0;
-    carrito.forEach(p=> total+=p.precio);
-    totalEl.innerText=total;
-}
-
-window.pagar = async function(){
-    await addDoc(collection(db,"compras"),{
-        productos:carrito,
-        fecha:new Date()
-    });
-    carrito=[];
-    localStorage.removeItem("carrito");
-    mostrar();
-}
-
-/* INIT */
-year.innerText=new Date().getFullYear();
-cargarProductos();
-mostrar();
-cargarAdmin();
 
 </script>
+
 </body>
 </html>
