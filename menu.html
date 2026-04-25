@@ -129,6 +129,13 @@ let tiempoEspera = 90;
 let ultimoEnvio = Number(localStorage.getItem("ultimoEnvio")) || 0;
 let intervalo;
 
+// 🔍 obtener data del usuario (VIP / BAN)
+async function getUsuarioData(email){
+    const snap = await getDocs(collection(db,"usuarios"));
+    let user = snap.docs.find(doc=>doc.data().email === email);
+    return user ? user.data() : null;
+}
+
 // validar suscriptor
 async function esSuscriptor(email){
     const snap = await getDocs(collection(db,"suscriptores"));
@@ -139,16 +146,15 @@ async function esSuscriptor(email){
 function mensajeValido(texto){
     let t = texto.toLowerCase();
 
-    if(t.includes("http") || t.includes("www") || t.includes(".com")) return false;
+    if(t.includes("http") || t.includes("www") || t.includes(".com") || t.includes(".net")) return false;
     if(/\d{7,}/.test(t)) return false;
     if(t.replace(/\s/g,"").includes("www")) return false;
 
     return true;
 }
 
-// cooldown visual (mejorado)
+// cooldown visual
 function iniciarCooldown(tiempoInicial = tiempoEspera){
-
     let t = tiempoInicial;
     let el = document.getElementById("cooldown");
 
@@ -165,7 +171,7 @@ function iniciarCooldown(tiempoInicial = tiempoEspera){
     },1000);
 }
 
-// restaurar cooldown al entrar
+// restaurar cooldown
 window.addEventListener("load", ()=>{
     let ahora = Date.now();
     let restante = tiempoEspera - Math.floor((ahora - ultimoEnvio)/1000);
@@ -184,7 +190,10 @@ onSnapshot(q,(snap)=>{
 
     snap.forEach(d=>{
         let m = d.data();
-        let color = m.tipo === "artista" ? "#00ffcc" : "#fff";
+
+        let color = "#fff";
+        if(m.tipo === "artista") color = "#00ffcc";
+        if(m.tipo === "vip") color = "#ffd700";
 
         chat.innerHTML += `
         <div class="msg" style="color:${color}">
@@ -195,7 +204,7 @@ onSnapshot(q,(snap)=>{
     chat.scrollTop = chat.scrollHeight;
 });
 
-// enviar mensaje (ARREGLADO)
+// enviar mensaje
 window.enviarMensaje = async function(){
 
     let ahora = Date.now();
@@ -213,10 +222,22 @@ window.enviarMensaje = async function(){
         return;
     }
 
-    let ok = await esSuscriptor(usuario);
-    if(!ok){
+    let suscriptor = await esSuscriptor(usuario);
+    if(!suscriptor){
         alert("Solo suscriptores");
         return;
+    }
+
+    let data = await getUsuarioData(usuario);
+
+    // 🚫 BAN
+    if(data && data.ban){
+        let ahora = Date.now();
+
+        if(ahora < data.banHasta){
+            alert("Baneado hasta: " + new Date(data.banHasta).toLocaleString());
+            return;
+        }
     }
 
     if(!texto) return;
@@ -226,10 +247,19 @@ window.enviarMensaje = async function(){
         return;
     }
 
+    let tipo = "user";
+
+    if(data && data.vip) tipo = "vip";
+
+    // 👑 artista (puedes cambiar este correo)
+    if(usuario === "TU_CORREO_AQUI@gmail.com"){
+        tipo = "artista";
+    }
+
     await addDoc(collection(db,"chat"),{
         usuario,
         texto,
-        tipo:"user",
+        tipo,
         fecha: serverTimestamp()
     });
 
