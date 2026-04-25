@@ -125,8 +125,9 @@ const db = getFirestore(app);
 
 /* ================= CHAT ================= */
 
-let ultimoEnvio = 0;
 let tiempoEspera = 90;
+let ultimoEnvio = Number(localStorage.getItem("ultimoEnvio")) || 0;
+let intervalo;
 
 // validar suscriptor
 async function esSuscriptor(email){
@@ -134,7 +135,7 @@ async function esSuscriptor(email){
     return snap.docs.some(doc=>doc.data().email === email);
 }
 
-// filtro
+// filtro fuerte
 function mensajeValido(texto){
     let t = texto.toLowerCase();
 
@@ -145,22 +146,36 @@ function mensajeValido(texto){
     return true;
 }
 
-// cooldown visual
-function iniciarCooldown(){
-    let t = tiempoEspera;
+// cooldown visual (mejorado)
+function iniciarCooldown(tiempoInicial = tiempoEspera){
+
+    let t = tiempoInicial;
     let el = document.getElementById("cooldown");
 
-    let i = setInterval(()=>{
+    clearInterval(intervalo);
+
+    intervalo = setInterval(()=>{
         t--;
         el.innerText = "Puedes enviar en " + t + "s";
-        if(t<=0){
-            clearInterval(i);
+
+        if(t <= 0){
+            clearInterval(intervalo);
             el.innerText = "";
         }
     },1000);
 }
 
-// realtime
+// restaurar cooldown al entrar
+window.addEventListener("load", ()=>{
+    let ahora = Date.now();
+    let restante = tiempoEspera - Math.floor((ahora - ultimoEnvio)/1000);
+
+    if(restante > 0){
+        iniciarCooldown(restante);
+    }
+});
+
+// realtime chat
 const q = query(collection(db,"chat"), orderBy("fecha"));
 
 onSnapshot(q,(snap)=>{
@@ -180,16 +195,17 @@ onSnapshot(q,(snap)=>{
     chat.scrollTop = chat.scrollHeight;
 });
 
-// enviar
+// enviar mensaje (ARREGLADO)
 window.enviarMensaje = async function(){
 
     let ahora = Date.now();
+
     if(ahora - ultimoEnvio < tiempoEspera * 1000){
         alert("Espera ⏱️");
         return;
     }
 
-    let texto = mensajeInput.value.trim();
+    let texto = document.getElementById("mensajeInput").value.trim();
     let usuario = localStorage.getItem("usuario");
 
     if(!usuario){
@@ -206,7 +222,7 @@ window.enviarMensaje = async function(){
     if(!texto) return;
 
     if(!mensajeValido(texto)){
-        alert("No permitido");
+        alert("No se permiten links ni números");
         return;
     }
 
@@ -217,8 +233,11 @@ window.enviarMensaje = async function(){
         fecha: serverTimestamp()
     });
 
-    mensajeInput.value="";
+    document.getElementById("mensajeInput").value = "";
+
     ultimoEnvio = Date.now();
+    localStorage.setItem("ultimoEnvio", ultimoEnvio);
+
     iniciarCooldown();
 };
 
@@ -272,12 +291,11 @@ window.eliminar = function(i){
 }
 
 function mostrar(){
-    let l = carrito;
     let ul = document.getElementById("carrito");
     ul.innerHTML="";
     let total=0;
 
-    l.forEach((p,i)=>{
+    carrito.forEach((p,i)=>{
         ul.innerHTML+=`
         <li>${p.nombre} $${p.precio}
         <button onclick="eliminar(${i})">❌</button></li>`;
@@ -289,7 +307,7 @@ function mostrar(){
 
 window.pagar = async function(){
     if(carrito.length===0){
-        alert("Vacío");
+        alert("Carrito vacío ❌");
         return;
     }
 
