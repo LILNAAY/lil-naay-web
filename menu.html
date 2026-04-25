@@ -91,12 +91,17 @@ select {
     text-align: center;
     backdrop-filter: blur(5px);
 }
+
+/* 💬 CHAT MENSAJES */
+.msg {
+    text-align:left;
+    margin-bottom:8px;
+}
 </style>
 
 </head>
 <body>
 
-<!-- 🔥 NAVBAR -->
 <div class="navbar">
     <a href="index.html" class="back-btn">⬅ Volver</a>
 </div>
@@ -136,7 +141,6 @@ border-radius:5px;
 <p id="cooldown" style="color:#aaa;font-size:12px;"></p>
 
 </div>
-    
 
 <div class="store" id="productos"></div>
 
@@ -146,15 +150,17 @@ border-radius:5px;
 
 <button onclick="pagar()">Pagar</button>
 
-<!-- 📄 COPYRIGHT -->
 <div class="footer">
-    © <span id="year"></span> LIL NAAY - Todos los derechos reservados
+    © <span id="year"></span> LIL NAAY
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { 
+getFirestore, collection, getDocs, addDoc,
+onSnapshot, query, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
@@ -167,7 +173,96 @@ const db = getFirestore(app);
 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-/* 🔥 CARGAR PRODUCTOS */
+/* ================= CHAT ================= */
+
+let tiempoEspera = 90;
+let ultimoEnvio = 0;
+let intervalo;
+
+// 🔍 FILTRO (links y teléfonos)
+function mensajeValido(texto){
+    let regexLinks = /(https?:\/\/|www\.)/i;
+    let regexTel = /\d{7,}/;
+
+    if(regexLinks.test(texto)) return false;
+    if(regexTel.test(texto)) return false;
+
+    return true;
+}
+
+// ⏱️ COOLDOWN VISUAL
+function iniciarCooldown(){
+    let tiempo = tiempoEspera;
+    let label = document.getElementById("cooldown");
+
+    intervalo = setInterval(()=>{
+        tiempo--;
+        label.innerText = "Puedes enviar en " + tiempo + "s";
+
+        if(tiempo <= 0){
+            clearInterval(intervalo);
+            label.innerText = "";
+        }
+    },1000);
+}
+
+// 📥 TIEMPO REAL
+const q = query(collection(db,"chat"), orderBy("fecha"));
+
+onSnapshot(q,(snapshot)=>{
+    const chat = document.getElementById("chatBox");
+    chat.innerHTML = "";
+
+    snapshot.forEach(doc=>{
+        let m = doc.data();
+
+        chat.innerHTML += `
+        <div class="msg">
+            <b>${m.usuario}</b>: ${m.texto}
+        </div>`;
+    });
+
+    chat.scrollTop = chat.scrollHeight;
+});
+
+// 📤 ENVIAR
+window.enviarMensaje = async function(){
+
+    let ahora = Date.now();
+
+    if(ahora - ultimoEnvio < tiempoEspera * 1000){
+        return;
+    }
+
+    let input = document.getElementById("mensajeInput");
+    let texto = input.value.trim();
+    let usuario = localStorage.getItem("usuario");
+
+    if(!usuario){
+        alert("Inicia sesión");
+        return;
+    }
+
+    if(!texto) return;
+
+    if(!mensajeValido(texto)){
+        alert("No se permiten links ni números");
+        return;
+    }
+
+    await addDoc(collection(db,"chat"),{
+        usuario,
+        texto,
+        fecha: serverTimestamp()
+    });
+
+    input.value = "";
+    ultimoEnvio = Date.now();
+    iniciarCooldown();
+}
+
+/* ================= TIENDA ================= */
+
 async function cargarProductos(){
     const contenedor = document.getElementById("productos");
     contenedor.innerHTML = "";
@@ -201,25 +296,21 @@ async function cargarProductos(){
     });
 }
 
-/* ➕ AGREGAR */
 window.agregar = function(nombre, precio, tallaId, colorId){
     let talla = document.getElementById(tallaId).value;
     let color = document.getElementById(colorId).value;
 
     carrito.push({ nombre, precio, talla, color });
-
     localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrar();
 }
 
-/* ❌ ELIMINAR */
 window.eliminar = function(i){
     carrito.splice(i,1);
     localStorage.setItem("carrito", JSON.stringify(carrito));
     mostrar();
 }
 
-/* 🔄 MOSTRAR */
 function mostrar(){
     let lista = document.getElementById("carrito");
     let total = 0;
@@ -238,7 +329,6 @@ function mostrar(){
     document.getElementById("total").innerText = total;
 }
 
-/* 💳 PAGAR */
 window.pagar = async function(){
     if(carrito.length === 0){
         alert("Carrito vacío ❌");
@@ -257,10 +347,8 @@ window.pagar = async function(){
     mostrar();
 }
 
-/* 📅 AÑO AUTOMÁTICO */
 document.getElementById("year").innerText = new Date().getFullYear();
 
-/* INIT */
 cargarProductos();
 mostrar();
 
