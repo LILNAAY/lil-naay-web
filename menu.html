@@ -4,40 +4,6 @@
 <meta charset="UTF-8">
 <title>Tienda LIL NAAY</title>
 
-    <!-- 💬 CHAT -->
-<div style="
-max-width:800px;
-margin:30px auto;
-background:#1a1a1a;
-padding:20px;
-border-radius:15px;
-box-shadow:0 0 20px rgba(0,0,0,0.6);
-">
-
-<h2>💬 Chat en vivo</h2>
-
-<div id="chatBox" style="
-height:300px;
-overflow-y:auto;
-background:#0d0d0d;
-padding:10px;
-border-radius:10px;
-margin-bottom:10px;
-"></div>
-
-<input id="mensajeInput" placeholder="Escribe tu mensaje..." style="
-width:70%;
-padding:10px;
-border:none;
-border-radius:5px;
-">
-
-<button onclick="enviarMensaje()">Enviar</button>
-
-<p id="cooldown" style="color:#aaa;font-size:12px;"></p>
-
-</div>
-
 <style>
 body {
     font-family: Arial;
@@ -136,6 +102,41 @@ select {
 </div>
 
 <h1>🔥 Tienda LIL NAAY</h1>
+
+<!-- 💬 CHAT -->
+<div style="
+max-width:800px;
+margin:30px auto;
+background:#1a1a1a;
+padding:20px;
+border-radius:15px;
+box-shadow:0 0 20px rgba(0,0,0,0.6);
+">
+
+<h2>💬 Chat en vivo</h2>
+
+<div id="chatBox" style="
+height:300px;
+overflow-y:auto;
+background:#0d0d0d;
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
+"></div>
+
+<input id="mensajeInput" placeholder="Escribe tu mensaje..." style="
+width:70%;
+padding:10px;
+border:none;
+border-radius:5px;
+">
+
+<button onclick="enviarMensaje()">Enviar</button>
+
+<p id="cooldown" style="color:#aaa;font-size:12px;"></p>
+
+</div>
+    
 
 <div class="store" id="productos"></div>
 
