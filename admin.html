@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Admin LIL NAAY PRO</title>
+<title>Admin LIL NAAY</title>
 
 <style>
 body{
@@ -12,7 +12,7 @@ body{
     color:white;
 }
 
-/* 🔐 LOGIN */
+/* LOGIN */
 .login{
     display:flex;
     flex-direction:column;
@@ -25,11 +25,9 @@ input{
     padding:10px;
     margin:5px;
     width:250px;
-    border-radius:5px;
-    border:none;
 }
 
-/* 🔝 NAVBAR */
+/* NAVBAR */
 .navbar{
     display:flex;
     justify-content:space-between;
@@ -37,36 +35,15 @@ input{
     background:#140909;
 }
 
-/* 📂 MENU */
-.menu{
-    display:flex;
-    gap:10px;
-    padding:10px;
-    background:#1a1a1a;
-}
-
-.menu button{
-    background:#333;
-}
-
-/* 🪟 VENTANAS */
-.section{
-    display:none;
-    padding:20px;
-}
-
-.active{
-    display:block;
-}
-
-/* 📊 GRID */
+/* GRID */
 .container{
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
     gap:20px;
+    padding:20px;
 }
 
-/* 🧱 CARDS */
+/* CARDS */
 .card{
     background:rgba(255,255,255,0.05);
     padding:15px;
@@ -75,43 +52,28 @@ input{
     overflow:auto;
 }
 
-/* 💬 CHAT */
-.chat-box{
-    max-width:800px;
-    margin:auto;
-    background:#1a1a1a;
-    padding:20px;
-    border-radius:10px;
-}
-
-.msg{
-    margin-bottom:10px;
-    padding:10px;
-    background:#222;
-    border-radius:8px;
-}
-
-/* 🔘 BOTONES */
 button{
-    padding:8px;
+    padding:10px;
+    background:#8b0000;
     border:none;
-    border-radius:5px;
+    color:white;
     cursor:pointer;
 }
 
-.warn-btn{background:orange;}
-.ban-btn{background:red;color:white;}
-.vip-btn{background:green;color:white;}
-.del-btn{background:#555;color:white;}
-
+li{
+    font-size:13px;
+    margin-bottom:5px;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    padding-bottom:5px;
+}
 </style>
-</head>
 
+</head>
 <body>
 
 <!-- 🔐 LOGIN -->
 <div id="loginBox" class="login">
-    <h2>🔐 Admin</h2>
+    <h2>🔐 Acceso Admin</h2>
     <input id="email" placeholder="Correo">
     <input id="pass" type="password" placeholder="Contraseña">
     <button onclick="login()">Entrar</button>
@@ -119,217 +81,241 @@ button{
 
 <!-- 🔥 PANEL -->
 <div id="panel" style="display:none;">
-
     <div class="navbar">
-        <h2>⚙️ LIL NAAY ADMIN</h2>
-        <button onclick="logout()">Salir</button>
+        <h2>⚙️ Panel Admin</h2>
+        <button onclick="logout()">Cerrar sesión</button>
     </div>
 
-    <!-- 📂 MENU -->
-    <div class="menu">
-        <button onclick="mostrar('dashboard')">📊 Dashboard</button>
-        <button onclick="mostrar('chat')">💬 Chat</button>
-        <button onclick="mostrar('productos')">🛍️ Productos</button>
-    </div>
+    <div class="container">
 
-    <!-- 📊 DASHBOARD -->
-    <div id="dashboard" class="section active">
-        <div class="container">
-
-            <div class="card">
-                <h3>👥 Suscriptores</h3>
-                <ul id="suscriptores"></ul>
-            </div>
-
-            <div class="card">
-                <h3>💳 Compras</h3>
-                <ul id="compras"></ul>
-            </div>
-
-            <div class="card">
-                <h3>📡 Actividad</h3>
-                <ul id="actividad"></ul>
-            </div>
-
+        <div class="card">
+            <h3>👥 Suscriptores</h3>
+            <ul id="suscriptores"></ul>
         </div>
-    </div>
 
-    <!-- 💬 CHAT -->
-    <div id="chat" class="section">
-        <div class="chat-box">
-            <h3>Chat Admin</h3>
-            <div id="chatBox"></div>
-
-            <input id="mensajeInput" placeholder="Mensaje...">
-            <button onclick="enviarMensaje()">Enviar</button>
+        <div class="card">
+            <h3>💳 Compras</h3>
+            <ul id="compras"></ul>
         </div>
-    </div>
 
-    <!-- 🛍️ PRODUCTOS -->
-    <div id="productos" class="section">
-        <div class="container">
-
-            <div class="card">
-                <h3>Lista</h3>
-                <ul id="listaProductos"></ul>
-            </div>
-
-            <div class="card">
-                <h3>Crear</h3>
-                <input id="nombre" placeholder="Nombre">
-                <input id="precio" placeholder="Precio">
-                <input id="imagen" placeholder="Imagen URL">
-                <button onclick="crearProducto()">Crear</button>
-            </div>
-
+        <div class="card">
+            <h3>📡 Actividad</h3>
+            <ul id="actividad"></ul>
         </div>
-    </div>
 
+        <div class="card">
+            <h3>🛍️ Productos</h3>
+            <ul id="productos"></ul>
+        </div>
+
+        <div class="card">
+            <h3>🛍️ Crear Producto</h3>
+            <input id="nombre" placeholder="Nombre">
+            <input id="precio" placeholder="Precio">
+            <input id="imagen" placeholder="URL Imagen">
+            <button onclick="crearProducto()">Crear</button>
+        </div>
+
+    </div>
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-getFirestore, collection, getDocs, addDoc,
-deleteDoc, doc, updateDoc,
-onSnapshot, query, orderBy, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-import {
-getAuth, signInWithEmailAndPassword,
-onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+    authDomain: "lil-naay.firebaseapp.com",
+    projectId: "lil-naay",
+    storageBucket: "lil-naay.firebasestorage.app",
+    messagingSenderId: "703644392301",
+    appId: "1:703644392301:web:7338cd5cc4ae6054401864"
+};
 
-const app = initializeApp({
-apiKey:"TU_API_KEY",
-authDomain:"lil-naay.firebaseapp.com",
-projectId:"lil-naay"
-});
-
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
 /* 🔐 LOGIN */
 window.login = function(){
-let email = email.value;
-let pass = pass.value;
+    let email = document.getElementById("email").value.trim();
+    let pass = document.getElementById("pass").value.trim();
 
-signInWithEmailAndPassword(auth,email,pass)
-.catch(e=>alert(e.message));
+    if(!email || !pass){
+        alert("Completa los campos");
+        return;
+    }
+
+    signInWithEmailAndPassword(auth,email,pass)
+    .then(()=>{
+        alert("Bienvenido 🔥");
+    })
+    .catch((error)=>{
+        alert("Error: " + error.message);
+    });
 }
 
+/* ENTER LOGIN */
+document.getElementById("pass").addEventListener("keypress",function(e){
+    if(e.key === "Enter"){
+        login();
+    }
+});
+
+/* 🔐 LOGOUT */
 window.logout = function(){
-signOut(auth);
+    signOut(auth);
 }
 
+/* 🔐 PROTECCIÓN */
 onAuthStateChanged(auth,user=>{
-if(user){
-loginBox.style.display="none";
-panel.style.display="block";
-cargarTodo();
-}else{
-loginBox.style.display="flex";
-panel.style.display="none";
-}
+    if(user){
+        document.getElementById("loginBox").style.display="none";
+        document.getElementById("panel").style.display="block";
+        cargarTodo();
+    }else{
+        document.getElementById("loginBox").style.display="flex";
+        document.getElementById("panel").style.display="none";
+    }
 });
 
-/* 📂 CAMBIAR VENTANA */
-window.mostrar = function(id){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
-/* 📊 CARGAR */
+/* 📊 CARGAR TODO */
 function cargarTodo(){
-cargarSuscriptores();
-cargarCompras();
-cargarActividad();
-cargarProductos();
-}
-
-/* 👥 SUSCRIPTORES */
-async function cargarSuscriptores(){
-let snap = await getDocs(collection(db,"suscriptores"));
-suscriptores.innerHTML="";
-snap.forEach(d=>suscriptores.innerHTML+=`<li>${d.data().email}</li>`);
-}
-
-/* 💳 COMPRAS */
-async function cargarCompras(){
-let snap = await getDocs(collection(db,"compras"));
-compras.innerHTML="";
-snap.forEach(d=>{
-let p = d.data().productos.map(x=>x.nombre).join(", ");
-compras.innerHTML+=`<li>${p}</li>`;
-});
-}
-
-/* 📡 ACTIVIDAD */
-async function cargarActividad(){
-let snap = await getDocs(collection(db,"actividad"));
-actividad.innerHTML="";
-snap.forEach(d=>actividad.innerHTML+=`<li>${d.data().accion}</li>`);
+    cargarSuscriptores();
+    cargarCompras();
+    cargarActividad();
+    cargarProductos();
 }
 
 /* 🛍️ PRODUCTOS */
 async function cargarProductos(){
-let snap = await getDocs(collection(db,"productos"));
-listaProductos.innerHTML="";
+    const lista = document.getElementById("productos");
+    lista.innerHTML = "";
 
-snap.forEach(d=>{
-let p = d.data();
+    const snap = await getDocs(collection(db,"productos"));
 
-listaProductos.innerHTML+=`
-<li>
-${p.nombre} - $${p.precio}
-<button onclick="eliminarProducto('${d.id}')">🗑️</button>
-</li>`;
-});
+    snap.forEach(docSnap=>{
+        let p = docSnap.data();
+        let id = docSnap.id;
+
+        lista.innerHTML += `
+        <li>
+            <b>${p.nombre}</b> - $${p.precio}<br>
+            <button onclick="editarProducto('${id}','${p.nombre}',${p.precio})">✏️</button>
+            <button onclick="eliminarProducto('${id}')">🗑️</button>
+        </li>`;
+    });
 }
 
-window.crearProducto = async function(){
-await addDoc(collection(db,"productos"),{
-nombre:nombre.value,
-precio:Number(precio.value),
-imagen:imagen.value
-});
-alert("Creado");
-cargarProductos();
+/* 👥 SUSCRIPTORES */
+async function cargarSuscriptores(){
+    const lista = document.getElementById("suscriptores");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"suscriptores"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+
+        lista.innerHTML += `<li>${d.email}</li>`;
+    });
 }
 
+/* 💳 COMPRAS */
+async function cargarCompras(){
+    const lista = document.getElementById("compras");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"compras"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+
+        let productos = d.productos.map(p=>
+            `${p.nombre} | Talla: ${p.talla || "-"} | Color: ${p.color || "-"} | $${p.precio}`
+        ).join("<br>");
+
+        lista.innerHTML += `<li>${productos}</li>`;
+    });
+}
+
+/* 📡 ACTIVIDAD */
+async function cargarActividad(){
+    const lista = document.getElementById("actividad");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"actividad"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+
+        lista.innerHTML += `<li>${d.accion} - ${d.fecha || ""}</li>`;
+    });
+}
+
+/* ✏️ EDITAR */
+window.editarProducto = async function(id, nombreActual, precioActual){
+    let nuevoNombre = prompt("Nuevo nombre:", nombreActual);
+    let nuevoPrecio = prompt("Nuevo precio:", precioActual);
+
+    if(!nuevoNombre || isNaN(nuevoPrecio)) return;
+
+    await updateDoc(doc(db,"productos",id),{
+        nombre: nuevoNombre,
+        precio: Number(nuevoPrecio)
+    });
+
+    await addDoc(collection(db,"actividad"),{
+        accion: "Producto editado: " + nuevoNombre,
+        fecha: new Date().toLocaleString()
+    });
+
+    cargarProductos();
+}
+
+/* 🗑️ ELIMINAR */
 window.eliminarProducto = async function(id){
-await deleteDoc(doc(db,"productos",id));
-cargarProductos();
+    if(!confirm("¿Eliminar producto?")) return;
+
+    await deleteDoc(doc(db,"productos",id));
+
+    await addDoc(collection(db,"actividad"),{
+        accion: "Producto eliminado",
+        fecha: new Date().toLocaleString()
+    });
+
+    cargarProductos();
 }
 
-/* 💬 CHAT ADMIN */
-const q = query(collection(db,"chat"), orderBy("fecha"));
+/* 🛍️ CREAR */
+window.crearProducto = async function(){
+    let nombre = document.getElementById("nombre").value;
+    let precio = Number(document.getElementById("precio").value);
+    let imagen = document.getElementById("imagen").value;
 
-onSnapshot(q,(snap)=>{
-chatBox.innerHTML="";
-snap.forEach(d=>{
-let m = d.data();
+    if(!nombre || isNaN(precio)){
+        alert("Datos inválidos");
+        return;
+    }
 
-chatBox.innerHTML+=`
-<div class="msg">
-<b>${m.usuario}</b>: ${m.texto}
-<button onclick="eliminarMensaje('${d.id}')">❌</button>
-</div>`;
-});
-});
+    await addDoc(collection(db,"productos"),{
+        nombre, precio, imagen, stock:10
+    });
 
-window.eliminarMensaje = async function(id){
-await deleteDoc(doc(db,"chat",id));
-}
+    await addDoc(collection(db,"actividad"),{
+        accion: "Producto creado: " + nombre,
+        fecha: new Date().toLocaleString()
+    });
 
-window.enviarMensaje = async function(){
-await addDoc(collection(db,"chat"),{
-usuario:"ADMIN",
-texto:mensajeInput.value,
-fecha: serverTimestamp()
-});
-mensajeInput.value="";
+    alert("Producto creado 🔥");
+
+    document.getElementById("nombre").value="";
+    document.getElementById("precio").value="";
+    document.getElementById("imagen").value="";
+
+    cargarProductos();
 }
 
 </script>
