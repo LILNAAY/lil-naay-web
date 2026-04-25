@@ -79,7 +79,7 @@ li{
 
 <body>
 
-<!-- 🔐 LOGIN -->
+<!-- LOGIN -->
 <div id="loginBox" class="login">
     <h2>🔐 Acceso Admin</h2>
     <input id="email" placeholder="Correo">
@@ -87,7 +87,7 @@ li{
     <button onclick="login()">Entrar</button>
 </div>
 
-<!-- 🔥 PANEL -->
+<!-- PANEL -->
 <div id="panel" style="display:none;">
     <div class="navbar">
         <h2>⚙️ Panel Admin GOD</h2>
@@ -156,7 +156,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/* 🔐 LOGIN */
+/* LOGIN */
 window.login = function(){
     let email = document.getElementById("email").value;
     let pass = document.getElementById("pass").value;
@@ -166,22 +166,24 @@ window.login = function(){
     .catch(e=> alert("Error: "+e.message));
 }
 
-/* 🔐 LOGOUT */
+/* LOGOUT */
 window.logout = function(){
     signOut(auth);
 }
 
-/* 🔐 PROTECCIÓN ADMIN REAL */
+/* 🔥 PROTECCIÓN ADMIN (UID SYSTEM) */
 onAuthStateChanged(auth, async user=>{
     if(user){
 
-        // 🔥 VERIFICAR SI ES ADMIN
-        const snap = await getDocs(collection(db,"usuarios"));
+        const uid = user.uid;
+
+        // 🔥 BUSCAR DIRECTO POR UID (SOLUCIÓN PRO)
+        const userDoc = await getDocs(collection(db,"usuarios"));
+
         let esAdmin = false;
 
-        snap.forEach(d=>{
-            let u = d.data();
-            if(u.email === user.email && u.admin === true){
+        userDoc.forEach(d=>{
+            if(d.id === uid && d.data().admin === true){
                 esAdmin = true;
             }
         });
@@ -203,7 +205,7 @@ onAuthStateChanged(auth, async user=>{
     }
 });
 
-/* 📊 CARGAR TODO */
+/* CARGAR TODO */
 function cargarTodo(){
     cargarSuscriptores();
     cargarCompras();
@@ -212,7 +214,7 @@ function cargarTodo(){
     cargarStats();
 }
 
-/* 📊 STATS */
+/* STATS */
 async function cargarStats(){
     document.getElementById("totalUsuarios").innerText = (await getDocs(collection(db,"usuarios"))).size;
     document.getElementById("totalCompras").innerText = (await getDocs(collection(db,"compras"))).size;
@@ -220,7 +222,7 @@ async function cargarStats(){
     document.getElementById("totalChat").innerText = (await getDocs(collection(db,"chat"))).size;
 }
 
-/* 🛍️ PRODUCTOS */
+/* PRODUCTOS */
 async function cargarProductos(){
     const lista = document.getElementById("productos");
     lista.innerHTML = "";
@@ -241,7 +243,7 @@ async function cargarProductos(){
     });
 }
 
-/* 👥 SUSCRIPTORES */
+/* SUSCRIPTORES */
 async function cargarSuscriptores(){
     const lista = document.getElementById("suscriptores");
     lista.innerHTML = "";
@@ -253,7 +255,7 @@ async function cargarSuscriptores(){
     });
 }
 
-/* 💳 COMPRAS */
+/* COMPRAS */
 async function cargarCompras(){
     const lista = document.getElementById("compras");
     lista.innerHTML = "";
@@ -271,7 +273,7 @@ async function cargarCompras(){
     });
 }
 
-/* 📡 ACTIVIDAD */
+/* ACTIVIDAD */
 async function cargarActividad(){
     const lista = document.getElementById("actividad");
     lista.innerHTML = "";
@@ -283,7 +285,7 @@ async function cargarActividad(){
     });
 }
 
-/* ✏️ EDITAR */
+/* EDITAR */
 window.editarProducto = async function(id,nombre,precio){
     let n = prompt("Nuevo nombre:", nombre);
     let p = prompt("Nuevo precio:", precio);
@@ -303,7 +305,7 @@ window.editarProducto = async function(id,nombre,precio){
     cargarProductos();
 }
 
-/* 🗑️ ELIMINAR */
+/* ELIMINAR */
 window.eliminarProducto = async function(id){
     if(!confirm("Eliminar producto?")) return;
 
@@ -317,7 +319,7 @@ window.eliminarProducto = async function(id){
     cargarProductos();
 }
 
-/* ➕ CREAR */
+/* CREAR */
 window.crearProducto = async function(){
     let nombre = document.getElementById("nombre").value;
     let precio = Number(document.getElementById("precio").value);
