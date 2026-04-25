@@ -2,185 +2,334 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Admin - LIL NAAY</title>
+<title>Admin LIL NAAY PRO</title>
 
 <style>
-body {
-    font-family: Arial;
-    background: #111;
-    color: white;
-    margin: 0;
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0d0d0d;
+    color:white;
 }
 
-.navbar {
-    padding: 20px;
-    background: #000;
+/* 🔐 LOGIN */
+.login{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
 }
 
-.back-btn {
-    color: white;
-    text-decoration: none;
+input{
+    padding:10px;
+    margin:5px;
+    width:250px;
+    border-radius:5px;
+    border:none;
 }
 
-.chat-box {
-    max-width: 800px;
-    margin: 20px auto;
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 10px;
+/* 🔝 NAVBAR */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    padding:15px 20px;
+    background:#140909;
 }
 
-.msg {
-    margin-bottom: 10px;
-    padding: 10px;
-    background: #222;
-    border-radius: 8px;
+/* 📂 MENU */
+.menu{
+    display:flex;
+    gap:10px;
+    padding:10px;
+    background:#1a1a1a;
 }
 
-button {
-    margin: 3px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.menu button{
+    background:#333;
 }
 
-/* BOTONES ADMIN */
-.warn-btn { background: orange; }
-.ban-btn { background: red; color:white; }
-.vip-btn { background: green; color:white; }
-.del-btn { background: #555; color:white; }
-
-.admin-controls {
-    margin-top: 5px;
+/* 🪟 VENTANAS */
+.section{
+    display:none;
+    padding:20px;
 }
+
+.active{
+    display:block;
+}
+
+/* 📊 GRID */
+.container{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap:20px;
+}
+
+/* 🧱 CARDS */
+.card{
+    background:rgba(255,255,255,0.05);
+    padding:15px;
+    border-radius:10px;
+    max-height:300px;
+    overflow:auto;
+}
+
+/* 💬 CHAT */
+.chat-box{
+    max-width:800px;
+    margin:auto;
+    background:#1a1a1a;
+    padding:20px;
+    border-radius:10px;
+}
+
+.msg{
+    margin-bottom:10px;
+    padding:10px;
+    background:#222;
+    border-radius:8px;
+}
+
+/* 🔘 BOTONES */
+button{
+    padding:8px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.warn-btn{background:orange;}
+.ban-btn{background:red;color:white;}
+.vip-btn{background:green;color:white;}
+.del-btn{background:#555;color:white;}
+
 </style>
-
 </head>
+
 <body>
 
-<div class="navbar">
-    <a href="index.html" class="back-btn">⬅ Volver</a>
+<!-- 🔐 LOGIN -->
+<div id="loginBox" class="login">
+    <h2>🔐 Admin</h2>
+    <input id="email" placeholder="Correo">
+    <input id="pass" type="password" placeholder="Contraseña">
+    <button onclick="login()">Entrar</button>
 </div>
 
-<div class="chat-box">
-    <h2>💬 Panel Admin</h2>
+<!-- 🔥 PANEL -->
+<div id="panel" style="display:none;">
 
-    <div id="chatBox"></div>
+    <div class="navbar">
+        <h2>⚙️ LIL NAAY ADMIN</h2>
+        <button onclick="logout()">Salir</button>
+    </div>
 
-    <input id="mensajeInput" placeholder="Mensaje admin..." style="width:70%;padding:10px;">
-    <button onclick="enviarMensaje()">Enviar</button>
+    <!-- 📂 MENU -->
+    <div class="menu">
+        <button onclick="mostrar('dashboard')">📊 Dashboard</button>
+        <button onclick="mostrar('chat')">💬 Chat</button>
+        <button onclick="mostrar('productos')">🛍️ Productos</button>
+    </div>
+
+    <!-- 📊 DASHBOARD -->
+    <div id="dashboard" class="section active">
+        <div class="container">
+
+            <div class="card">
+                <h3>👥 Suscriptores</h3>
+                <ul id="suscriptores"></ul>
+            </div>
+
+            <div class="card">
+                <h3>💳 Compras</h3>
+                <ul id="compras"></ul>
+            </div>
+
+            <div class="card">
+                <h3>📡 Actividad</h3>
+                <ul id="actividad"></ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 💬 CHAT -->
+    <div id="chat" class="section">
+        <div class="chat-box">
+            <h3>Chat Admin</h3>
+            <div id="chatBox"></div>
+
+            <input id="mensajeInput" placeholder="Mensaje...">
+            <button onclick="enviarMensaje()">Enviar</button>
+        </div>
+    </div>
+
+    <!-- 🛍️ PRODUCTOS -->
+    <div id="productos" class="section">
+        <div class="container">
+
+            <div class="card">
+                <h3>Lista</h3>
+                <ul id="listaProductos"></ul>
+            </div>
+
+            <div class="card">
+                <h3>Crear</h3>
+                <input id="nombre" placeholder="Nombre">
+                <input id="precio" placeholder="Precio">
+                <input id="imagen" placeholder="Imagen URL">
+                <button onclick="crearProducto()">Crear</button>
+            </div>
+
+        </div>
+    </div>
+
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-getFirestore, collection, addDoc, onSnapshot,
-query, orderBy, serverTimestamp,
-deleteDoc, doc, updateDoc, getDocs
+getFirestore, collection, getDocs, addDoc,
+deleteDoc, doc, updateDoc,
+onSnapshot, query, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+import {
+getAuth, signInWithEmailAndPassword,
+onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
 const app = initializeApp({
-  apiKey: "TU_API_KEY",
-  authDomain: "lil-naay.firebaseapp.com",
-  projectId: "lil-naay"
+apiKey:"TU_API_KEY",
+authDomain:"lil-naay.firebaseapp.com",
+projectId:"lil-naay"
 });
 
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-/* ================= CHAT ================= */
+/* 🔐 LOGIN */
+window.login = function(){
+let email = email.value;
+let pass = pass.value;
 
+signInWithEmailAndPassword(auth,email,pass)
+.catch(e=>alert(e.message));
+}
+
+window.logout = function(){
+signOut(auth);
+}
+
+onAuthStateChanged(auth,user=>{
+if(user){
+loginBox.style.display="none";
+panel.style.display="block";
+cargarTodo();
+}else{
+loginBox.style.display="flex";
+panel.style.display="none";
+}
+});
+
+/* 📂 CAMBIAR VENTANA */
+window.mostrar = function(id){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+/* 📊 CARGAR */
+function cargarTodo(){
+cargarSuscriptores();
+cargarCompras();
+cargarActividad();
+cargarProductos();
+}
+
+/* 👥 SUSCRIPTORES */
+async function cargarSuscriptores(){
+let snap = await getDocs(collection(db,"suscriptores"));
+suscriptores.innerHTML="";
+snap.forEach(d=>suscriptores.innerHTML+=`<li>${d.data().email}</li>`);
+}
+
+/* 💳 COMPRAS */
+async function cargarCompras(){
+let snap = await getDocs(collection(db,"compras"));
+compras.innerHTML="";
+snap.forEach(d=>{
+let p = d.data().productos.map(x=>x.nombre).join(", ");
+compras.innerHTML+=`<li>${p}</li>`;
+});
+}
+
+/* 📡 ACTIVIDAD */
+async function cargarActividad(){
+let snap = await getDocs(collection(db,"actividad"));
+actividad.innerHTML="";
+snap.forEach(d=>actividad.innerHTML+=`<li>${d.data().accion}</li>`);
+}
+
+/* 🛍️ PRODUCTOS */
+async function cargarProductos(){
+let snap = await getDocs(collection(db,"productos"));
+listaProductos.innerHTML="";
+
+snap.forEach(d=>{
+let p = d.data();
+
+listaProductos.innerHTML+=`
+<li>
+${p.nombre} - $${p.precio}
+<button onclick="eliminarProducto('${d.id}')">🗑️</button>
+</li>`;
+});
+}
+
+window.crearProducto = async function(){
+await addDoc(collection(db,"productos"),{
+nombre:nombre.value,
+precio:Number(precio.value),
+imagen:imagen.value
+});
+alert("Creado");
+cargarProductos();
+}
+
+window.eliminarProducto = async function(id){
+await deleteDoc(doc(db,"productos",id));
+cargarProductos();
+}
+
+/* 💬 CHAT ADMIN */
 const q = query(collection(db,"chat"), orderBy("fecha"));
 
 onSnapshot(q,(snap)=>{
-    let chat = document.getElementById("chatBox");
-    chat.innerHTML = "";
+chatBox.innerHTML="";
+snap.forEach(d=>{
+let m = d.data();
 
-    snap.forEach(d=>{
-        let m = d.data();
-
-        chat.innerHTML += `
-        <div class="msg">
-            <b>${m.usuario}</b>: ${m.texto}
-
-            <div class="admin-controls">
-                <button class="warn-btn" onclick="advertir('${m.usuario}')">⚠️</button>
-                <button class="ban-btn" onclick="banear('${m.usuario}')">🔒</button>
-                <button class="vip-btn" onclick="vip('${m.usuario}')">👑</button>
-                <button class="del-btn" onclick="eliminarMensaje('${d.id}')">❌</button>
-            </div>
-        </div>`;
-    });
-
-    chat.scrollTop = chat.scrollHeight;
+chatBox.innerHTML+=`
+<div class="msg">
+<b>${m.usuario}</b>: ${m.texto}
+<button onclick="eliminarMensaje('${d.id}')">❌</button>
+</div>`;
+});
 });
 
-/* ================= ACCIONES ADMIN ================= */
-
-// eliminar mensaje
 window.eliminarMensaje = async function(id){
-    await deleteDoc(doc(db,"chat",id));
+await deleteDoc(doc(db,"chat",id));
 }
-
-// advertir usuario
-window.advertir = async function(email){
-    alert("Usuario advertido ⚠️: " + email);
-}
-
-// dar VIP
-window.vip = async function(email){
-    const snap = await getDocs(collection(db,"usuarios"));
-
-    snap.forEach(async d=>{
-        if(d.data().email === email){
-            await updateDoc(doc(db,"usuarios",d.id),{
-                vip:true
-            });
-        }
-    });
-
-    alert("Usuario VIP 👑");
-}
-
-// banear usuario
-window.banear = async function(email){
-    let tiempo = prompt("Minutos de ban:");
-
-    if(!tiempo) return;
-
-    let banHasta = Date.now() + (tiempo * 60000);
-
-    const snap = await getDocs(collection(db,"usuarios"));
-
-    snap.forEach(async d=>{
-        if(d.data().email === email){
-            await updateDoc(doc(db,"usuarios",d.id),{
-                ban:true,
-                banHasta: banHasta
-            });
-        }
-    });
-
-    alert("Usuario baneado 🔒");
-}
-
-/* ================= ENVIAR MENSAJE ADMIN ================= */
 
 window.enviarMensaje = async function(){
-
-    let texto = document.getElementById("mensajeInput").value.trim();
-
-    if(!texto) return;
-
-    await addDoc(collection(db,"chat"),{
-        usuario: "ADMIN",
-        texto,
-        tipo:"admin",
-        fecha: serverTimestamp()
-    });
-
-    document.getElementById("mensajeInput").value="";
+await addDoc(collection(db,"chat"),{
+usuario:"ADMIN",
+texto:mensajeInput.value,
+fecha: serverTimestamp()
+});
+mensajeInput.value="";
 }
 
 </script>
