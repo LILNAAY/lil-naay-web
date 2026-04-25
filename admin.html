@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>ADMIN GOD - LIL NAAY</title>
+<title>Admin LIL NAAY</title>
 
 <style>
 body{
@@ -12,7 +12,6 @@ body{
     color:white;
 }
 
-/* LOGIN */
 .login{
     display:flex;
     flex-direction:column;
@@ -21,154 +20,106 @@ body{
     height:100vh;
 }
 
-/* NAV */
-.navbar{
-    display:flex;
-    justify-content:space-between;
-    padding:15px;
-    background:#140909;
-}
-
-.tabs{
-    display:flex;
-    gap:10px;
-    padding:10px;
-    background:#1a1a1a;
-}
-
-.tab{
-    padding:10px;
-    background:#222;
-    cursor:pointer;
-    border-radius:5px;
-}
-
-.tab:hover{ background:#8b0000; }
-
-/* SECCIONES */
-.section{
-    display:none;
-    padding:20px;
-}
-
-.active{ display:block; }
-
-/* CARDS */
-.grid{
-    display:grid;
-    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
-    gap:15px;
-}
-
-.card{
-    background:#1a1a1a;
-    padding:15px;
-    border-radius:10px;
-}
-
-/* CHAT */
-.msg{
-    background:#222;
-    padding:8px;
-    margin:5px 0;
-    border-radius:6px;
-}
-
-button{
-    background:#8b0000;
-    color:white;
-    border:none;
-    padding:5px;
-    cursor:pointer;
-    margin:2px;
-}
-
 input{
     padding:10px;
     margin:5px;
+    width:250px;
+}
+
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    padding:15px 20px;
+    background:#140909;
+}
+
+.container{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap:20px;
+    padding:20px;
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    padding:15px;
+    border-radius:10px;
+    max-height:300px;
+    overflow:auto;
+}
+
+button{
+    padding:10px;
+    background:#8b0000;
+    border:none;
+    color:white;
+    cursor:pointer;
+}
+
+li{
+    font-size:13px;
+    margin-bottom:5px;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    padding-bottom:5px;
 }
 </style>
-</head>
 
+</head>
 <body>
 
 <!-- LOGIN -->
 <div id="loginBox" class="login">
-<h2>🔐 Admin GOD</h2>
-<input id="email" placeholder="Correo">
-<input id="pass" type="password" placeholder="Contraseña">
-<button onclick="login()">Entrar</button>
+    <h2>🔐 Acceso Admin</h2>
+    <input id="email" placeholder="Correo">
+    <input id="pass" type="password" placeholder="Contraseña">
+    <button onclick="login()">Entrar</button>
 </div>
 
 <!-- PANEL -->
 <div id="panel" style="display:none;">
+    <div class="navbar">
+        <h2>⚙️ Panel Admin</h2>
+        <button onclick="logout()">Cerrar sesión</button>
+    </div>
 
-<div class="navbar">
-<h2>🔥 ADMIN GOD</h2>
-<button onclick="logout()">Salir</button>
-</div>
+    <div class="container">
 
-<div class="tabs">
-<div class="tab" onclick="cambiar('dashboard')">📊 Dashboard</div>
-<div class="tab" onclick="cambiar('chat')">💬 Chat</div>
-<div class="tab" onclick="cambiar('productos')">🛍️ Productos</div>
-<div class="tab" onclick="cambiar('compras')">💳 Compras</div>
-<div class="tab" onclick="cambiar('usuarios')">👥 Usuarios</div>
-</div>
+        <div class="card">
+            <h3>👥 Suscriptores</h3>
+            <ul id="suscriptores"></ul>
+        </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="section active">
-<div class="grid">
-<div class="card">👥 Usuarios: <span id="statUsuarios">0</span></div>
-<div class="card">💬 Mensajes: <span id="statMensajes">0</span></div>
-<div class="card">🛒 Compras: <span id="statCompras">0</span></div>
-<div class="card">💰 Ingresos: $<span id="statDinero">0</span></div>
-</div>
-</div>
+        <div class="card">
+            <h3>💳 Compras</h3>
+            <ul id="compras"></ul>
+        </div>
 
-<!-- CHAT -->
-<div id="chat" class="section">
-<div id="chatBox"></div>
+        <div class="card">
+            <h3>📡 Actividad</h3>
+            <ul id="actividad"></ul>
+        </div>
 
-<input id="msgAdmin" placeholder="Mensaje admin">
-<button onclick="enviarAdmin()">Enviar</button>
-</div>
+        <div class="card">
+            <h3>🛍️ Productos</h3>
+            <ul id="productos"></ul>
+        </div>
 
-<!-- PRODUCTOS -->
-<div id="productos" class="section">
-<ul id="listaProductos"></ul>
+        <div class="card">
+            <h3>🛍️ Crear Producto</h3>
+            <input id="nombre" placeholder="Nombre">
+            <input id="precio" placeholder="Precio">
+            <input id="imagen" placeholder="URL Imagen">
+            <button onclick="crearProducto()">Crear</button>
+        </div>
 
-<h3>Crear producto</h3>
-<input id="nombre">
-<input id="precio">
-<input id="imagen">
-<button onclick="crearProducto()">Crear</button>
-</div>
-
-<!-- COMPRAS -->
-<div id="compras" class="section">
-<ul id="listaCompras"></ul>
-</div>
-
-<!-- USUARIOS -->
-<div id="usuarios" class="section">
-<ul id="listaUsuarios"></ul>
-</div>
-
+    </div>
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-getFirestore, collection, getDocs, addDoc,
-deleteDoc, doc, updateDoc, onSnapshot, query, orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-import {
-getAuth, signInWithEmailAndPassword,
-onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const app = initializeApp({
 apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
@@ -179,175 +130,151 @@ projectId:"lil-naay"
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/* LOGIN */
+/* 🔐 LOGIN */
 window.login = function(){
-let email = email.value;
-let pass = pass.value;
+    let correo = document.getElementById("email").value.trim();
+    let clave = document.getElementById("pass").value.trim();
 
-signInWithEmailAndPassword(auth,email,pass)
-.catch(e=>alert(e.message));
+    if(!correo || !clave){
+        alert("Completa los campos");
+        return;
+    }
+
+    signInWithEmailAndPassword(auth,correo,clave)
+    .then(()=>{
+        console.log("Login OK");
+    })
+    .catch((error)=>{
+        alert("Error: " + error.message);
+    });
 }
 
-window.logout = ()=> signOut(auth);
-
-/* PROTECCIÓN */
-onAuthStateChanged(auth,user=>{
-if(user){
-loginBox.style.display="none";
-panel.style.display="block";
-cargarTodo();
-}else{
-loginBox.style.display="flex";
-panel.style.display="none";
-}
-});
-
-/* TABS */
-window.cambiar = function(id){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
+/* 🔐 LOGOUT */
+window.logout = function(){
+    signOut(auth);
 }
 
-/* DASHBOARD */
-async function cargarStats(){
+/* 🔐 VALIDAR ADMIN */
+async function esAdmin(email){
+    const snap = await getDocs(collection(db,"usuarios"));
 
-let users = await getDocs(collection(db,"usuarios"));
-let chat = await getDocs(collection(db,"chat"));
-let compras = await getDocs(collection(db,"compras"));
-
-let totalDinero = 0;
-
-compras.forEach(c=>{
-c.data().productos.forEach(p=>{
-totalDinero += p.precio;
-});
-});
-
-statUsuarios.innerText = users.size;
-statMensajes.innerText = chat.size;
-statCompras.innerText = compras.size;
-statDinero.innerText = totalDinero;
+    return snap.docs.some(d=>{
+        let u = d.data();
+        return u.email === email && u.admin === true;
+    });
 }
 
-/* CHAT TIEMPO REAL */
-const q = query(collection(db,"chat"), orderBy("fecha"));
+/* 🔐 PROTECCIÓN REAL */
+onAuthStateChanged(auth, async user=>{
+    if(user){
 
-onSnapshot(q,snap=>{
-chatBox.innerHTML="";
+        let permitido = await esAdmin(user.email);
 
-snap.forEach(d=>{
-let m = d.data();
+        if(!permitido){
+            alert("No eres admin ❌");
+            logout();
+            return;
+        }
 
-chatBox.innerHTML += `
-<div class="msg">
-<b>${m.usuario}</b>: ${m.texto}
-<br>
-<button onclick="borrar('${d.id}')">❌</button>
-<button onclick="ban('${m.usuario}')">🔒</button>
-<button onclick="vip('${m.usuario}')">👑</button>
-</div>`;
+        loginBox.style.display="none";
+        panel.style.display="block";
+        cargarTodo();
+
+    }else{
+        loginBox.style.display="flex";
+        panel.style.display="none";
+    }
 });
-});
 
-/* ACCIONES CHAT */
-window.borrar = id => deleteDoc(doc(db,"chat",id));
-
-window.ban = async email=>{
-let t = prompt("Minutos:");
-let snap = await getDocs(collection(db,"usuarios"));
-
-snap.forEach(async d=>{
-if(d.data().email===email){
-await updateDoc(doc(db,"usuarios",d.id),{
-ban:true,
-banHasta: Date.now() + t*60000
-});
-}
-});
-}
-
-window.vip = async email=>{
-let snap = await getDocs(collection(db,"usuarios"));
-
-snap.forEach(async d=>{
-if(d.data().email===email){
-await updateDoc(doc(db,"usuarios",d.id),{vip:true});
-}
-});
-}
-
-/* ADMIN CHAT */
-window.enviarAdmin = ()=>{
-addDoc(collection(db,"chat"),{
-usuario:"ADMIN",
-texto: msgAdmin.value,
-fecha:new Date()
-});
-msgAdmin.value="";
-}
-
-/* PRODUCTOS */
-async function cargarProductos(){
-let lista = listaProductos;
-lista.innerHTML="";
-
-let snap = await getDocs(collection(db,"productos"));
-
-snap.forEach(d=>{
-let p = d.data();
-
-lista.innerHTML+=`
-<li>${p.nombre} $${p.precio}
-<button onclick="delProd('${d.id}')">❌</button>
-</li>`;
-});
-}
-
-window.crearProducto = ()=>{
-addDoc(collection(db,"productos"),{
-nombre:nombre.value,
-precio:Number(precio.value),
-imagen:imagen.value
-});
-}
-
-/* COMPRAS */
-async function cargarCompras(){
-let lista = listaCompras;
-lista.innerHTML="";
-
-let snap = await getDocs(collection(db,"compras"));
-
-snap.forEach(d=>{
-lista.innerHTML+=`<li>${JSON.stringify(d.data())}</li>`;
-});
-}
-
-/* USUARIOS */
-async function cargarUsuarios(){
-let lista = listaUsuarios;
-lista.innerHTML="";
-
-let snap = await getDocs(collection(db,"usuarios"));
-
-snap.forEach(d=>{
-let u = d.data();
-
-lista.innerHTML+=`
-<li>
-${u.email}
-<button onclick="ban('${u.email}')">🔒</button>
-<button onclick="vip('${u.email}')">👑</button>
-</li>`;
-});
-}
-
-/* INIT */
+/* 📊 CARGAR TODO */
 function cargarTodo(){
-cargarStats();
-cargarProductos();
-cargarCompras();
-cargarUsuarios();
+    cargarSuscriptores();
+    cargarCompras();
+    cargarActividad();
+    cargarProductos();
+}
+
+/* 🛍️ PRODUCTOS */
+async function cargarProductos(){
+    const lista = document.getElementById("productos");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"productos"));
+
+    snap.forEach(docSnap=>{
+        let p = docSnap.data();
+        let id = docSnap.id;
+
+        lista.innerHTML += `
+        <li>
+        <b>${p.nombre}</b> - $${p.precio}<br>
+        <button onclick="editarProducto('${id}','${p.nombre}',${p.precio})">✏️</button>
+        <button onclick="eliminarProducto('${id}')">🗑️</button>
+        </li>`;
+    });
+}
+
+/* 👥 SUSCRIPTORES */
+async function cargarSuscriptores(){
+    const lista = document.getElementById("suscriptores");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"suscriptores"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+        lista.innerHTML += `<li>${d.email}</li>`;
+    });
+}
+
+/* 💳 COMPRAS */
+async function cargarCompras(){
+    const lista = document.getElementById("compras");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"compras"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+
+        let productos = d.productos.map(p=>
+            `${p.nombre} | $${p.precio}`
+        ).join("<br>");
+
+        lista.innerHTML += `<li>${productos}</li>`;
+    });
+}
+
+/* 📡 ACTIVIDAD */
+async function cargarActividad(){
+    const lista = document.getElementById("actividad");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"actividad"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+        lista.innerHTML += `<li>${d.accion}</li>`;
+    });
+}
+
+/* 🛍️ CREAR */
+window.crearProducto = async function(){
+    let nombre = document.getElementById("nombre").value;
+    let precio = Number(document.getElementById("precio").value);
+    let imagen = document.getElementById("imagen").value;
+
+    if(!nombre || isNaN(precio)){
+        alert("Datos inválidos");
+        return;
+    }
+
+    await addDoc(collection(db,"productos"),{
+        nombre, precio, imagen
+    });
+
+    alert("Producto creado");
+    cargarProductos();
 }
 
 </script>
