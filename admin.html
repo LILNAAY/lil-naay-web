@@ -12,6 +12,7 @@ body{
     color:white;
 }
 
+/* LOGIN */
 .login{
     display:flex;
     flex-direction:column;
@@ -24,8 +25,11 @@ input{
     padding:10px;
     margin:5px;
     width:250px;
+    border:none;
+    border-radius:5px;
 }
 
+/* NAVBAR */
 .navbar{
     display:flex;
     justify-content:space-between;
@@ -33,6 +37,7 @@ input{
     background:#140909;
 }
 
+/* GRID */
 .container{
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
@@ -40,6 +45,7 @@ input{
     padding:20px;
 }
 
+/* CARDS */
 .card{
     background:rgba(255,255,255,0.05);
     padding:15px;
@@ -54,6 +60,7 @@ button{
     border:none;
     color:white;
     cursor:pointer;
+    border-radius:5px;
 }
 
 li{
@@ -62,12 +69,17 @@ li{
     border-bottom:1px solid rgba(255,255,255,0.1);
     padding-bottom:5px;
 }
-</style>
 
+.stats{
+    font-size:18px;
+    margin:5px 0;
+}
+</style>
 </head>
+
 <body>
 
-<!-- LOGIN -->
+<!-- 🔐 LOGIN -->
 <div id="loginBox" class="login">
     <h2>🔐 Acceso Admin</h2>
     <input id="email" placeholder="Correo">
@@ -75,14 +87,22 @@ li{
     <button onclick="login()">Entrar</button>
 </div>
 
-<!-- PANEL -->
+<!-- 🔥 PANEL -->
 <div id="panel" style="display:none;">
     <div class="navbar">
-        <h2>⚙️ Panel Admin</h2>
+        <h2>⚙️ Panel Admin GOD</h2>
         <button onclick="logout()">Cerrar sesión</button>
     </div>
 
     <div class="container">
+
+        <div class="card">
+            <h3>📊 Estadísticas</h3>
+            <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
+            <div class="stats">Compras: <span id="totalCompras">0</span></div>
+            <div class="stats">Productos: <span id="totalProductos">0</span></div>
+            <div class="stats">Mensajes: <span id="totalChat">0</span></div>
+        </div>
 
         <div class="card">
             <h3>👥 Suscriptores</h3>
@@ -105,7 +125,7 @@ li{
         </div>
 
         <div class="card">
-            <h3>🛍️ Crear Producto</h3>
+            <h3>➕ Crear Producto</h3>
             <input id="nombre" placeholder="Nombre">
             <input id="precio" placeholder="Precio">
             <input id="imagen" placeholder="URL Imagen">
@@ -118,35 +138,32 @@ li{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const app = initializeApp({
-apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
-authDomain:"lil-naay.firebaseapp.com",
-projectId:"lil-naay"
-});
+import {
+getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
+const firebaseConfig = {
+apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+authDomain: "lil-naay.firebaseapp.com",
+projectId: "lil-naay"
+};
+
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
 /* 🔐 LOGIN */
 window.login = function(){
-    let correo = document.getElementById("email").value.trim();
-    let clave = document.getElementById("pass").value.trim();
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("pass").value;
 
-    if(!correo || !clave){
-        alert("Completa los campos");
-        return;
-    }
-
-    signInWithEmailAndPassword(auth,correo,clave)
-    .then(()=>{
-        console.log("Login OK");
-    })
-    .catch((error)=>{
-        alert("Error: " + error.message);
-    });
+    signInWithEmailAndPassword(auth,email,pass)
+    .then(()=> alert("Bienvenido 🔥"))
+    .catch(e=> alert("Error: "+e.message));
 }
 
 /* 🔐 LOGOUT */
@@ -154,35 +171,35 @@ window.logout = function(){
     signOut(auth);
 }
 
-/* 🔐 VALIDAR ADMIN */
-async function esAdmin(email){
-    const snap = await getDocs(collection(db,"usuarios"));
-
-    return snap.docs.some(d=>{
-        let u = d.data();
-        return u.email === email && u.admin === true;
-    });
-}
-
-/* 🔐 PROTECCIÓN REAL */
+/* 🔐 PROTECCIÓN ADMIN REAL */
 onAuthStateChanged(auth, async user=>{
     if(user){
 
-        let permitido = await esAdmin(user.email);
+        // 🔥 VERIFICAR SI ES ADMIN
+        const snap = await getDocs(collection(db,"usuarios"));
+        let esAdmin = false;
 
-        if(!permitido){
+        snap.forEach(d=>{
+            let u = d.data();
+            if(u.email === user.email && u.admin === true){
+                esAdmin = true;
+            }
+        });
+
+        if(!esAdmin){
             alert("No eres admin ❌");
             logout();
             return;
         }
 
-        loginBox.style.display="none";
-        panel.style.display="block";
+        document.getElementById("loginBox").style.display="none";
+        document.getElementById("panel").style.display="block";
+
         cargarTodo();
 
     }else{
-        loginBox.style.display="flex";
-        panel.style.display="none";
+        document.getElementById("loginBox").style.display="flex";
+        document.getElementById("panel").style.display="none";
     }
 });
 
@@ -192,6 +209,15 @@ function cargarTodo(){
     cargarCompras();
     cargarActividad();
     cargarProductos();
+    cargarStats();
+}
+
+/* 📊 STATS */
+async function cargarStats(){
+    document.getElementById("totalUsuarios").innerText = (await getDocs(collection(db,"usuarios"))).size;
+    document.getElementById("totalCompras").innerText = (await getDocs(collection(db,"compras"))).size;
+    document.getElementById("totalProductos").innerText = (await getDocs(collection(db,"productos"))).size;
+    document.getElementById("totalChat").innerText = (await getDocs(collection(db,"chat"))).size;
 }
 
 /* 🛍️ PRODUCTOS */
@@ -207,7 +233,8 @@ async function cargarProductos(){
 
         lista.innerHTML += `
         <li>
-        <b>${p.nombre}</b> - $${p.precio}<br>
+        <b>${p.nombre}</b> - $${p.precio}
+        <br>
         <button onclick="editarProducto('${id}','${p.nombre}',${p.precio})">✏️</button>
         <button onclick="eliminarProducto('${id}')">🗑️</button>
         </li>`;
@@ -221,9 +248,8 @@ async function cargarSuscriptores(){
 
     const snap = await getDocs(collection(db,"suscriptores"));
 
-    snap.forEach(docSnap=>{
-        let d = docSnap.data();
-        lista.innerHTML += `<li>${d.email}</li>`;
+    snap.forEach(d=>{
+        lista.innerHTML += `<li>${d.data().email}</li>`;
     });
 }
 
@@ -237,8 +263,8 @@ async function cargarCompras(){
     snap.forEach(docSnap=>{
         let d = docSnap.data();
 
-        let productos = d.productos.map(p=>
-            `${p.nombre} | $${p.precio}`
+        let productos = d.productos.map(p =>
+            `${p.nombre} | ${p.talla || "-"} | ${p.color || "-"} | $${p.precio}`
         ).join("<br>");
 
         lista.innerHTML += `<li>${productos}</li>`;
@@ -252,13 +278,46 @@ async function cargarActividad(){
 
     const snap = await getDocs(collection(db,"actividad"));
 
-    snap.forEach(docSnap=>{
-        let d = docSnap.data();
-        lista.innerHTML += `<li>${d.accion}</li>`;
+    snap.forEach(d=>{
+        lista.innerHTML += `<li>${d.data().accion} - ${d.data().fecha}</li>`;
     });
 }
 
-/* 🛍️ CREAR */
+/* ✏️ EDITAR */
+window.editarProducto = async function(id,nombre,precio){
+    let n = prompt("Nuevo nombre:", nombre);
+    let p = prompt("Nuevo precio:", precio);
+
+    if(!n || isNaN(p)) return;
+
+    await updateDoc(doc(db,"productos",id),{
+        nombre:n,
+        precio:Number(p)
+    });
+
+    await addDoc(collection(db,"actividad"),{
+        accion:"Producto editado: "+n,
+        fecha:new Date().toLocaleString()
+    });
+
+    cargarProductos();
+}
+
+/* 🗑️ ELIMINAR */
+window.eliminarProducto = async function(id){
+    if(!confirm("Eliminar producto?")) return;
+
+    await deleteDoc(doc(db,"productos",id));
+
+    await addDoc(collection(db,"actividad"),{
+        accion:"Producto eliminado",
+        fecha:new Date().toLocaleString()
+    });
+
+    cargarProductos();
+}
+
+/* ➕ CREAR */
 window.crearProducto = async function(){
     let nombre = document.getElementById("nombre").value;
     let precio = Number(document.getElementById("precio").value);
@@ -270,10 +329,23 @@ window.crearProducto = async function(){
     }
 
     await addDoc(collection(db,"productos"),{
-        nombre, precio, imagen
+        nombre,
+        precio,
+        imagen,
+        stock:10
     });
 
-    alert("Producto creado");
+    await addDoc(collection(db,"actividad"),{
+        accion:"Producto creado: "+nombre,
+        fecha:new Date().toLocaleString()
+    });
+
+    alert("Producto creado 🔥");
+
+    document.getElementById("nombre").value="";
+    document.getElementById("precio").value="";
+    document.getElementById("imagen").value="";
+
     cargarProductos();
 }
 
