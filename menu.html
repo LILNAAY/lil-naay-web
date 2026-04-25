@@ -13,7 +13,6 @@ body {
     margin: 0;
 }
 
-/* 🔥 NAVBAR */
 .navbar {
     display: flex;
     align-items: center;
@@ -30,20 +29,13 @@ body {
     border-radius: 20px;
     text-decoration: none;
     color: white;
-    transition: 0.3s;
 }
 
-.back-btn:hover {
-    background: rgba(139, 0, 0, 0.5);
-}
-
-/* 🛍️ PRODUCTOS */
 .store {
     display: flex;
     justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
-    margin-top: 20px;
 }
 
 .product {
@@ -51,14 +43,12 @@ body {
     padding: 15px;
     border-radius: 10px;
     width: 200px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
 }
 
 .product img {
     width: 100%;
 }
 
-/* 🔘 BOTONES */
 button {
     margin-top: 10px;
     padding: 10px;
@@ -69,17 +59,6 @@ button {
     border-radius: 5px;
 }
 
-button:hover {
-    background: #b30000;
-}
-
-select {
-    margin-top: 5px;
-    padding: 5px;
-    width: 100%;
-}
-
-/* 📄 COPYRIGHT */
 .footer {
     position: fixed;
     bottom: 0;
@@ -87,12 +66,8 @@ select {
     background: rgba(0,0,0,0.6);
     padding: 10px;
     font-size: 14px;
-    color: #ccc;
-    text-align: center;
-    backdrop-filter: blur(5px);
 }
 
-/* 💬 CHAT MENSAJES */
 .msg {
     text-align:left;
     margin-bottom:8px;
@@ -108,38 +83,16 @@ select {
 
 <h1>🔥 Tienda LIL NAAY</h1>
 
-<!-- 💬 CHAT -->
-<div style="
-max-width:800px;
-margin:30px auto;
-background:#1a1a1a;
-padding:20px;
-border-radius:15px;
-box-shadow:0 0 20px rgba(0,0,0,0.6);
-">
-
+<!-- CHAT -->
+<div style="max-width:800px;margin:30px auto;background:#1a1a1a;padding:20px;border-radius:15px;">
 <h2>💬 Chat en vivo</h2>
 
-<div id="chatBox" style="
-height:300px;
-overflow-y:auto;
-background:#0d0d0d;
-padding:10px;
-border-radius:10px;
-margin-bottom:10px;
-"></div>
+<div id="chatBox" style="height:300px;overflow-y:auto;background:#0d0d0d;padding:10px;border-radius:10px;"></div>
 
-<input id="mensajeInput" placeholder="Escribe tu mensaje..." style="
-width:70%;
-padding:10px;
-border:none;
-border-radius:5px;
-">
-
+<input id="mensajeInput" placeholder="Escribe..." style="width:70%;padding:10px;border-radius:5px;">
 <button onclick="enviarMensaje()">Enviar</button>
 
-<p id="cooldown" style="color:#aaa;font-size:12px;"></p>
-
+<p id="cooldown"></p>
 </div>
 
 <div class="store" id="productos"></div>
@@ -151,91 +104,92 @@ border-radius:5px;
 <button onclick="pagar()">Pagar</button>
 
 <div class="footer">
-    © <span id="year"></span> LIL NAAY
+© <span id="year"></span> LIL NAAY
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { 
+import {
 getFirestore, collection, getDocs, addDoc,
 onSnapshot, query, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
-  authDomain: "lil-naay.firebaseapp.com",
-  projectId: "lil-naay"
-};
+const app = initializeApp({
+apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+authDomain:"lil-naay.firebaseapp.com",
+projectId:"lil-naay"
+});
 
-const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 /* ================= CHAT ================= */
 
-let tiempoEspera = 90;
 let ultimoEnvio = 0;
-let intervalo;
+let tiempoEspera = 90;
 
-// 🔍 FILTRO (links y teléfonos)
+// validar suscriptor
+async function esSuscriptor(email){
+    const snap = await getDocs(collection(db,"suscriptores"));
+    return snap.docs.some(doc=>doc.data().email === email);
+}
+
+// filtro
 function mensajeValido(texto){
-    let regexLinks = /(https?:\/\/|www\.)/i;
-    let regexTel = /\d{7,}/;
+    let t = texto.toLowerCase();
 
-    if(regexLinks.test(texto)) return false;
-    if(regexTel.test(texto)) return false;
+    if(t.includes("http") || t.includes("www") || t.includes(".com")) return false;
+    if(/\d{7,}/.test(t)) return false;
+    if(t.replace(/\s/g,"").includes("www")) return false;
 
     return true;
 }
 
-// ⏱️ COOLDOWN VISUAL
+// cooldown visual
 function iniciarCooldown(){
-    let tiempo = tiempoEspera;
-    let label = document.getElementById("cooldown");
+    let t = tiempoEspera;
+    let el = document.getElementById("cooldown");
 
-    intervalo = setInterval(()=>{
-        tiempo--;
-        label.innerText = "Puedes enviar en " + tiempo + "s";
-
-        if(tiempo <= 0){
-            clearInterval(intervalo);
-            label.innerText = "";
+    let i = setInterval(()=>{
+        t--;
+        el.innerText = "Puedes enviar en " + t + "s";
+        if(t<=0){
+            clearInterval(i);
+            el.innerText = "";
         }
     },1000);
 }
 
-// 📥 TIEMPO REAL
+// realtime
 const q = query(collection(db,"chat"), orderBy("fecha"));
 
-onSnapshot(q,(snapshot)=>{
-    const chat = document.getElementById("chatBox");
+onSnapshot(q,(snap)=>{
+    let chat = document.getElementById("chatBox");
     chat.innerHTML = "";
 
-    snapshot.forEach(doc=>{
-        let m = doc.data();
+    snap.forEach(d=>{
+        let m = d.data();
+        let color = m.tipo === "artista" ? "#00ffcc" : "#fff";
 
         chat.innerHTML += `
-        <div class="msg">
-            <b>${m.usuario}</b>: ${m.texto}
+        <div class="msg" style="color:${color}">
+        <b>${m.usuario}</b>: ${m.texto}
         </div>`;
     });
 
     chat.scrollTop = chat.scrollHeight;
 });
 
-// 📤 ENVIAR
+// enviar
 window.enviarMensaje = async function(){
 
     let ahora = Date.now();
-
     if(ahora - ultimoEnvio < tiempoEspera * 1000){
+        alert("Espera ⏱️");
         return;
     }
 
-    let input = document.getElementById("mensajeInput");
-    let texto = input.value.trim();
+    let texto = mensajeInput.value.trim();
     let usuario = localStorage.getItem("usuario");
 
     if(!usuario){
@@ -243,111 +197,114 @@ window.enviarMensaje = async function(){
         return;
     }
 
+    let ok = await esSuscriptor(usuario);
+    if(!ok){
+        alert("Solo suscriptores");
+        return;
+    }
+
     if(!texto) return;
 
     if(!mensajeValido(texto)){
-        alert("No se permiten links ni números");
+        alert("No permitido");
         return;
     }
 
     await addDoc(collection(db,"chat"),{
         usuario,
         texto,
+        tipo:"user",
         fecha: serverTimestamp()
     });
 
-    input.value = "";
+    mensajeInput.value="";
     ultimoEnvio = Date.now();
     iniciarCooldown();
-}
+};
 
 /* ================= TIENDA ================= */
 
-async function cargarProductos(){
-    const contenedor = document.getElementById("productos");
-    contenedor.innerHTML = "";
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-    const snap = await getDocs(collection(db,"productos"));
+async function cargarProductos(){
+    let c = document.getElementById("productos");
+    c.innerHTML="";
+
+    let snap = await getDocs(collection(db,"productos"));
 
     snap.forEach(doc=>{
         let p = doc.data();
 
-        contenedor.innerHTML += `
+        c.innerHTML += `
         <div class="product">
-            <img src="${p.imagen}">
-            <p>${p.nombre}</p>
-            <p>$${p.precio}</p>
+        <img src="${p.imagen}">
+        <p>${p.nombre}</p>
+        <p>$${p.precio}</p>
 
-            <select id="talla-${doc.id}">
-                <option>S</option>
-                <option>M</option>
-                <option>L</option>
-            </select>
+        <select id="t-${doc.id}">
+        <option>S</option><option>M</option><option>L</option>
+        </select>
 
-            <select id="color-${doc.id}">
-                <option>Rojo</option>
-                <option>Negro</option>
-            </select>
+        <select id="c-${doc.id}">
+        <option>Rojo</option><option>Negro</option>
+        </select>
 
-            <button onclick="agregar('${p.nombre}',${p.precio},'talla-${doc.id}','color-${doc.id}')">
-                Comprar
-            </button>
+        <button onclick="agregar('${p.nombre}',${p.precio},'t-${doc.id}','c-${doc.id}')">Comprar</button>
         </div>`;
     });
 }
 
-window.agregar = function(nombre, precio, tallaId, colorId){
-    let talla = document.getElementById(tallaId).value;
-    let color = document.getElementById(colorId).value;
-
-    carrito.push({ nombre, precio, talla, color });
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+window.agregar = function(n,p,t,c){
+    carrito.push({
+        nombre:n,
+        precio:p,
+        talla:document.getElementById(t).value,
+        color:document.getElementById(c).value
+    });
+    localStorage.setItem("carrito",JSON.stringify(carrito));
     mostrar();
 }
 
 window.eliminar = function(i){
     carrito.splice(i,1);
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    localStorage.setItem("carrito",JSON.stringify(carrito));
     mostrar();
 }
 
 function mostrar(){
-    let lista = document.getElementById("carrito");
-    let total = 0;
+    let l = carrito;
+    let ul = document.getElementById("carrito");
+    ul.innerHTML="";
+    let total=0;
 
-    lista.innerHTML = "";
-
-    carrito.forEach((p,i)=>{
-        lista.innerHTML += `
-        <li>
-        ${p.nombre} - $${p.precio} | ${p.talla} | ${p.color}
-        <button onclick="eliminar(${i})">❌</button>
-        </li>`;
-        total += p.precio;
+    l.forEach((p,i)=>{
+        ul.innerHTML+=`
+        <li>${p.nombre} $${p.precio}
+        <button onclick="eliminar(${i})">❌</button></li>`;
+        total+=p.precio;
     });
 
-    document.getElementById("total").innerText = total;
+    document.getElementById("total").innerText=total;
 }
 
 window.pagar = async function(){
-    if(carrito.length === 0){
-        alert("Carrito vacío ❌");
+    if(carrito.length===0){
+        alert("Vacío");
         return;
     }
 
     await addDoc(collection(db,"compras"),{
-        productos: carrito,
-        fecha: new Date()
+        productos:carrito,
+        fecha:new Date()
     });
 
-    alert("Compra guardada 🔥");
-
-    carrito = [];
+    carrito=[];
     localStorage.removeItem("carrito");
     mostrar();
+    alert("Compra OK");
 }
 
-document.getElementById("year").innerText = new Date().getFullYear();
+document.getElementById("year").innerText=new Date().getFullYear();
 
 cargarProductos();
 mostrar();
