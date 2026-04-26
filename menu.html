@@ -5,107 +5,192 @@
 <title>Tienda LIL NAAY</title>
 
 <style>
-body {
-    font-family: Arial;
-    background: #111;
-    color: white;
-    text-align: center;
-    margin: 0;
+body{
+    margin:0;
+    font-family:'Segoe UI';
+    background:#0a0a0a;
+    color:white;
 }
 
-.navbar {
-    display: flex;
-    align-items: center;
-    padding: 20px 30px;
-    background: rgba(20, 9, 9, 0.8);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
+/* NAV */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    padding:15px 25px;
+    background:#120000;
 }
 
-.back-btn {
-    background: rgba(255,255,255,0.05);
-    padding: 10px 18px;
-    border-radius: 20px;
-    text-decoration: none;
-    color: white;
+.navbar button{
+    background:#ff0000;
+    border:none;
+    color:white;
+    padding:8px 15px;
+    border-radius:8px;
+    cursor:pointer;
 }
 
-.store {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
+/* SECCIONES */
+.section{
+    display:none;
+    padding:20px;
 }
 
-.product {
-    background: #222;
-    padding: 15px;
-    border-radius: 10px;
-    width: 200px;
+.active{
+    display:block;
 }
 
-.product img {
-    width: 100%;
+/* BOTONES TOP */
+.tabs{
+    display:flex;
+    gap:10px;
+    padding:10px 20px;
 }
 
-button {
-    margin-top: 10px;
-    padding: 10px;
-    background: red;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
+.tabs button{
+    background:#1a1a1a;
+    border:none;
+    padding:10px;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
 }
 
-.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.6);
-    padding: 10px;
-    font-size: 14px;
+.tabs button:hover{
+    background:#ff000020;
 }
 
-.msg {
-    text-align:left;
+/* PRODUCTOS */
+.store{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.product{
+    background:#111;
+    padding:15px;
+    border-radius:12px;
+    width:200px;
+}
+
+.product img{
+    width:100%;
+    border-radius:10px;
+}
+
+/* CHAT FLOTANTE */
+.chat-box{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    width:300px;
+    background:#0d0d0d;
+    border:1px solid #ff000050;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(255,0,0,0.3);
+    z-index:999;
+}
+
+.chat-header{
+    background:#1a0000;
+    padding:10px;
+    cursor:move;
+    border-radius:15px 15px 0 0;
+}
+
+.chat-messages{
+    height:200px;
+    overflow-y:auto;
+    padding:10px;
+}
+
+.msg{
     margin-bottom:8px;
 }
-</style>
 
+.chat-input{
+    display:flex;
+}
+
+.chat-input input{
+    flex:1;
+    padding:8px;
+    border:none;
+    background:#111;
+    color:white;
+}
+
+.chat-input button{
+    background:red;
+    border:none;
+    padding:8px;
+    color:white;
+}
+
+/* MUSICA */
+.music{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.music iframe{
+    width:100%;
+    height:150px;
+    border-radius:10px;
+}
+
+.footer{
+    text-align:center;
+    padding:10px;
+    opacity:0.6;
+}
+</style>
 </head>
+
 <body>
 
 <div class="navbar">
-    <a href="index.html" class="back-btn">⬅ Volver</a>
+    <h2>🔥 LIL NAAY</h2>
+    <a href="index.html"><button>⬅ Volver</button></a>
 </div>
 
-<h1>🔥 Tienda LIL NAAY</h1>
-
-<!-- CHAT -->
-<div style="max-width:800px;margin:30px auto;background:#1a1a1a;padding:20px;border-radius:15px;">
-<h2>💬 Chat en vivo</h2>
-
-<div id="chatBox" style="height:300px;overflow-y:auto;background:#0d0d0d;padding:10px;border-radius:10px;"></div>
-
-<input id="mensajeInput" placeholder="Escribe..." style="width:70%;padding:10px;border-radius:5px;">
-<button onclick="enviarMensaje()">Enviar</button>
-
-<p id="cooldown"></p>
+<div class="tabs">
+    <button onclick="mostrar('tienda')">🛍️ Tienda</button>
+    <button onclick="mostrar('musica')">🎵 Música</button>
 </div>
 
-<div class="store" id="productos"></div>
+<!-- TIENDA -->
+<div id="tienda" class="section active">
+    <h2>Productos</h2>
+    <div class="store" id="productos"></div>
 
-<h2>🛒 Carrito</h2>
-<ul id="carrito"></ul>
-<h3>Total: $<span id="total">0</span></h3>
-
-<button onclick="pagar()">Pagar</button>
-
-<div class="footer">
-© <span id="year"></span> LIL NAAY
+    <h3>🛒 Carrito</h3>
+    <ul id="carrito"></ul>
+    <h3>Total: $<span id="total">0</span></h3>
+    <button onclick="pagar()">Pagar</button>
 </div>
+
+<!-- MUSICA -->
+<div id="musica" class="section">
+    <h2>🎵 Música nueva</h2>
+    <div class="music">
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID"></iframe>
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID"></iframe>
+    </div>
+</div>
+
+<!-- CHAT FLOTANTE -->
+<div class="chat-box" id="chatBoxDrag">
+    <div class="chat-header">💬 Chat en vivo</div>
+    <div id="chatBox" class="chat-messages"></div>
+    <div class="chat-input">
+        <input id="mensajeInput" placeholder="Escribe...">
+        <button onclick="enviarMensaje()">➤</button>
+    </div>
+</div>
+
+<div class="footer">© 2026 LIL NAAY</div>
 
 <script type="module">
 
@@ -123,153 +208,62 @@ projectId:"lil-naay"
 
 const db = getFirestore(app);
 
+/* CAMBIAR SECCION */
+window.mostrar = function(sec){
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+    document.getElementById(sec).classList.add("active");
+}
+
 /* ================= CHAT ================= */
 
-let tiempoEspera = 90;
-let ultimoEnvio = Number(localStorage.getItem("ultimoEnvio")) || 0;
-let intervalo;
-
-// 🔍 obtener data del usuario (VIP / BAN)
-async function getUsuarioData(email){
-    const snap = await getDocs(collection(db,"usuarios"));
-    let user = snap.docs.find(doc=>doc.data().email === email);
-    return user ? user.data() : null;
-}
-
-// validar suscriptor
-async function esSuscriptor(email){
-    const snap = await getDocs(collection(db,"suscriptores"));
-    return snap.docs.some(doc=>doc.data().email === email);
-}
-
-// filtro fuerte
-function mensajeValido(texto){
-    let t = texto.toLowerCase();
-
-    if(t.includes("http") || t.includes("www") || t.includes(".com") || t.includes(".net")) return false;
-    if(/\d{7,}/.test(t)) return false;
-    if(t.replace(/\s/g,"").includes("www")) return false;
-
-    return true;
-}
-
-// cooldown visual
-function iniciarCooldown(tiempoInicial = tiempoEspera){
-    let t = tiempoInicial;
-    let el = document.getElementById("cooldown");
-
-    clearInterval(intervalo);
-
-    intervalo = setInterval(()=>{
-        t--;
-        el.innerText = "Puedes enviar en " + t + "s";
-
-        if(t <= 0){
-            clearInterval(intervalo);
-            el.innerText = "";
-        }
-    },1000);
-}
-
-// restaurar cooldown
-window.addEventListener("load", ()=>{
-    let ahora = Date.now();
-    let restante = tiempoEspera - Math.floor((ahora - ultimoEnvio)/1000);
-
-    if(restante > 0){
-        iniciarCooldown(restante);
-    }
-});
-
-// realtime chat
 const q = query(collection(db,"chat"), orderBy("fecha"));
 
 onSnapshot(q,(snap)=>{
     let chat = document.getElementById("chatBox");
-    chat.innerHTML = "";
+    chat.innerHTML="";
 
     snap.forEach(d=>{
         let m = d.data();
-
-        let color = "#fff";
-        if(m.tipo === "artista") color = "#00ffcc";
-        if(m.tipo === "vip") color = "#ffd700";
-
-        chat.innerHTML += `
-        <div class="msg" style="color:${color}">
-        <b>${m.usuario}</b>: ${m.texto}
-        </div>`;
+        chat.innerHTML += `<div class="msg"><b>${m.usuario}</b>: ${m.texto}</div>`;
     });
 
     chat.scrollTop = chat.scrollHeight;
 });
 
-// enviar mensaje
 window.enviarMensaje = async function(){
-
-    let ahora = Date.now();
-
-    if(ahora - ultimoEnvio < tiempoEspera * 1000){
-        alert("Espera ⏱️");
-        return;
-    }
-
-    let texto = document.getElementById("mensajeInput").value.trim();
+    let texto = document.getElementById("mensajeInput").value;
     let usuario = localStorage.getItem("usuario");
 
-    if(!usuario){
-        alert("Inicia sesión");
-        return;
-    }
-
-    let suscriptor = await esSuscriptor(usuario);
-    if(!suscriptor){
-        alert("Solo suscriptores");
-        return;
-    }
-
-    let data = await getUsuarioData(usuario);
-
-    // 🚫 BAN
-    if(data && data.ban){
-        let ahora = Date.now();
-
-        if(ahora < data.banHasta){
-            alert("Baneado hasta: " + new Date(data.banHasta).toLocaleString());
-            return;
-        }
-    }
-
-    if(!texto) return;
-
-    if(!mensajeValido(texto)){
-        alert("No se permiten links ni números");
-        return;
-    }
-
-    let tipo = "user";
-
-    if(data && data.vip) tipo = "vip";
-
-    // 👑 artista (puedes cambiar este correo)
-    if(usuario === "TU_CORREO_AQUI@gmail.com"){
-        tipo = "artista";
-    }
+    if(!usuario) return alert("Login requerido");
 
     await addDoc(collection(db,"chat"),{
         usuario,
         texto,
-        tipo,
         fecha: serverTimestamp()
     });
 
-    document.getElementById("mensajeInput").value = "";
+    document.getElementById("mensajeInput").value="";
+}
 
-    ultimoEnvio = Date.now();
-    localStorage.setItem("ultimoEnvio", ultimoEnvio);
+/* DRAG CHAT */
+let chat = document.getElementById("chatBoxDrag");
+let header = chat.querySelector(".chat-header");
 
-    iniciarCooldown();
-};
+let offsetX, offsetY, isDown=false;
+
+header.onmousedown = e=>{
+    isDown=true;
+    offsetX = e.clientX - chat.offsetLeft;
+    offsetY = e.clientY - chat.offsetTop;
+}
+
+document.onmouseup=()=> isDown=false;
+
+document.onmousemove = e=>{
+    if(!isDown) return;
+    chat.style.left = (e.clientX - offsetX)+"px";
+    chat.style.top = (e.clientY - offsetY)+"px";
+}
 
 /* ================= TIENDA ================= */
 
@@ -289,46 +283,24 @@ async function cargarProductos(){
         <img src="${p.imagen}">
         <p>${p.nombre}</p>
         <p>$${p.precio}</p>
-
-        <select id="t-${doc.id}">
-        <option>S</option><option>M</option><option>L</option>
-        </select>
-
-        <select id="c-${doc.id}">
-        <option>Rojo</option><option>Negro</option>
-        </select>
-
-        <button onclick="agregar('${p.nombre}',${p.precio},'t-${doc.id}','c-${doc.id}')">Comprar</button>
+        <button onclick="agregar('${p.nombre}',${p.precio})">Comprar</button>
         </div>`;
     });
 }
 
-window.agregar = function(n,p,t,c){
-    carrito.push({
-        nombre:n,
-        precio:p,
-        talla:document.getElementById(t).value,
-        color:document.getElementById(c).value
-    });
+window.agregar = function(n,p){
+    carrito.push({nombre:n,precio:p});
     localStorage.setItem("carrito",JSON.stringify(carrito));
-    mostrar();
+    mostrarCarrito();
 }
 
-window.eliminar = function(i){
-    carrito.splice(i,1);
-    localStorage.setItem("carrito",JSON.stringify(carrito));
-    mostrar();
-}
-
-function mostrar(){
+function mostrarCarrito(){
     let ul = document.getElementById("carrito");
     ul.innerHTML="";
     let total=0;
 
     carrito.forEach((p,i)=>{
-        ul.innerHTML+=`
-        <li>${p.nombre} $${p.precio}
-        <button onclick="eliminar(${i})">❌</button></li>`;
+        ul.innerHTML+=`<li>${p.nombre} $${p.precio}</li>`;
         total+=p.precio;
     });
 
@@ -336,10 +308,7 @@ function mostrar(){
 }
 
 window.pagar = async function(){
-    if(carrito.length===0){
-        alert("Carrito vacío ❌");
-        return;
-    }
+    if(carrito.length===0) return alert("Vacío");
 
     await addDoc(collection(db,"compras"),{
         productos:carrito,
@@ -348,14 +317,12 @@ window.pagar = async function(){
 
     carrito=[];
     localStorage.removeItem("carrito");
-    mostrar();
-    alert("Compra OK");
+    mostrarCarrito();
+    alert("Compra realizada");
 }
 
-document.getElementById("year").innerText=new Date().getFullYear();
-
 cargarProductos();
-mostrar();
+mostrarCarrito();
 
 </script>
 
