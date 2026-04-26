@@ -5,230 +5,136 @@
 <title>Tienda LIL NAAY</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI';
-}
-
-body{
-    background:#0a0a0a;
-    color:white;
-    display:flex;
-    flex-direction:column;
-    min-height:100vh;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
+body{background:#0a0a0a;color:white;display:flex;flex-direction:column;min-height:100vh;}
 
 /* NAV */
-.navbar{
-    display:flex;
-    justify-content:space-between;
-    padding:15px 25px;
-    background:#120000;
-}
-
-.navbar button{
-    background:#ff0000;
-    border:none;
-    color:white;
-    padding:8px 15px;
-    border-radius:8px;
-    cursor:pointer;
-}
+.navbar{display:flex;justify-content:space-between;padding:15px 25px;background:#120000;}
+.navbar button{background:#ff0000;border:none;color:white;padding:8px 15px;border-radius:8px;cursor:pointer;}
 
 /* TABS */
-.tabs{
-    display:flex;
-    gap:10px;
-    padding:15px 20px;
-}
+.tabs{display:flex;gap:10px;padding:15px 20px;}
+.tabs button{background:#1a1a1a;border:none;padding:10px 15px;color:white;border-radius:8px;cursor:pointer;}
+.tabs button:hover{background:#ff000020;}
 
-.tabs button{
-    background:#1a1a1a;
-    border:none;
-    padding:10px 15px;
-    color:white;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.tabs button:hover{
-    background:#ff000020;
-}
-
-/* CONTENIDO */
-.content{
-    flex:1;
-    padding:20px;
-}
-
-/* SECCIONES */
-.section{
-    display:none;
-}
-.active{
-    display:block;
-}
+/* CONTENT */
+.content{flex:1;padding:20px;}
+.section{display:none;}
+.active{display:block;}
 
 /* PRODUCTOS */
-.store{
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-}
-
-.product{
-    background:#111;
-    padding:15px;
-    border-radius:12px;
-    width:200px;
-}
-
-.product img{
-    width:100%;
-    border-radius:10px;
-}
-
-/* EVENTOS */
-.event{
-    background:#111;
-    padding:15px;
-    border-radius:12px;
-    margin-bottom:10px;
-}
+.store{display:flex;flex-wrap:wrap;gap:20px;}
+.product{background:#111;padding:15px;border-radius:12px;width:200px;}
+.product img{width:100%;border-radius:10px;}
 
 /* PERFIL */
-.profile{
-    background:#111;
-    padding:20px;
-    border-radius:12px;
-    max-width:400px;
-}
+.profile{background:#111;padding:20px;border-radius:12px;max-width:400px;}
 
 /* CHAT */
 .chat-toggle{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    background:#ff0000;
-    color:white;
-    border:none;
-    padding:12px;
-    border-radius:50%;
-    cursor:pointer;
-    z-index:1000;
+position:fixed;bottom:20px;right:20px;
+background:#ff0000;border:none;color:white;
+padding:12px;border-radius:50%;cursor:pointer;z-index:1000;
 }
 
+/* CHAT BOX */
 .chat-box{
-    position:fixed;
-    bottom:80px;
-    right:20px;
-    width:320px;
-    max-height:500px;
-    background:#0d0d0d;
-    border:1px solid #ff000050;
-    border-radius:15px;
-    box-shadow:0 0 20px rgba(255,0,0,0.3);
-    display:none;
-    flex-direction:column;
-    overflow:hidden;
-    z-index:999;
+position:fixed;bottom:80px;right:20px;
+width:320px;height:420px;
+background:#0d0d0d;
+border-radius:15px;
+display:none;
+flex-direction:column;
+overflow:hidden;
+box-shadow:0 0 25px rgba(255,0,0,0.4);
 }
 
+/* HEADER */
 .chat-header{
-    background:#1a0000;
-    padding:10px;
-    font-weight:bold;
-    cursor:move;
+background:#1a0000;
+padding:10px;
+font-weight:bold;
+display:flex;
+justify-content:space-between;
 }
 
+/* ONLINE USERS */
+.online{
+font-size:12px;
+color:#0f0;
+}
+
+/* MENSAJES */
 .chat-messages{
-    flex:1;
-    overflow-y:auto;
-    padding:10px;
-    font-size:13px;
+flex:1;
+overflow-y:auto;
+padding:10px;
+display:flex;
+flex-direction:column;
+gap:6px;
 }
 
-.chat-input{
-    display:flex;
-    border-top:1px solid #222;
+/* BURBUJAS */
+.msg{
+max-width:75%;
+padding:8px 12px;
+border-radius:12px;
+font-size:13px;
 }
 
-.chat-input input{
-    flex:1;
-    padding:10px;
-    border:none;
-    background:#111;
-    color:white;
-}
+.me{background:#ff0000;align-self:flex-end;}
+.other{background:#222;align-self:flex-start;}
 
-.chat-input button{
-    background:red;
-    border:none;
-    padding:10px;
-    color:white;
-}
+/* INPUT */
+.chat-input{display:flex;border-top:1px solid #222;}
+.chat-input input{flex:1;padding:10px;border:none;background:#111;color:white;}
+.chat-input button{background:red;border:none;padding:10px;color:white;}
 
-/* MOBILE */
-@media(max-width:768px){
-    .chat-box{
-        width:100%;
-        height:60%;
-        right:0;
-        bottom:0;
-        border-radius:15px 15px 0 0;
-    }
+/* NOTI */
+#noti{
+position:fixed;
+top:20px;
+right:20px;
+background:red;
+padding:10px;
+border-radius:8px;
+display:none;
 }
 
 /* FOOTER */
-.footer{
-    text-align:center;
-    padding:15px;
-    background:#0d0d0d;
-    margin-top:auto;
-}
+.footer{text-align:center;padding:15px;background:#0d0d0d;margin-top:auto;}
 </style>
 </head>
 
 <body>
 
+<div id="noti">🔔 Nuevo mensaje</div>
+
 <div class="navbar">
-    <h2>🔥 LIL NAAY</h2>
-    <a href="index.html"><button>⬅ Volver</button></a>
+<h2>🔥 LIL NAAY</h2>
+<a href="index.html"><button>⬅ Volver</button></a>
 </div>
 
 <div class="tabs">
-    <button onclick="mostrar('tienda')">🛍️ Tienda</button>
-    <button onclick="mostrar('musica')">🎵 Música</button>
-    <button onclick="mostrar('eventos')">🎉 Eventos</button>
-    <button onclick="mostrar('perfil')">👤 Perfil</button>
+<button onclick="mostrar('tienda')">🛍️ Tienda</button>
+<button onclick="mostrar('perfil')">👤 Perfil</button>
 </div>
 
 <div class="content">
 
 <div id="tienda" class="section active">
-    <h2>Productos</h2>
-    <div class="store" id="productos"></div>
+<h2>Productos</h2>
+<div class="store" id="productos"></div>
 
-    <h3>🛒 Carrito</h3>
-    <ul id="carrito"></ul>
-    <h3>Total: $<span id="total">0</span></h3>
-    <button onclick="pagar()">Pagar</button>
-</div>
-
-<div id="musica" class="section">
-    <h2>🎵 Música</h2>
-</div>
-
-<div id="eventos" class="section">
-    <h2>🎉 Eventos</h2>
-    <div class="event">Próximamente 🔥</div>
+<h3>🛒 Carrito</h3>
+<ul id="carrito"></ul>
+<h3>Total: $<span id="total">0</span></h3>
+<button onclick="pagar()">Pagar</button>
 </div>
 
 <div id="perfil" class="section">
-    <h2>👤 Perfil</h2>
-    <div class="profile" id="perfilData">Cargando...</div>
+<h2>Perfil</h2>
+<div class="profile" id="perfilData"></div>
 </div>
 
 </div>
@@ -236,25 +142,28 @@ body{
 <button class="chat-toggle" onclick="toggleChat()">💬</button>
 
 <div class="chat-box" id="chatBoxDrag">
-    <div class="chat-header">💬 Chat en vivo</div>
-    <div id="chatBox" class="chat-messages"></div>
-
-    <div class="chat-input">
-        <input id="mensajeInput" placeholder="Escribe...">
-        <button onclick="enviarMensaje()">➤</button>
-    </div>
+<div class="chat-header">
+<span>💬 Chat</span>
+<span class="online" id="onlineCount">0 online</span>
 </div>
 
-<div class="footer">
-© 2026 LIL NAAY
+<div id="chatBox" class="chat-messages"></div>
+
+<div class="chat-input">
+<input id="mensajeInput" placeholder="Escribe...">
+<button onclick="enviarMensaje()">➤</button>
 </div>
+</div>
+
+<div class="footer">© 2026 LIL NAAY</div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
 getFirestore, collection, getDocs, addDoc,
-onSnapshot, query, orderBy, serverTimestamp, where
+onSnapshot, query, orderBy, serverTimestamp,
+doc, setDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
@@ -266,126 +175,118 @@ projectId:"lil-naay"
 const db = getFirestore(app);
 
 /* SECCIONES */
-window.mostrar = function(sec){
-    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-    document.getElementById(sec).classList.add("active");
+window.mostrar = sec=>{
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(sec).classList.add("active");
 }
 
-/* PERFIL MEJORADO (IMPORTANTE 🔥) */
-async function obtenerPerfil(email){
-    const q = query(collection(db,"usuarios"), where("email","==",email));
-    const snap = await getDocs(q);
-    if(!snap.empty) return {id:snap.docs[0].id, ...snap.docs[0].data()};
-    return null;
-}
-
+/* PERFIL */
 async function cargarPerfil(){
-    let email = localStorage.getItem("usuario");
-    if(!email) return;
+let email = localStorage.getItem("usuario");
+if(!email) return;
 
-    let data = await obtenerPerfil(email);
-
-    document.getElementById("perfilData").innerHTML = `
-    <p><b>Usuario:</b> ${data?.username || "No definido"}</p>
-    <p><b>Email:</b> ${email}</p>
-    <p><b>Rol:</b> ${data?.admin ? "ADMIN" : data?.mod ? "MOD" : data?.vip ? "VIP" : "USER"}</p>
-    <p><b>País:</b> ${data?.pais || "-"}</p>
-    <p><b>Provincia:</b> ${data?.provincia || "-"}</p>
-    <p><b>Edad:</b> ${data?.edad || "-"}</p>
-    `;
+document.getElementById("perfilData").innerHTML =
+`Usuario: ${email}`;
 }
 
-/* ================= CHAT CON ROLES + BAN ================= */
+/* ================= CHAT ================= */
 
+let lastMsg="";
+let lastTime=0;
+
+/* ONLINE USERS */
+const onlineRef = collection(db,"online");
+
+setInterval(async ()=>{
+let email = localStorage.getItem("usuario");
+if(!email) return;
+
+await setDoc(doc(onlineRef,email),{
+time:Date.now()
+});
+},5000);
+
+onSnapshot(onlineRef,snap=>{
+let count=0;
+let now=Date.now();
+
+snap.forEach(d=>{
+if(now - d.data().time < 10000) count++;
+});
+
+document.getElementById("onlineCount").innerText = count+" online";
+});
+
+/* MENSAJES */
 const qChat = query(collection(db,"chat"), orderBy("fecha"));
 
 onSnapshot(qChat,(snap)=>{
-    let chat = document.getElementById("chatBox");
-    chat.innerHTML="";
+let chat = document.getElementById("chatBox");
+chat.innerHTML="";
 
-    snap.forEach(d=>{
-        let m = d.data();
+let email = localStorage.getItem("usuario");
 
-        let color = "#fff";
+snap.forEach(d=>{
+let m = d.data();
 
-        if(m.rol === "admin") color = "#ff0000";
-        else if(m.rol === "mod") color = "#00ffff";
-        else if(m.rol === "vip") color = "#ffd700";
+let div = document.createElement("div");
+div.className = "msg " + (m.email===email ? "me":"other");
+div.innerText = m.usuario+": "+m.texto;
 
-        chat.innerHTML += `
-        <div style="color:${color}">
-            <b>${m.usuario}</b>: ${m.texto}
-        </div>`;
-    });
-
-    chat.scrollTop = chat.scrollHeight;
+chat.appendChild(div);
 });
 
-/* ENVIAR MENSAJE (FIX TOTAL 🔥) */
-window.enviarMensaje = async function(){
+/* NOTI */
+let docs = snap.docs;
+if(docs.length){
+let ultimo = docs[docs.length-1].data();
+if(ultimo.texto !== lastMsg){
+noti.style.display="block";
+setTimeout(()=>noti.style.display="none",2000);
+lastMsg = ultimo.texto;
+}
+}
 
-    let input = document.getElementById("mensajeInput");
-    let texto = input.value.trim();
-    let email = localStorage.getItem("usuario");
+chat.scrollTop = chat.scrollHeight;
+});
 
-    if(!email) return alert("Login requerido");
-    if(!texto) return;
+/* ENVIAR */
+window.enviarMensaje = async ()=>{
 
-    let perfil = await obtenerPerfil(email);
+let input = document.getElementById("mensajeInput");
+let texto = input.value.trim();
+let email = localStorage.getItem("usuario");
 
-    /* 🚫 BLOQUEO AUTOMÁTICO */
-    if(perfil?.ban){
-        if(Date.now() < perfil.banHasta){
-            return alert("🚫 Estás baneado");
-        }
-    }
+if(!texto || !email) return;
 
-    let nombre = perfil?.username || email;
+/* ANTI SPAM */
+if(texto === lastMsg && Date.now()-lastTime < 3000){
+return alert("Spam detectado 🚫");
+}
 
-    await addDoc(collection(db,"chat"),{
-        usuario: nombre,
-        email: email,
-        texto: texto,
-        fecha: serverTimestamp(),
-        rol: perfil?.admin ? "admin" :
-             perfil?.mod ? "mod" :
-             perfil?.vip ? "vip" : "user"
-    });
+lastMsg = texto;
+lastTime = Date.now();
 
-    input.value="";
+await addDoc(collection(db,"chat"),{
+usuario:email,
+email:email,
+texto:texto,
+fecha:serverTimestamp()
+});
+
+input.value="";
 }
 
 /* ENTER */
-document.getElementById("mensajeInput").addEventListener("keypress",function(e){
-    if(e.key==="Enter") enviarMensaje();
+document.getElementById("mensajeInput")
+.addEventListener("keypress",e=>{
+if(e.key==="Enter") enviarMensaje();
 });
 
 /* CHAT UI */
-window.toggleChat = function(){
-    let chat = document.getElementById("chatBoxDrag");
-    chat.style.display = chat.style.display === "flex" ? "none" : "flex";
-}
-
-/* DRAG */
-if(window.innerWidth > 768){
-    let chat = document.getElementById("chatBoxDrag");
-    let header = chat.querySelector(".chat-header");
-
-    let offsetX, offsetY, isDown=false;
-
-    header.onmousedown = e=>{
-        isDown=true;
-        offsetX = e.clientX - chat.offsetLeft;
-        offsetY = e.clientY - chat.offsetTop;
-    }
-
-    document.onmouseup=()=> isDown=false;
-
-    document.onmousemove = e=>{
-        if(!isDown) return;
-        chat.style.left = (e.clientX - offsetX)+"px";
-        chat.style.top = (e.clientY - offsetY)+"px";
-    }
+window.toggleChat = ()=>{
+let c=document.getElementById("chatBoxDrag");
+c.style.display = c.style.display==="flex"?"none":"flex";
 }
 
 /* ================= TIENDA ================= */
@@ -393,55 +294,55 @@ if(window.innerWidth > 768){
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 async function cargarProductos(){
-    let c = document.getElementById("productos");
-    c.innerHTML="";
+let c = document.getElementById("productos");
+c.innerHTML="";
 
-    let snap = await getDocs(collection(db,"productos"));
+let snap = await getDocs(collection(db,"productos"));
 
-    snap.forEach(doc=>{
-        let p = doc.data();
+snap.forEach(doc=>{
+let p = doc.data();
 
-        c.innerHTML += `
-        <div class="product">
-        <img src="${p.imagen}">
-        <p>${p.nombre}</p>
-        <p>$${p.precio}</p>
-        <button onclick="agregar('${p.nombre}',${p.precio})">Comprar</button>
-        </div>`;
-    });
+c.innerHTML+=`
+<div class="product">
+<img src="${p.imagen}">
+<p>${p.nombre}</p>
+<p>$${p.precio}</p>
+<button onclick="agregar('${p.nombre}',${p.precio})">Comprar</button>
+</div>`;
+});
 }
 
-window.agregar = function(n,p){
-    carrito.push({nombre:n,precio:p});
-    localStorage.setItem("carrito",JSON.stringify(carrito));
-    mostrarCarrito();
+window.agregar=(n,p)=>{
+carrito.push({nombre:n,precio:p});
+localStorage.setItem("carrito",JSON.stringify(carrito));
+mostrarCarrito();
 }
 
 function mostrarCarrito(){
-    let ul = document.getElementById("carrito");
-    ul.innerHTML="";
-    let total=0;
+let ul=document.getElementById("carrito");
+ul.innerHTML="";
+let total=0;
 
-    carrito.forEach(p=>{
-        ul.innerHTML+=`<li>${p.nombre} $${p.precio}</li>`;
-        total+=p.precio;
-    });
+carrito.forEach(p=>{
+ul.innerHTML+=`<li>${p.nombre} $${p.precio}</li>`;
+total+=p.precio;
+});
 
-    document.getElementById("total").innerText=total;
+total.innerText=total;
 }
 
-window.pagar = async function(){
-    if(carrito.length===0) return alert("Vacío");
+window.pagar=async()=>{
+if(carrito.length===0) return;
 
-    await addDoc(collection(db,"compras"),{
-        productos:carrito,
-        fecha:new Date()
-    });
+await addDoc(collection(db,"compras"),{
+productos:carrito,
+fecha:new Date()
+});
 
-    carrito=[];
-    localStorage.removeItem("carrito");
-    mostrarCarrito();
-    alert("Compra realizada");
+carrito=[];
+localStorage.removeItem("carrito");
+mostrarCarrito();
+alert("Compra realizada");
 }
 
 /* INIT */
