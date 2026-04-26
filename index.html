@@ -111,7 +111,7 @@ body{
     gap:15px;
     z-index:4;
 }
-
+ 
 .btn-img{
     background:none;
     border:none;
@@ -129,30 +129,49 @@ body{
     filter:drop-shadow(0 0 25px red);
 }
 
+    /* TEXTO CARD */
+.card p{
+    margin-top:20px;
+    color:#ccc;
+    font-size:15px;
+}
+
 /* CONTENIDO */
 .container{
-    max-width:900px;
+    max-width:1000px;
     margin:auto;
-    padding:40px 20px;
+    padding:80px 20px;
+    display:flex;
+    justify-content:center;
 }
 
 .card{
-    background:rgba(0,0,0,0.75);
+    width:100%;
+    max-width:750px;
     padding:40px;
+
     border-radius:20px;
-    margin-top:-60px;
-    border:1px solid rgba(255,0,0,0.2);
-    box-shadow:0 0 40px rgba(255,0,0,0.3), inset 0 0 20px rgba(255,0,0,0.1);
-    backdrop-filter:blur(12px);
-    text-align:center;
-}
 
+    /* 🔥 fondo rojo oscuro con efecto */
+    background:radial-gradient(circle at center, rgba(255,0,0,0.15), rgba(0,0,0,0.95));
+
+    border:1px solid rgba(255,0,0,0.3);
+
+    box-shadow:
+        0 0 60px rgba(255,0,0,0.2),
+        inset 0 0 40px rgba(255,0,0,0.15);
+
+    backdrop-filter:blur(10px);
+
+    text-align:left;
+}
 .card h2{
-    font-size:28px;
+    font-size:26px;
     margin-bottom:20px;
-    text-shadow:0 0 10px red;
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
-
 .btn{
     background:linear-gradient(45deg,#8b0000,#ff0000);
     padding:12px 25px;
@@ -160,7 +179,7 @@ body{
     border-radius:30px;
     color:white;
     cursor:pointer;
-    margin:10px;
+    margin-right:10px;
     box-shadow:0 0 15px rgba(255,0,0,0.4);
     transition:0.3s;
 }
