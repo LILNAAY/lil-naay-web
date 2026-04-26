@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Admin LIL NAAY</title>
+<title>Admin DIOS - LIL NAAY</title>
 
 <style>
 body{
@@ -10,348 +10,326 @@ body{
     font-family:Arial;
     background:#0d0d0d;
     color:white;
+    display:flex;
 }
 
-/* LOGIN */
-.login{
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+/* SIDEBAR */
+.sidebar{
+    width:220px;
+    background:#0a0a0a;
     height:100vh;
-}
-
-input{
-    padding:10px;
-    margin:5px;
-    width:250px;
-    border:none;
-    border-radius:5px;
-}
-
-/* NAVBAR */
-.navbar{
-    display:flex;
-    justify-content:space-between;
-    padding:15px 20px;
-    background:#140909;
-}
-
-/* GRID */
-.container{
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
-    gap:20px;
     padding:20px;
 }
 
-/* CARDS */
+.sidebar button{
+    width:100%;
+    margin:5px 0;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:20px;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+/* CARD */
 .card{
-    background:rgba(255,255,255,0.05);
+    background:#1a1a1a;
     padding:15px;
     border-radius:10px;
     max-height:300px;
     overflow:auto;
 }
 
-button{
-    padding:10px;
-    background:#8b0000;
-    border:none;
-    color:white;
-    cursor:pointer;
-    border-radius:5px;
+.stat{
+    font-size:22px;
 }
 
-li{
-    font-size:13px;
-    margin-bottom:5px;
-    border-bottom:1px solid rgba(255,255,255,0.1);
-    padding-bottom:5px;
-}
-
-.stats{
-    font-size:18px;
+/* CHAT */
+.msg{
+    background:#222;
+    padding:8px;
     margin:5px 0;
+    border-radius:6px;
+}
+
+.admin-btn{
+    margin:2px;
+    padding:3px 6px;
+    font-size:12px;
+}
+
+.warn{background:orange;}
+.ban{background:red;}
+.vip{background:green;}
+.del{background:#555;}
+
+/* LOGIN */
+.login{
+    position:absolute;
+    width:100%;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:#0d0d0d;
+}
+
+input{
+    padding:10px;
+    margin:5px;
+    width:250px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div id="loginBox" class="login">
-    <h2>🔐 Acceso Admin</h2>
-    <input id="email" placeholder="Correo">
-    <input id="pass" type="password" placeholder="Contraseña">
+    <h2>🔐 Admin DIOS</h2>
+    <input id="email">
+    <input id="pass" type="password">
     <button onclick="login()">Entrar</button>
 </div>
 
-<!-- PANEL -->
-<div id="panel" style="display:none;">
-    <div class="navbar">
-        <h2>⚙️ Panel Admin GOD</h2>
-        <button onclick="logout()">Cerrar sesión</button>
-    </div>
+<div id="panel" style="display:none;width:100%;">
 
-    <div class="container">
+<div class="sidebar">
+    <h2>🔥 LIL NAAY</h2>
+    <button onclick="ver('dashboard')">📊 Dashboard</button>
+    <button onclick="ver('chat')">💬 Chat Admin</button>
+    <button onclick="logout()">🚪 Salir</button>
+</div>
 
-        <div class="card">
-            <h3>📊 Estadísticas</h3>
-            <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
-            <div class="stats">Compras: <span id="totalCompras">0</span></div>
-            <div class="stats">Productos: <span id="totalProductos">0</span></div>
-            <div class="stats">Mensajes: <span id="totalChat">0</span></div>
-        </div>
+<div class="main">
 
-        <div class="card">
-            <h3>👥 Suscriptores</h3>
-            <ul id="suscriptores"></ul>
-        </div>
+<!-- DASHBOARD -->
+<div id="dashboard">
 
-        <div class="card">
-            <h3>💳 Compras</h3>
-            <ul id="compras"></ul>
-        </div>
+<div class="grid">
 
-        <div class="card">
-            <h3>📡 Actividad</h3>
-            <ul id="actividad"></ul>
-        </div>
+<div class="card">
+<h3>Usuarios</h3>
+<div id="totalUsuarios" class="stat">0</div>
+</div>
 
-        <div class="card">
-            <h3>🛍️ Productos</h3>
-            <ul id="productos"></ul>
-        </div>
+<div class="card">
+<h3>Compras</h3>
+<div id="totalCompras" class="stat">0</div>
+</div>
 
-        <div class="card">
-            <h3>➕ Crear Producto</h3>
-            <input id="nombre" placeholder="Nombre">
-            <input id="precio" placeholder="Precio">
-            <input id="imagen" placeholder="URL Imagen">
-            <button onclick="crearProducto()">Crear</button>
-        </div>
+<div class="card">
+<h3>Productos</h3>
+<div id="totalProductos" class="stat">0</div>
+</div>
 
-    </div>
+<div class="card">
+<h3>Chat</h3>
+<div id="totalChat" class="stat">0</div>
+</div>
+
+<div class="card">
+<h3>🛍️ Productos</h3>
+<ul id="productos"></ul>
+</div>
+
+<div class="card">
+<h3>➕ Crear Producto</h3>
+<input id="nombre">
+<input id="precio">
+<button onclick="crearProducto()">Crear</button>
+</div>
+
+<div class="card">
+<h3>📡 Logs</h3>
+<ul id="logs"></ul>
+</div>
+
+</div>
+</div>
+
+<!-- CHAT -->
+<div id="chatPanel" style="display:none">
+<div class="card">
+<h3>💬 Moderación Chat</h3>
+<div id="chatBox"></div>
+</div>
+</div>
+
+</div>
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc
+getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, getDoc, onSnapshot, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 import {
 getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const firebaseConfig = {
-apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
-authDomain: "lil-naay.firebaseapp.com",
-projectId: "lil-naay"
-};
+const app = initializeApp({
+apiKey:"AIzaSy...",
+authDomain:"lil-naay.firebaseapp.com",
+projectId:"lil-naay"
+});
 
-const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
 /* LOGIN */
-window.login = function(){
-    let email = document.getElementById("email").value;
-    let pass = document.getElementById("pass").value;
-
-    signInWithEmailAndPassword(auth,email,pass)
-    .then(()=> alert("Bienvenido 🔥"))
-    .catch(e=> alert("Error: "+e.message));
-}
+window.login = ()=>signInWithEmailAndPassword(auth,email.value,pass.value);
 
 /* LOGOUT */
-window.logout = function(){
-    signOut(auth);
-}
+window.logout = ()=>signOut(auth);
 
-/* 🔥 PROTECCIÓN ADMIN (UID SYSTEM) */
+/* PROTECCIÓN UID */
 onAuthStateChanged(auth, async user=>{
-    if(user){
-
-        const uid = user.uid;
-
-        // 🔥 BUSCAR DIRECTO POR UID (SOLUCIÓN PRO)
-        const userDoc = await getDocs(collection(db,"usuarios"));
-
-        let esAdmin = false;
-
-        userDoc.forEach(d=>{
-            if(d.id === uid && d.data().admin === true){
-                esAdmin = true;
-            }
-        });
-
-        if(!esAdmin){
-            alert("No eres admin ❌");
-            logout();
-            return;
-        }
-
-        document.getElementById("loginBox").style.display="none";
-        document.getElementById("panel").style.display="block";
-
-        cargarTodo();
-
-    }else{
-        document.getElementById("loginBox").style.display="flex";
-        document.getElementById("panel").style.display="none";
-    }
-});
-
-/* CARGAR TODO */
-function cargarTodo(){
-    cargarSuscriptores();
-    cargarCompras();
-    cargarActividad();
-    cargarProductos();
-    cargarStats();
-}
-
-/* STATS */
-async function cargarStats(){
-    document.getElementById("totalUsuarios").innerText = (await getDocs(collection(db,"usuarios"))).size;
-    document.getElementById("totalCompras").innerText = (await getDocs(collection(db,"compras"))).size;
-    document.getElementById("totalProductos").innerText = (await getDocs(collection(db,"productos"))).size;
-    document.getElementById("totalChat").innerText = (await getDocs(collection(db,"chat"))).size;
-}
-
-/* PRODUCTOS */
-async function cargarProductos(){
-    const lista = document.getElementById("productos");
-    lista.innerHTML = "";
-
-    const snap = await getDocs(collection(db,"productos"));
-
-    snap.forEach(docSnap=>{
-        let p = docSnap.data();
-        let id = docSnap.id;
-
-        lista.innerHTML += `
-        <li>
-        <b>${p.nombre}</b> - $${p.precio}
-        <br>
-        <button onclick="editarProducto('${id}','${p.nombre}',${p.precio})">✏️</button>
-        <button onclick="eliminarProducto('${id}')">🗑️</button>
-        </li>`;
-    });
-}
-
-/* SUSCRIPTORES */
-async function cargarSuscriptores(){
-    const lista = document.getElementById("suscriptores");
-    lista.innerHTML = "";
-
-    const snap = await getDocs(collection(db,"suscriptores"));
-
-    snap.forEach(d=>{
-        lista.innerHTML += `<li>${d.data().email}</li>`;
-    });
-}
-
-/* COMPRAS */
-async function cargarCompras(){
-    const lista = document.getElementById("compras");
-    lista.innerHTML = "";
-
-    const snap = await getDocs(collection(db,"compras"));
-
-    snap.forEach(docSnap=>{
-        let d = docSnap.data();
-
-        let productos = d.productos.map(p =>
-            `${p.nombre} | ${p.talla || "-"} | ${p.color || "-"} | $${p.precio}`
-        ).join("<br>");
-
-        lista.innerHTML += `<li>${productos}</li>`;
-    });
-}
-
-/* ACTIVIDAD */
-async function cargarActividad(){
-    const lista = document.getElementById("actividad");
-    lista.innerHTML = "";
-
-    const snap = await getDocs(collection(db,"actividad"));
-
-    snap.forEach(d=>{
-        lista.innerHTML += `<li>${d.data().accion} - ${d.data().fecha}</li>`;
-    });
-}
-
-/* EDITAR */
-window.editarProducto = async function(id,nombre,precio){
-    let n = prompt("Nuevo nombre:", nombre);
-    let p = prompt("Nuevo precio:", precio);
-
-    if(!n || isNaN(p)) return;
-
-    await updateDoc(doc(db,"productos",id),{
-        nombre:n,
-        precio:Number(p)
-    });
-
-    await addDoc(collection(db,"actividad"),{
-        accion:"Producto editado: "+n,
-        fecha:new Date().toLocaleString()
-    });
-
-    cargarProductos();
-}
-
-/* ELIMINAR */
-window.eliminarProducto = async function(id){
-    if(!confirm("Eliminar producto?")) return;
-
-    await deleteDoc(doc(db,"productos",id));
-
-    await addDoc(collection(db,"actividad"),{
-        accion:"Producto eliminado",
-        fecha:new Date().toLocaleString()
-    });
-
-    cargarProductos();
-}
-
-/* CREAR */
-window.crearProducto = async function(){
-    let nombre = document.getElementById("nombre").value;
-    let precio = Number(document.getElementById("precio").value);
-    let imagen = document.getElementById("imagen").value;
-
-    if(!nombre || isNaN(precio)){
-        alert("Datos inválidos");
+if(user){
+    const snap = await getDoc(doc(db,"usuarios",user.uid));
+    if(!snap.exists() || !snap.data().admin){
+        alert("No eres admin");
+        logout();
         return;
     }
 
-    await addDoc(collection(db,"productos"),{
-        nombre,
-        precio,
-        imagen,
-        stock:10
-    });
+    loginBox.style.display="none";
+    panel.style.display="flex";
 
-    await addDoc(collection(db,"actividad"),{
-        accion:"Producto creado: "+nombre,
-        fecha:new Date().toLocaleString()
-    });
+    cargarTodo();
+    cargarChat();
 
-    alert("Producto creado 🔥");
+}else{
+    loginBox.style.display="flex";
+    panel.style.display="none";
+}
+});
 
-    document.getElementById("nombre").value="";
-    document.getElementById("precio").value="";
-    document.getElementById("imagen").value="";
+/* VISTAS */
+window.ver = function(v){
+    dashboard.style.display = v==="dashboard"?"block":"none";
+    chatPanel.style.display = v==="chat"?"block":"none";
+}
 
-    cargarProductos();
+/* STATS */
+async function cargarTodo(){
+totalUsuarios.innerText = (await getDocs(collection(db,"usuarios"))).size;
+totalCompras.innerText = (await getDocs(collection(db,"compras"))).size;
+totalProductos.innerText = (await getDocs(collection(db,"productos"))).size;
+totalChat.innerText = (await getDocs(collection(db,"chat"))).size;
+
+/* PRODUCTOS */
+let p = await getDocs(collection(db,"productos"));
+productos.innerHTML="";
+p.forEach(d=>{
+productos.innerHTML+=`<li>${d.data().nombre}
+<button onclick="eliminarProducto('${d.id}')">🗑️</button></li>`;
+});
+
+/* LOGS */
+let l = await getDocs(collection(db,"logs"));
+logs.innerHTML="";
+l.forEach(d=>{
+logs.innerHTML+=`<li>${d.data().accion}</li>`;
+});
+}
+
+/* CREAR PRODUCTO */
+window.crearProducto = async ()=>{
+await addDoc(collection(db,"productos"),{
+nombre:nombre.value,
+precio:Number(precio.value)
+});
+await log("Producto creado");
+cargarTodo();
+}
+
+/* ELIMINAR */
+window.eliminarProducto = async id=>{
+await deleteDoc(doc(db,"productos",id));
+await log("Producto eliminado");
+cargarTodo();
+}
+
+/* CHAT REALTIME */
+function cargarChat(){
+const q = query(collection(db,"chat"), orderBy("fecha"));
+
+onSnapshot(q,snap=>{
+chatBox.innerHTML="";
+snap.forEach(d=>{
+let m=d.data();
+
+chatBox.innerHTML+=`
+<div class="msg">
+<b>${m.usuario}</b>: ${m.texto}
+<br>
+<button class="admin-btn warn" onclick="warn('${m.usuario}')">⚠️</button>
+<button class="admin-btn ban" onclick="ban('${m.usuario}')">🔒</button>
+<button class="admin-btn vip" onclick="vip('${m.usuario}')">👑</button>
+<button class="admin-btn del" onclick="delMsg('${d.id}')">❌</button>
+</div>`;
+});
+});
+}
+
+/* ACCIONES */
+window.delMsg = async id=>{
+await deleteDoc(doc(db,"chat",id));
+await log("Mensaje eliminado");
+}
+
+window.vip = async email=>{
+let snap = await getDocs(collection(db,"usuarios"));
+snap.forEach(async d=>{
+if(d.data().email===email){
+await updateDoc(doc(db,"usuarios",d.id),{vip:true});
+}
+});
+await log("Usuario VIP");
+}
+
+window.ban = async email=>{
+let t = prompt("Minutos:");
+if(!t) return;
+
+let banHasta = Date.now()+(t*60000);
+
+let snap = await getDocs(collection(db,"usuarios"));
+snap.forEach(async d=>{
+if(d.data().email===email){
+await updateDoc(doc(db,"usuarios",d.id),{
+ban:true,
+banHasta
+});
+}
+});
+await log("Usuario baneado");
+}
+
+window.warn = async email=>{
+alert("Advertido");
+await log("Advertencia enviada");
+}
+
+/* LOG */
+async function log(txt){
+await addDoc(collection(db,"logs"),{
+accion:txt,
+fecha:new Date().toLocaleString()
+});
 }
 
 </script>
-
 </body>
 </html>
