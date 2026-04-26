@@ -10,6 +10,8 @@
 <style>
 :root{
     --rojo:#ff0000;
+    --rojo-fuerte:#ff1a1a;
+    --rojo-oscuro:#8b0000;
 }
 
 /* RESET */
@@ -59,7 +61,7 @@ body{
     z-index:0;
 }
 
-/* ARTISTA (FIX RESPONSIVE) */
+/* artista */
 .hero-artista{
     position:absolute;
     left:0;
@@ -69,7 +71,7 @@ body{
     filter:drop-shadow(0 0 25px rgba(255,0,0,0.7));
 }
 
-/* TEXTO */
+/* texto */
 .hero-texto{
     position:absolute;
     top:50%;
@@ -81,7 +83,7 @@ body{
     filter:drop-shadow(0 0 20px red);
 }
 
-/* BOTONES */
+/* botones */
 .hero-buttons{
     position:absolute;
     right:60px;
@@ -105,6 +107,7 @@ body{
 
 .btn-img img:hover{
     transform:scale(1.1);
+    filter:drop-shadow(0 0 25px red);
 }
 
 /* CONTENIDO */
@@ -120,11 +123,14 @@ body{
     border-radius:20px;
     margin-top:-60px;
     border:1px solid rgba(255,0,0,0.2);
-    box-shadow:0 0 40px rgba(255,0,0,0.3);
+    box-shadow:0 0 40px rgba(255,0,0,0.3), inset 0 0 20px rgba(255,0,0,0.1);
+    backdrop-filter:blur(12px);
     text-align:center;
 }
 
 .card h2{
+    font-size:28px;
+    margin-bottom:20px;
     text-shadow:0 0 10px red;
 }
 
@@ -136,6 +142,13 @@ body{
     color:white;
     cursor:pointer;
     margin:10px;
+    box-shadow:0 0 15px rgba(255,0,0,0.4);
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:scale(1.08);
+    box-shadow:0 0 25px red, 0 0 50px rgba(255,0,0,0.6);
 }
 
 /* MODAL */
@@ -143,6 +156,8 @@ body{
     position:fixed;
     width:100%;
     height:100%;
+    top:0;
+    left:0;
     background:rgba(0,0,0,0.95);
     display:none;
     justify-content:center;
@@ -150,14 +165,17 @@ body{
     z-index:9999;
 }
 
+/* CAJA */
 .box{
     background:#0a0a0a;
     padding:25px;
     border-radius:15px;
     width:320px;
+    border:1px solid #ff000030;
+    box-shadow:0 0 25px rgba(255,0,0,0.4), inset 0 0 15px rgba(255,0,0,0.1);
 }
 
-/* INPUT */
+/* INPUTS */
 input{
     width:100%;
     padding:10px;
@@ -168,22 +186,29 @@ input{
     color:white;
 }
 
+input:focus{
+    background:#1a0000;
+    box-shadow:0 0 10px red;
+}
+
 /* MENSAJE */
 #mensaje{
     position:fixed;
     bottom:20px;
     right:20px;
-    padding:12px;
+    padding:12px 18px;
     border-radius:10px;
     display:none;
+    font-size:14px;
+    z-index:10000;
 }
 
-/* ===================== */
-/* RESPONSIVE */
-/* ===================== */
+/* ========================= */
+/* 📱 RESPONSIVE */
+/* ========================= */
 
 /* TABLET */
-@media (max-width:900px){
+@media (max-width: 900px){
 
     .hero{
         height:380px;
@@ -191,7 +216,7 @@ input{
 
     .hero-artista{
         height:90%;
-        left:-30px;
+        left:-20px;
         opacity:0.9;
     }
 
@@ -199,23 +224,30 @@ input{
         width:400px;
     }
 
+    .hero-buttons{
+        right:30px;
+        bottom:30px;
+    }
+
     .btn-img img{
         width:90px;
+    }
+
+    .card{
+        margin-top:-40px;
+        padding:30px;
     }
 }
 
 /* CELULAR */
-@media (max-width:600px){
+@media (max-width: 600px){
 
     .hero{
-        height:320px;
+        height:300px;
     }
 
-    /* 🔥 AQUÍ ESTÁ EL FIX */
     .hero-artista{
-        height:80%;
-        left:-60px;
-        opacity:0.7;
+        display:none;
     }
 
     .hero-texto{
@@ -242,9 +274,17 @@ input{
         padding:20px;
     }
 
+    .card h2{
+        font-size:22px;
+    }
+
     .btn{
-        padding:10px 15px;
+        padding:10px 18px;
         font-size:14px;
+    }
+
+    input{
+        padding:8px;
     }
 
     .box{
@@ -290,6 +330,9 @@ input{
 <input id="rUser" placeholder="Usuario">
 <input id="rEmail" placeholder="Correo">
 <input id="rPass" type="password" placeholder="Contraseña">
+<input id="rPais" placeholder="País">
+<input id="rProvincia" placeholder="Provincia">
+<input id="rEdad" placeholder="Edad">
 <button class="btn" onclick="registrar()">Crear</button>
 <button class="btn" onclick="cerrar()">Cancelar</button>
 </div>
@@ -301,7 +344,21 @@ input{
 <input id="lEmail" placeholder="Correo">
 <input id="lPass" type="password" placeholder="Contraseña">
 <button class="btn" onclick="loginUser()">Entrar</button>
+<p onclick="recuperar()" style="cursor:pointer;color:#ff4d4d;">¿Olvidaste tu contraseña?</p>
 <button class="btn" onclick="cerrar()">Cancelar</button>
+</div>
+</div>
+
+<div class="modal" id="perfil">
+<div class="box">
+<h3>👤 Mi Perfil</h3>
+<p><b>Usuario:</b> <span id="pUser"></span></p>
+<p><b>Email:</b> <span id="pEmail"></span></p>
+<p><b>País:</b> <span id="pPais"></span></p>
+<p><b>Provincia:</b> <span id="pProvincia"></span></p>
+<p><b>Edad:</b> <span id="pEdad"></span></p>
+<button class="btn" onclick="logout()">Cerrar sesión</button>
+<button class="btn" onclick="cerrar()">Cerrar</button>
 </div>
 </div>
 
@@ -311,7 +368,7 @@ input{
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const app = initializeApp({
 apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
@@ -324,26 +381,91 @@ const auth = getAuth(app);
 
 window.abrirRegistro=()=>registro.style.display="flex";
 window.abrirLogin=()=>login.style.display="flex";
-window.cerrar=()=>["registro","login"].forEach(id=>document.getElementById(id).style.display="none");
+window.abrirPerfil=()=>cargarPerfil();
+window.cerrar=()=>["registro","login","perfil"].forEach(id=>document.getElementById(id).style.display="none");
 
-function msg(t){
+function msg(t,ok=true){
 mensaje.innerText=t;
 mensaje.style.display="block";
+mensaje.style.background=ok?"green":"red";
 setTimeout(()=>mensaje.style.display="none",3000);
 }
 
 window.registrar=async()=>{
-await createUserWithEmailAndPassword(auth,rEmail.value,rPass.value);
-await addDoc(collection(db,"suscriptores"),{email:rEmail.value});
+try{
+const cred=await createUserWithEmailAndPassword(auth,rEmail.value,rPass.value);
+
+await addDoc(collection(db,"usuarios"),{
+uid:cred.user.uid,
+usuario:rUser.value,
+email:rEmail.value,
+pais:rPais.value,
+provincia:rProvincia.value,
+edad:rEdad.value
+});
+
+await addDoc(collection(db,"suscriptores"),{
+email:rEmail.value,
+fecha:new Date()
+});
+
+localStorage.setItem("usuario",rEmail.value);
 msg("Cuenta creada");
 cerrar();
 cargarContador();
+
+}catch(e){msg(e.message,false);}
 }
 
 window.loginUser=async()=>{
+try{
 await signInWithEmailAndPassword(auth,lEmail.value,lPass.value);
+localStorage.setItem("usuario",lEmail.value);
 msg("Bienvenido");
 cerrar();
+}catch{msg("Datos incorrectos",false);}
+}
+
+window.recuperar=async()=>{
+if(!lEmail.value) return msg("Escribe tu correo",false);
+await sendPasswordResetEmail(auth,lEmail.value);
+msg("Correo enviado");
+}
+
+async function cargarPerfil(){
+let email=localStorage.getItem("usuario");
+if(!email) return msg("No has iniciado sesión",false);
+
+const snap=await getDocs(collection(db,"usuarios"));
+let user=snap.docs.find(d=>d.data().email===email);
+if(!user) return msg("No encontrado",false);
+
+let u=user.data();
+pUser.innerText=u.usuario;
+pEmail.innerText=u.email;
+pPais.innerText=u.pais;
+pProvincia.innerText=u.provincia;
+pEdad.innerText=u.edad;
+
+perfil.style.display="flex";
+}
+
+window.logout=async()=>{
+await signOut(auth);
+localStorage.removeItem("usuario");
+msg("Sesión cerrada");
+cerrar();
+}
+
+window.entrarTienda=async()=>{
+let email=localStorage.getItem("usuario");
+if(!email) return msg("Inicia sesión",false);
+
+const snap=await getDocs(collection(db,"suscriptores"));
+let ok=snap.docs.some(d=>d.data().email===email);
+
+if(ok) window.location.href="menu.html";
+else msg("No autorizado",false);
 }
 
 async function cargarContador(){
