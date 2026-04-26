@@ -8,19 +8,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-:root {
-    --rojo: #a00000;
-    --rojo-hover: #ff1a1a;
-    --glass: rgba(255,255,255,0.05);
-    --borde: rgba(255,255,255,0.08);
+:root{
+    --rojo:#ff0000;
+    --rojo-fuerte:#ff1a1a;
+    --rojo-oscuro:#8b0000;
 }
 
-/* BASE */
+/* FONDO GLOBAL */
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#0a0a0a,#1a0d0d,#2a0f0f);
     color:white;
+
+    background:
+    linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.9)),
+    url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee');
+
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
 }
 
 /* HEADER */
@@ -29,41 +35,57 @@ body{
     align-items:center;
     justify-content:space-between;
     padding:40px 30px;
-    background:linear-gradient(90deg,#7a0000,#1a0f0f);
-    box-shadow:0 5px 20px rgba(0,0,0,0.6);
-}
 
-.header-left{
-    display:flex;
-    align-items:center;
+    background:linear-gradient(90deg,#1a0000,#000);
+    border-bottom:1px solid #ff000030;
+
+    box-shadow:0 0 40px rgba(255,0,0,0.2);
 }
 
 .header img{
     width:110px;
     border-radius:15px;
     margin-right:20px;
-    box-shadow:0 0 15px rgba(255,0,0,0.3);
+
+    box-shadow:
+    0 0 10px #ff0000,
+    0 0 25px rgba(255,0,0,0.5);
+}
+
+/* TITULO */
+.header h2{
+    font-size:26px;
+    letter-spacing:2px;
+    text-shadow:0 0 10px rgba(255,0,0,0.6);
+}
+
+small{
+    color:#bbb;
 }
 
 /* BOTONES */
 .btn{
-    background:linear-gradient(45deg,var(--rojo),#ff0000);
-    padding:10px 18px;
+    background:linear-gradient(45deg,#8b0000,#ff0000);
+    padding:10px 20px;
     border:none;
-    border-radius:20px;
+    border-radius:25px;
     color:white;
     cursor:pointer;
+
+    box-shadow:0 0 10px rgba(255,0,0,0.4);
     transition:0.3s;
-    box-shadow:0 0 10px rgba(255,0,0,0.3);
 }
 
 .btn:hover{
-    background:linear-gradient(45deg,var(--rojo-hover),#ff4d4d);
-    transform:scale(1.05);
-    box-shadow:0 0 15px rgba(255,0,0,0.6);
+    background:linear-gradient(45deg,#ff0000,#ff4d4d);
+    transform:scale(1.08);
+
+    box-shadow:
+    0 0 15px #ff0000,
+    0 0 40px rgba(255,0,0,0.6);
 }
 
-/* CONTENIDO */
+/* CONTENEDOR */
 .container{
     max-width:900px;
     margin:auto;
@@ -72,47 +94,56 @@ body{
 
 /* CARD */
 .card{
-    background:var(--glass);
+    background:rgba(0,0,0,0.65);
     padding:30px;
     border-radius:20px;
     margin-top:30px;
+
+    border:1px solid rgba(255,0,0,0.2);
+
+    box-shadow:
+    0 0 25px rgba(255,0,0,0.2),
+    inset 0 0 20px rgba(255,0,0,0.1);
+
     backdrop-filter:blur(10px);
-    border:1px solid var(--borde);
-    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+
     transition:0.3s;
 }
 
 .card:hover{
     transform:translateY(-5px);
+    box-shadow:
+    0 0 35px rgba(255,0,0,0.4),
+    inset 0 0 25px rgba(255,0,0,0.2);
 }
 
-/* MODALES */
+/* MODAL */
 .modal{
     position:fixed;
     width:100%;
     height:100%;
     top:0;
     left:0;
-    background:rgba(0,0,0,0.8);
+
+    background:rgba(0,0,0,0.85);
+
     display:none;
     justify-content:center;
     align-items:center;
-    z-index:1000;
-    animation:fadeIn 0.3s ease;
 }
 
-@keyframes fadeIn{
-    from{opacity:0;}
-    to{opacity:1;}
-}
-
+/* CAJA */
 .box{
-    background:#111;
+    background:#0a0a0a;
     padding:25px;
     border-radius:15px;
     width:320px;
-    box-shadow:0 0 25px rgba(255,0,0,0.4);
-    border:1px solid #ff000040;
+
+    border:1px solid #ff000030;
+
+    box-shadow:
+    0 0 25px rgba(255,0,0,0.4),
+    inset 0 0 15px rgba(255,0,0,0.1);
 }
 
 /* INPUTS */
@@ -120,17 +151,20 @@ input{
     width:100%;
     padding:10px;
     margin:8px 0;
+
     border:none;
     border-radius:8px;
-    background:#1a1a1a;
+
+    background:#111;
     color:white;
+
     outline:none;
     transition:0.2s;
 }
 
 input:focus{
-    background:#222;
-    box-shadow:0 0 8px rgba(255,0,0,0.5);
+    background:#1a0000;
+    box-shadow:0 0 10px rgba(255,0,0,0.6);
 }
 
 /* MENSAJE */
@@ -140,18 +174,19 @@ input:focus{
     right:20px;
     padding:12px 18px;
     border-radius:10px;
+
     display:none;
+
     font-size:14px;
-    box-shadow:0 0 15px rgba(0,0,0,0.5);
+
+    box-shadow:
+    0 0 15px rgba(0,0,0,0.8),
+    0 0 20px rgba(255,0,0,0.5);
 }
 
-/* TEXTO */
+/* TITULOS */
 h2{
-    letter-spacing:1px;
-}
-
-small{
-    color:#ccc;
+    text-shadow:0 0 10px rgba(255,0,0,0.5);
 }
 </style>
 </head>
