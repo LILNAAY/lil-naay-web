@@ -8,15 +8,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-:root{
-    --rojo:#8b0000;
+:root {
+    --rojo: #8b0000;
+    --rojo-hover: #b30000;
 }
 
-/* GENERAL */
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#0a0a0a,#2a0000);
+    background:linear-gradient(135deg,#140909,#3a1a1a);
     color:white;
 }
 
@@ -24,29 +24,37 @@ body{
 .header{
     display:flex;
     align-items:center;
-    padding:40px;
-    background:linear-gradient(90deg,#8b0000,#1a0000);
-    border-bottom-left-radius:40px;
-    border-bottom-right-radius:40px;
+    justify-content:space-between;
+    padding:40px 30px;
+    background:linear-gradient(90deg,var(--rojo),#1a0f0f);
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
 }
 
 .header img{
-    width:140px;
-    border-radius:20px;
-    margin-right:30px;
+    width:120px;
+    border-radius:15px;
+    margin-right:20px;
 }
 
+/* BOTONES */
 .btn{
-    padding:12px 25px;
-    margin-top:10px;
+    background:var(--rojo);
+    padding:10px 18px;
     border:none;
-    border-radius:25px;
-    background:linear-gradient(45deg,#ff0000,#8b0000);
+    border-radius:20px;
     color:white;
     cursor:pointer;
 }
 
-/* CARD */
+.btn:hover{
+    background:var(--rojo-hover);
+}
+
+/* CONTENIDO */
 .container{
     max-width:900px;
     margin:auto;
@@ -54,40 +62,40 @@ body{
 }
 
 .card{
-    background:#111;
-    padding:25px;
-    border-radius:15px;
+    background:rgba(255,255,255,0.05);
+    padding:30px;
+    border-radius:20px;
     margin-top:30px;
 }
 
-/* MODAL */
+/* MODALES */
 .modal{
     position:fixed;
-    top:0;
-    left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.85);
+    top:0;
+    left:0;
+    background:rgba(0,0,0,0.7);
     display:none;
     justify-content:center;
     align-items:center;
-    z-index:999;
+    z-index:1000;
 }
 
-.modal-content{
+.box{
     background:#111;
-    padding:30px;
+    padding:25px;
     border-radius:15px;
-    width:320px;
+    width:300px;
 }
 
-.modal input{
+input{
     width:100%;
     padding:10px;
     margin:5px 0;
     border:none;
     border-radius:8px;
-    background:#1a1a1a;
+    background:#222;
     color:white;
 }
 
@@ -96,10 +104,9 @@ body{
     position:fixed;
     bottom:20px;
     right:20px;
-    padding:15px;
+    padding:12px;
     border-radius:10px;
     display:none;
-    z-index:1000;
 }
 </style>
 </head>
@@ -108,58 +115,82 @@ body{
 
 <!-- HEADER -->
 <div class="header">
-    <img src="Lil Naay.png">
-    <div>
-        <h1>LIL NAAY</h1>
-        <p>Artista urbano • Trap</p>
-        <button onclick="entrarTienda()" class="btn">Ver Eventos & Tienda</button>
+
+    <div class="header-left">
+        <img src="Lil Naay.png">
+        <div>
+            <h2>LIL NAAY</h2>
+            <small>Artista urbano • Trap</small>
+        </div>
     </div>
+
+    <div>
+        <button class="btn" onclick="abrirPerfil()">👤 Perfil</button>
+        <button class="btn" onclick="entrarTienda()">Entrar</button>
+    </div>
+
 </div>
 
 <div class="container">
 
 <div class="card">
-    <h2>🔥 Comunidad</h2>
+<h2>🔥 Comunidad</h2>
 
-    <button onclick="abrirRegistro()" class="btn">Registrarse</button>
-    <button onclick="abrirLogin()" class="btn">Iniciar Sesión</button>
+<button class="btn" onclick="abrirRegistro()">Registrarse</button>
+<button class="btn" onclick="abrirLogin()">Iniciar Sesión</button>
 
-    <button onclick="loginGoogle()" class="btn">
-        <i class="fab fa-google"></i> Google
-    </button>
-
-    <p>Suscriptores: <span id="contador">0</span></p>
+<p>Suscriptores: <span id="contador">0</span></p>
 </div>
 
 </div>
 
-<!-- MODAL REGISTRO -->
-<div class="modal" id="modalRegistro">
-<div class="modal-content">
+<!-- REGISTRO -->
+<div class="modal" id="registro">
+<div class="box">
 <h3>Crear Cuenta</h3>
 
-<input id="r_user" placeholder="Usuario">
-<input id="r_email" placeholder="Correo">
-<input id="r_pass" type="password" placeholder="Contraseña">
-<input id="r_pais" placeholder="País">
-<input id="r_provincia" placeholder="Provincia">
-<input id="r_edad" type="number" placeholder="Edad">
+<input id="rUser" placeholder="Usuario">
+<input id="rEmail" placeholder="Correo">
+<input id="rPass" type="password" placeholder="Contraseña">
+<input id="rPais" placeholder="País">
+<input id="rProvincia" placeholder="Provincia">
+<input id="rEdad" placeholder="Edad">
 
-<button onclick="registrar()" class="btn">Crear</button>
-<button onclick="cerrarModales()" class="btn">Cancelar</button>
+<button class="btn" onclick="registrar()">Crear</button>
+<button class="btn" onclick="cerrar()">Cancelar</button>
 </div>
 </div>
 
-<!-- MODAL LOGIN -->
-<div class="modal" id="modalLogin">
-<div class="modal-content">
+<!-- LOGIN -->
+<div class="modal" id="login">
+<div class="box">
 <h3>Iniciar Sesión</h3>
 
-<input id="l_email" placeholder="Correo">
-<input id="l_pass" type="password" placeholder="Contraseña">
+<input id="lEmail" placeholder="Correo">
+<input id="lPass" type="password" placeholder="Contraseña">
 
-<button onclick="login()" class="btn">Entrar</button>
-<button onclick="cerrarModales()" class="btn">Cancelar</button>
+<button class="btn" onclick="loginUser()">Entrar</button>
+
+<p style="font-size:13px;color:#ff4d4d;cursor:pointer"
+onclick="recuperar()">¿Olvidaste tu contraseña?</p>
+
+<button class="btn" onclick="cerrar()">Cancelar</button>
+</div>
+</div>
+
+<!-- PERFIL -->
+<div class="modal" id="perfil">
+<div class="box">
+<h3>👤 Mi Perfil</h3>
+
+<p><b>Usuario:</b> <span id="pUser"></span></p>
+<p><b>Email:</b> <span id="pEmail"></span></p>
+<p><b>País:</b> <span id="pPais"></span></p>
+<p><b>Provincia:</b> <span id="pProvincia"></span></p>
+<p><b>Edad:</b> <span id="pEdad"></span></p>
+
+<button class="btn" onclick="logout()">Cerrar sesión</button>
+<button class="btn" onclick="cerrar()">Cerrar</button>
 </div>
 </div>
 
@@ -168,17 +199,14 @@ body{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-
-import {
-getFirestore, collection, addDoc, getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 import {
 getAuth,
 createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
-GoogleAuthProvider,
-signInWithPopup
+sendPasswordResetEmail,
+signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const app = initializeApp({
@@ -189,132 +217,146 @@ projectId:"lil-naay"
 
 const db = getFirestore(app);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+
+/* UI */
+window.abrirRegistro=()=>document.getElementById("registro").style.display="flex";
+window.abrirLogin=()=>document.getElementById("login").style.display="flex";
+window.abrirPerfil=()=>cargarPerfil();
+window.cerrar=()=>{
+["registro","login","perfil"].forEach(id=>{
+document.getElementById(id).style.display="none";
+});
+}
 
 /* MENSAJE */
 function msg(t,ok=true){
-    let m=document.getElementById("mensaje");
-    m.innerText=t;
-    m.style.display="block";
-    m.style.background= ok ? "#008000" : "#b30000";
-    setTimeout(()=>m.style.display="none",2500);
+let m=document.getElementById("mensaje");
+m.innerText=t;
+m.style.display="block";
+m.style.background=ok?"green":"red";
+setTimeout(()=>m.style.display="none",3000);
 }
 
-/* MODALES */
-window.abrirRegistro=()=>modalRegistro.style.display="flex";
-window.abrirLogin=()=>modalLogin.style.display="flex";
-window.cerrarModales=()=>{
-    modalRegistro.style.display="none";
-    modalLogin.style.display="none";
+/* REGISTRO */
+window.registrar=async function(){
+try{
+let email=rEmail.value;
+let pass=rPass.value;
+
+const cred=await createUserWithEmailAndPassword(auth,email,pass);
+
+await addDoc(collection(db,"usuarios"),{
+uid:cred.user.uid,
+usuario:rUser.value,
+email,
+pais:rPais.value,
+provincia:rProvincia.value,
+edad:rEdad.value
+});
+
+await addDoc(collection(db,"suscriptores"),{
+email,
+fecha:new Date()
+});
+
+localStorage.setItem("usuario",email);
+
+msg("Cuenta creada 🔥");
+cerrar();
+cargarContador();
+
+}catch(e){
+msg(e.message,false);
+}
 }
 
-/* REGISTRO REAL */
-window.registrar = async function(){
+/* LOGIN */
+window.loginUser=async function(){
+try{
+let email=lEmail.value;
+let pass=lPass.value;
 
-    let email = r_email.value;
-    let pass = r_pass.value;
+await signInWithEmailAndPassword(auth,email,pass);
 
-    if(!email || !pass){
-        msg("Completa datos",false);
-        return;
-    }
+localStorage.setItem("usuario",email);
 
-    try{
+msg("Bienvenido 🔥");
+cerrar();
 
-        const userCred = await createUserWithEmailAndPassword(auth,email,pass);
-
-        // guardar info extra
-        await addDoc(collection(db,"usuarios"),{
-            uid: userCred.user.uid,
-            usuario: r_user.value,
-            email,
-            pais: r_pais.value,
-            provincia: r_provincia.value,
-            edad: Number(r_edad.value),
-            fecha: new Date()
-        });
-
-        // mantener tu sistema
-        await addDoc(collection(db,"suscriptores"),{
-            email,
-            fecha:new Date()
-        });
-
-        localStorage.setItem("usuario",email);
-
-        msg("Cuenta creada 🔥");
-        cerrarModales();
-        cargarContador();
-
-    }catch(e){
-        msg(e.message,false);
-    }
+}catch{
+msg("Datos incorrectos",false);
+}
 }
 
-/* LOGIN REAL */
-window.login = async function(){
+/* RECUPERAR */
+window.recuperar=async function(){
+let email=lEmail.value;
+if(!email) return msg("Escribe tu correo",false);
 
-    let email = l_email.value;
-    let pass = l_pass.value;
-
-    try{
-        await signInWithEmailAndPassword(auth,email,pass);
-
-        localStorage.setItem("usuario",email);
-
-        msg("Bienvenido 🔥");
-        cerrarModales();
-
-    }catch(e){
-        msg("Error login",false);
-    }
+await sendPasswordResetEmail(auth,email);
+msg("Correo enviado 📧");
 }
 
-/* GOOGLE */
-window.loginGoogle = async function(){
-    let r = await signInWithPopup(auth,provider);
-    let email = r.user.email;
+/* PERFIL */
+async function cargarPerfil(){
 
-    localStorage.setItem("usuario",email);
+let email=localStorage.getItem("usuario");
 
-    const snap = await getDocs(collection(db,"suscriptores"));
-    let existe = snap.docs.some(d=>d.data().email===email);
+if(!email){
+msg("No has iniciado sesión",false);
+return;
+}
 
-    if(!existe){
-        await addDoc(collection(db,"suscriptores"),{
-            email,
-            fecha:new Date()
-        });
-    }
+const snap=await getDocs(collection(db,"usuarios"));
 
-    msg("Google OK");
-    cargarContador();
+let user=snap.docs.find(d=>d.data().email===email);
+
+if(!user){
+msg("Usuario no encontrado",false);
+return;
+}
+
+let u=user.data();
+
+pUser.innerText=u.usuario;
+pEmail.innerText=u.email;
+pPais.innerText=u.pais;
+pProvincia.innerText=u.provincia;
+pEdad.innerText=u.edad;
+
+document.getElementById("perfil").style.display="flex";
+}
+
+/* LOGOUT */
+window.logout=async function(){
+await signOut(auth);
+localStorage.removeItem("usuario");
+msg("Sesión cerrada");
+cerrar();
 }
 
 /* ENTRAR */
-window.entrarTienda = async function(){
+window.entrarTienda=async function(){
 
-    let email = localStorage.getItem("usuario");
+let email=localStorage.getItem("usuario");
 
-    if(!email){
-        msg("Debes iniciar sesión",false);
-        return;
-    }
+if(!email) return msg("Inicia sesión",false);
 
-    const snap = await getDocs(collection(db,"suscriptores"));
-    let ok = snap.docs.some(d=>d.data().email===email);
+const snap=await getDocs(collection(db,"suscriptores"));
 
-    if(ok){
-        window.location="menu.html";
-    }else{
-        msg("No autorizado",false);
-    }
+let ok=snap.docs.some(d=>d.data().email===email);
+
+if(ok){
+window.location.href="menu.html";
+}else{
+msg("No autorizado",false);
+}
 }
 
 /* CONTADOR */
 async function cargarContador(){
-    const snap = await getDocs(collection(db,"suscriptores"));
-    contador.innerText = snap.size;
+const snap=await getDocs(collection(db,"suscriptores"));
+contador.innerText=snap.size;
 }
 
 cargarContador();
