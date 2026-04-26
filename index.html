@@ -9,14 +9,17 @@
 
 <style>
 :root {
-    --rojo: #8b0000;
-    --rojo-hover: #b30000;
+    --rojo: #a00000;
+    --rojo-hover: #ff1a1a;
+    --glass: rgba(255,255,255,0.05);
+    --borde: rgba(255,255,255,0.08);
 }
 
+/* BASE */
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#140909,#3a1a1a);
+    background:linear-gradient(135deg,#0a0a0a,#1a0d0d,#2a0f0f);
     color:white;
 }
 
@@ -26,7 +29,8 @@ body{
     align-items:center;
     justify-content:space-between;
     padding:40px 30px;
-    background:linear-gradient(90deg,var(--rojo),#1a0f0f);
+    background:linear-gradient(90deg,#7a0000,#1a0f0f);
+    box-shadow:0 5px 20px rgba(0,0,0,0.6);
 }
 
 .header-left{
@@ -35,23 +39,28 @@ body{
 }
 
 .header img{
-    width:120px;
+    width:110px;
     border-radius:15px;
     margin-right:20px;
+    box-shadow:0 0 15px rgba(255,0,0,0.3);
 }
 
 /* BOTONES */
 .btn{
-    background:var(--rojo);
+    background:linear-gradient(45deg,var(--rojo),#ff0000);
     padding:10px 18px;
     border:none;
     border-radius:20px;
     color:white;
     cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 0 10px rgba(255,0,0,0.3);
 }
 
 .btn:hover{
-    background:var(--rojo-hover);
+    background:linear-gradient(45deg,var(--rojo-hover),#ff4d4d);
+    transform:scale(1.05);
+    box-shadow:0 0 15px rgba(255,0,0,0.6);
 }
 
 /* CONTENIDO */
@@ -61,11 +70,20 @@ body{
     padding:20px;
 }
 
+/* CARD */
 .card{
-    background:rgba(255,255,255,0.05);
+    background:var(--glass);
     padding:30px;
     border-radius:20px;
     margin-top:30px;
+    backdrop-filter:blur(10px);
+    border:1px solid var(--borde);
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
 }
 
 /* MODALES */
@@ -75,28 +93,44 @@ body{
     height:100%;
     top:0;
     left:0;
-    background:rgba(0,0,0,0.7);
+    background:rgba(0,0,0,0.8);
     display:none;
     justify-content:center;
     align-items:center;
     z-index:1000;
+    animation:fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
 }
 
 .box{
     background:#111;
     padding:25px;
     border-radius:15px;
-    width:300px;
+    width:320px;
+    box-shadow:0 0 25px rgba(255,0,0,0.4);
+    border:1px solid #ff000040;
 }
 
+/* INPUTS */
 input{
     width:100%;
     padding:10px;
-    margin:5px 0;
+    margin:8px 0;
     border:none;
     border-radius:8px;
-    background:#222;
+    background:#1a1a1a;
     color:white;
+    outline:none;
+    transition:0.2s;
+}
+
+input:focus{
+    background:#222;
+    box-shadow:0 0 8px rgba(255,0,0,0.5);
 }
 
 /* MENSAJE */
@@ -104,9 +138,20 @@ input{
     position:fixed;
     bottom:20px;
     right:20px;
-    padding:12px;
+    padding:12px 18px;
     border-radius:10px;
     display:none;
+    font-size:14px;
+    box-shadow:0 0 15px rgba(0,0,0,0.5);
+}
+
+/* TEXTO */
+h2{
+    letter-spacing:1px;
+}
+
+small{
+    color:#ccc;
 }
 </style>
 </head>
