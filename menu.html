@@ -8,48 +8,44 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
 
 body{
-background:#0a0a0a;
-color:white;
-display:flex;
-flex-direction:column;
-min-height:100vh;
+    background:#0a0a0a;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
 }
 
 /* NAV */
 .navbar{
-display:flex;
-justify-content:space-between;
-padding:15px 25px;
-background:#120000;
+    display:flex;
+    justify-content:space-between;
+    padding:15px 25px;
+    background:#120000;
 }
 
 .navbar button{
-background:#ff0000;
-border:none;
-color:white;
-padding:8px 15px;
-border-radius:8px;
-cursor:pointer;
+    background:#ff0000;
+    border:none;
+    color:white;
+    padding:8px 15px;
+    border-radius:8px;
+    cursor:pointer;
 }
 
 /* TABS */
 .tabs{
-display:flex;
-gap:10px;
-padding:15px 20px;
+    display:flex;
+    gap:10px;
+    padding:15px 20px;
 }
 
 .tabs button{
-background:#1a1a1a;
-border:none;
-padding:10px 15px;
-color:white;
-border-radius:8px;
-cursor:pointer;
-}
-
-.tabs button:hover{
-background:#ff000020;
+    background:#1a1a1a;
+    border:none;
+    padding:10px 15px;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
 }
 
 /* CONTENT */
@@ -65,14 +61,11 @@ background:#ff000020;
 /* PERFIL */
 .profile{background:#111;padding:20px;border-radius:12px;max-width:400px;}
 
-/* EVENT */
-.event{background:#111;padding:15px;border-radius:12px;margin-bottom:10px;}
-
 /* CHAT */
 .chat-toggle{
 position:fixed;bottom:20px;right:20px;
-background:#ff0000;border:none;color:white;
-padding:12px;border-radius:50%;cursor:pointer;
+background:#ff0000;color:white;border:none;
+padding:12px;border-radius:50%;cursor:pointer;z-index:1000;
 }
 
 .chat-box{
@@ -86,15 +79,19 @@ overflow:hidden;
 box-shadow:0 0 25px rgba(255,0,0,0.4);
 }
 
+/* HEADER */
 .chat-header{
 background:#1a0000;
 padding:10px;
 display:flex;
 justify-content:space-between;
+font-weight:bold;
+cursor:move;
 }
 
 .online{color:#0f0;font-size:12px;}
 
+/* MENSAJES */
 .chat-messages{
 flex:1;
 overflow-y:auto;
@@ -115,11 +112,9 @@ font-size:13px;
 .me{background:#ff0000;align-self:flex-end;}
 .other{background:#222;align-self:flex-start;}
 
-.chat-user{
-font-size:10px;
-opacity:0.6;
-margin-bottom:2px;
-}
+.role-admin{border-left:4px solid red;}
+.role-mod{border-left:4px solid cyan;}
+.role-vip{border-left:4px solid gold;}
 
 /* INPUT */
 .chat-input{display:flex;border-top:1px solid #222;}
@@ -170,9 +165,7 @@ display:none;
 <button onclick="pagar()">Pagar</button>
 </div>
 
-<div id="musica" class="section">
-<h2>🎵 Música</h2>
-</div>
+<div id="musica" class="section"><h2>🎵 Música</h2></div>
 
 <div id="eventos" class="section">
 <h2>🎉 Eventos</h2>
@@ -189,7 +182,6 @@ display:none;
 <button class="chat-toggle" onclick="toggleChat()">💬</button>
 
 <div class="chat-box" id="chatBoxDrag">
-
 <div class="chat-header">
 <span>💬 Chat</span>
 <span class="online" id="onlineCount">0 online</span>
@@ -201,7 +193,6 @@ display:none;
 <input id="mensajeInput" placeholder="Escribe...">
 <button onclick="enviarMensaje()">➤</button>
 </div>
-
 </div>
 
 <div class="footer">© 2026 LIL NAAY</div>
@@ -212,11 +203,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
 getFirestore, collection, getDocs, addDoc,
 onSnapshot, query, orderBy, serverTimestamp,
-doc, setDoc
+where, doc, setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
-apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+apiKey:"TU_API_KEY",
 authDomain:"lil-naay.firebaseapp.com",
 projectId:"lil-naay"
 });
@@ -230,26 +221,39 @@ document.getElementById(sec).classList.add("active");
 }
 
 /* PERFIL */
-function cargarPerfil(){
-let email = localStorage.getItem("usuario");
-document.getElementById("perfilData").innerHTML = `Usuario: ${email}`;
+async function obtenerPerfil(email){
+const q = query(collection(db,"usuarios"), where("email","==",email));
+const snap = await getDocs(q);
+return snap.empty ? null : snap.docs[0].data();
 }
 
-/* CHAT */
-let lastMsg="";
-let lastTime=0;
+async function cargarPerfil(){
+let email = localStorage.getItem("usuario");
+if(!email) return;
+
+let data = await obtenerPerfil(email);
+
+document.getElementById("perfilData").innerHTML=`
+<p><b>Usuario:</b> ${data?.username || email}</p>
+<p><b>Email:</b> ${email}</p>
+<p><b>Rol:</b> ${data?.admin?"ADMIN":data?.mod?"MOD":data?.vip?"VIP":"USER"}</p>
+<p><b>País:</b> ${data?.pais||"-"}</p>
+`;
+}
 
 /* ONLINE */
+const onlineRef = collection(db,"online");
+
 setInterval(async ()=>{
 let email = localStorage.getItem("usuario");
 if(!email) return;
 
-await setDoc(doc(collection(db,"online"),email),{
+await setDoc(doc(onlineRef,email),{
 time:Date.now()
 });
 },5000);
 
-onSnapshot(collection(db,"online"),snap=>{
+onSnapshot(onlineRef,snap=>{
 let count=0;
 let now=Date.now();
 
@@ -260,49 +264,62 @@ if(now - d.data().time < 10000) count++;
 onlineCount.innerText = count+" online";
 });
 
-/* MENSAJES */
+/* CHAT */
+let lastMsg="", lastTime=0;
+
 const qChat = query(collection(db,"chat"), orderBy("fecha"));
 
-onSnapshot(qChat,(snap)=>{
-chatBox.innerHTML="";
+onSnapshot(qChat,async snap=>{
+let chat = document.getElementById("chatBox");
+chat.innerHTML="";
 
 let email = localStorage.getItem("usuario");
 
-snap.forEach(d=>{
+for(const d of snap.docs){
 let m = d.data();
+let perfil = await obtenerPerfil(m.email);
 
 let div = document.createElement("div");
-div.className = "msg " + (m.email===email ? "me":"other");
 
-div.innerHTML = `
-<div class="chat-user">${m.usuario}</div>
-${m.texto}
-`;
+div.className="msg "+(m.email===email?"me":"other");
 
-chatBox.appendChild(div);
-});
+if(perfil?.admin) div.classList.add("role-admin");
+else if(perfil?.mod) div.classList.add("role-mod");
+else if(perfil?.vip) div.classList.add("role-vip");
+
+div.innerText = m.usuario+": "+m.texto;
+
+chat.appendChild(div);
+}
 
 /* NOTI */
-let docs=snap.docs;
-if(docs.length){
-let ultimo=docs[docs.length-1].data();
+if(snap.docs.length){
+let ultimo = snap.docs[snap.docs.length-1].data();
 if(ultimo.texto !== lastMsg){
 noti.style.display="block";
 setTimeout(()=>noti.style.display="none",2000);
-lastMsg=ultimo.texto;
+lastMsg = ultimo.texto;
 }
 }
 
-chatBox.scrollTop = chatBox.scrollHeight;
+chat.scrollTop = chat.scrollHeight;
 });
 
 /* ENVIAR */
 window.enviarMensaje = async ()=>{
 
-let texto = mensajeInput.value.trim();
+let input = mensajeInput;
+let texto = input.value.trim();
 let email = localStorage.getItem("usuario");
 
 if(!texto || !email) return;
+
+let perfil = await obtenerPerfil(email);
+
+/* BAN */
+if(perfil?.ban && Date.now() < perfil.banHasta){
+return alert("🚫 Estás baneado");
+}
 
 /* ANTI SPAM */
 if(texto === lastMsg && Date.now()-lastTime < 3000){
@@ -313,13 +330,13 @@ lastMsg = texto;
 lastTime = Date.now();
 
 await addDoc(collection(db,"chat"),{
-usuario:email,
-email:email,
-texto:texto,
-fecha:serverTimestamp()
+usuario: perfil?.username || email,
+email,
+texto,
+fecha: serverTimestamp()
 });
 
-mensajeInput.value="";
+input.value="";
 }
 
 /* ENTER */
@@ -327,7 +344,7 @@ mensajeInput.addEventListener("keypress",e=>{
 if(e.key==="Enter") enviarMensaje();
 });
 
-/* TOGGLE */
+/* CHAT UI */
 window.toggleChat = ()=>{
 chatBoxDrag.style.display =
 chatBoxDrag.style.display==="flex"?"none":"flex";
@@ -337,14 +354,15 @@ chatBoxDrag.style.display==="flex"?"none":"flex";
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 async function cargarProductos(){
-productos.innerHTML="";
+let c = productos;
+c.innerHTML="";
 
 let snap = await getDocs(collection(db,"productos"));
 
 snap.forEach(doc=>{
 let p = doc.data();
 
-productos.innerHTML+=`
+c.innerHTML+=`
 <div class="product">
 <img src="${p.imagen}">
 <p>${p.nombre}</p>
@@ -361,18 +379,17 @@ mostrarCarrito();
 }
 
 function mostrarCarrito(){
-let totalPrecio=0;
-carrito.innerHTML="";
-
-let ul=document.getElementById("carrito");
-ul.innerHTML="";
+let ul=carrito;
+let lista=document.getElementById("carrito");
+lista.innerHTML="";
+let total=0;
 
 carrito.forEach(p=>{
-ul.innerHTML+=`<li>${p.nombre} $${p.precio}</li>`;
-totalPrecio+=p.precio;
+lista.innerHTML+=`<li>${p.nombre} $${p.precio}</li>`;
+total+=p.precio;
 });
 
-document.getElementById("total").innerText=totalPrecio;
+document.getElementById("total").innerText=total;
 }
 
 window.pagar=async()=>{
