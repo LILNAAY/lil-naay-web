@@ -107,6 +107,21 @@ max-width:75%;
 padding:8px 12px;
 border-radius:12px;
 font-size:13px;
+
+/* 🔥 FIX IMPORTANTE */
+word-wrap: break-word;
+overflow-wrap: break-word;
+word-break: break-word;
+white-space: pre-wrap;
+}
+
+/* 🔥 NOMBRE DEL USUARIO */
+.msg b{
+display:block;
+font-size:11px;
+opacity:0.7;
+margin-bottom:2px;
+word-break: break-word;
 }
 
 .me{background:#ff0000;align-self:flex-end;}
@@ -287,7 +302,7 @@ if(perfil?.admin) div.classList.add("role-admin");
 else if(perfil?.mod) div.classList.add("role-mod");
 else if(perfil?.vip) div.classList.add("role-vip");
 
-div.innerText = m.usuario+": "+m.texto;
+div.innerHTML = `<b>${m.usuario}</b>${m.texto}`;
 
 chat.appendChild(div);
 }
