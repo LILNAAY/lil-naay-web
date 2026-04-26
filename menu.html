@@ -94,15 +94,9 @@ body{
 
 /* CHAT */
 .chat-toggle{
-background:linear-gradient(45deg,#ff0000,#8b0000);
-color:white;
-border:none;
-padding:14px;
-border-radius:50%;
-cursor:pointer;
-z-index:1000;
-box-shadow:0 0 20px red;
-transition:0.3s;
+position:fixed;bottom:20px;right:20px;
+background:#ff0000;color:white;border:none;
+padding:12px;border-radius:50%;cursor:pointer;z-index:1000;
 }
 
 .chat-toggle:hover{
@@ -110,18 +104,14 @@ transform:scale(1.1);
 }
 
 .chat-box{
-position:fixed;
-bottom:80px;
-right:20px;
-width:320px;
-height:420px;
-background:linear-gradient(180deg,#0d0d0d,#1a0000);
+position:fixed;bottom:80px;right:20px;
+width:320px;height:420px;
+background:#0d0d0d;
 border-radius:15px;
 display:none;
 flex-direction:column;
 overflow:hidden;
-box-shadow:0 0 30px rgba(255,0,0,0.5);
-border:1px solid rgba(255,0,0,0.3);
+box-shadow:0 0 25px rgba(255,0,0,0.4);
 }
 /* HEADER */
 .chat-header{
@@ -168,17 +158,9 @@ margin-bottom:2px;
 word-break: break-word;
 }
 
-.me{
-background:linear-gradient(45deg,#ff0000,#8b0000);
-align-self:flex-end;
-box-shadow:0 0 10px red;
-}
+.me{background:#ff0000;align-self:flex-end;}
 
-.other{
-background:#1a1a1a;
-align-self:flex-start;
-border:1px solid rgba(255,255,255,0.1);
-}
+.other{background:#222;align-self:flex-start;}
 
 .role-admin{border-left:4px solid red;}
 .role-mod{border-left:4px solid cyan;}
