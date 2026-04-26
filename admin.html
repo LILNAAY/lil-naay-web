@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Admin DIOS</title>
+<title>Admin LIL NAAY</title>
 
 <style>
 body{
@@ -25,20 +25,54 @@ input{
     padding:10px;
     margin:5px;
     width:250px;
+    border:none;
+    border-radius:5px;
+}
+
+/* NAVBAR */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    padding:15px 20px;
+    background:#140909;
+}
+
+/* GRID */
+.container{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap:20px;
+    padding:20px;
+}
+
+/* CARDS */
+.card{
+    background:rgba(255,255,255,0.05);
+    padding:15px;
+    border-radius:10px;
+    max-height:300px;
+    overflow:auto;
 }
 
 button{
     padding:10px;
-    background:red;
-    color:white;
+    background:#8b0000;
     border:none;
+    color:white;
     cursor:pointer;
+    border-radius:5px;
 }
 
-/* PANEL */
-.panel{
-    display:none;
-    padding:20px;
+li{
+    font-size:13px;
+    margin-bottom:5px;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    padding-bottom:5px;
+}
+
+.stats{
+    font-size:18px;
+    margin:5px 0;
 }
 </style>
 </head>
@@ -47,32 +81,73 @@ button{
 
 <!-- LOGIN -->
 <div id="loginBox" class="login">
-    <h2>🔐 Admin</h2>
+    <h2>🔐 Acceso Admin</h2>
     <input id="email" placeholder="Correo">
     <input id="pass" type="password" placeholder="Contraseña">
-    <button id="btnLogin">Entrar</button>
+    <button onclick="login()">Entrar</button>
 </div>
 
 <!-- PANEL -->
-<div id="panel" class="panel">
-    <h2>🔥 Bienvenido Admin</h2>
-    <button id="btnLogout">Cerrar sesión</button>
+<div id="panel" style="display:none;">
+    <div class="navbar">
+        <h2>⚙️ Panel Admin GOD</h2>
+        <button onclick="logout()">Cerrar sesión</button>
+    </div>
+
+    <div class="container">
+
+        <div class="card">
+            <h3>📊 Estadísticas</h3>
+            <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
+            <div class="stats">Compras: <span id="totalCompras">0</span></div>
+            <div class="stats">Productos: <span id="totalProductos">0</span></div>
+            <div class="stats">Mensajes: <span id="totalChat">0</span></div>
+        </div>
+
+        <div class="card">
+            <h3>👥 Suscriptores</h3>
+            <ul id="suscriptores"></ul>
+        </div>
+
+        <div class="card">
+            <h3>💳 Compras</h3>
+            <ul id="compras"></ul>
+        </div>
+
+        <div class="card">
+            <h3>📡 Actividad</h3>
+            <ul id="actividad"></ul>
+        </div>
+
+        <div class="card">
+            <h3>🛍️ Productos</h3>
+            <ul id="productos"></ul>
+        </div>
+
+        <div class="card">
+            <h3>➕ Crear Producto</h3>
+            <input id="nombre" placeholder="Nombre">
+            <input id="precio" placeholder="Precio">
+            <input id="imagen" placeholder="URL Imagen">
+            <button onclick="crearProducto()">Crear</button>
+        </div>
+
+    </div>
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-getFirestore, doc, getDoc
+getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 import {
 getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-/* 🔥 CONFIG */
 const firebaseConfig = {
-apiKey: "TU_API_KEY",
+apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
 authDomain: "lil-naay.firebaseapp.com",
 projectId: "lil-naay"
 };
@@ -81,72 +156,200 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/* ELEMENTOS */
-const btnLogin = document.getElementById("btnLogin");
-const btnLogout = document.getElementById("btnLogout");
+/* LOGIN */
+window.login = function(){
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("pass").value;
 
-/* 🔐 LOGIN */
-btnLogin.onclick = async function(){
+    signInWithEmailAndPassword(auth,email,pass)
+    .then(()=> alert("Bienvenido 🔥"))
+    .catch(e=> alert("Error: "+e.message));
+}
 
-    const email = document.getElementById("email").value.trim();
-    const pass = document.getElementById("pass").value.trim();
+/* LOGOUT */
+window.logout = function(){
+    signOut(auth);
+}
 
-    if(!email || !pass){
-        alert("Completa todos los campos ⚠️");
+/* 🔥 PROTECCIÓN ADMIN (UID SYSTEM) */
+onAuthStateChanged(auth, async user=>{
+    if(user){
+
+        const uid = user.uid;
+
+        // 🔥 BUSCAR DIRECTO POR UID (SOLUCIÓN PRO)
+        const userDoc = await getDocs(collection(db,"usuarios"));
+
+        let esAdmin = false;
+
+        userDoc.forEach(d=>{
+            if(d.id === uid && d.data().admin === true){
+                esAdmin = true;
+            }
+        });
+
+        if(!esAdmin){
+            alert("No eres admin ❌");
+            logout();
+            return;
+        }
+
+        document.getElementById("loginBox").style.display="none";
+        document.getElementById("panel").style.display="block";
+
+        cargarTodo();
+
+    }else{
+        document.getElementById("loginBox").style.display="flex";
+        document.getElementById("panel").style.display="none";
+    }
+});
+
+/* CARGAR TODO */
+function cargarTodo(){
+    cargarSuscriptores();
+    cargarCompras();
+    cargarActividad();
+    cargarProductos();
+    cargarStats();
+}
+
+/* STATS */
+async function cargarStats(){
+    document.getElementById("totalUsuarios").innerText = (await getDocs(collection(db,"usuarios"))).size;
+    document.getElementById("totalCompras").innerText = (await getDocs(collection(db,"compras"))).size;
+    document.getElementById("totalProductos").innerText = (await getDocs(collection(db,"productos"))).size;
+    document.getElementById("totalChat").innerText = (await getDocs(collection(db,"chat"))).size;
+}
+
+/* PRODUCTOS */
+async function cargarProductos(){
+    const lista = document.getElementById("productos");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"productos"));
+
+    snap.forEach(docSnap=>{
+        let p = docSnap.data();
+        let id = docSnap.id;
+
+        lista.innerHTML += `
+        <li>
+        <b>${p.nombre}</b> - $${p.precio}
+        <br>
+        <button onclick="editarProducto('${id}','${p.nombre}',${p.precio})">✏️</button>
+        <button onclick="eliminarProducto('${id}')">🗑️</button>
+        </li>`;
+    });
+}
+
+/* SUSCRIPTORES */
+async function cargarSuscriptores(){
+    const lista = document.getElementById("suscriptores");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"suscriptores"));
+
+    snap.forEach(d=>{
+        lista.innerHTML += `<li>${d.data().email}</li>`;
+    });
+}
+
+/* COMPRAS */
+async function cargarCompras(){
+    const lista = document.getElementById("compras");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"compras"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+
+        let productos = d.productos.map(p =>
+            `${p.nombre} | ${p.talla || "-"} | ${p.color || "-"} | $${p.precio}`
+        ).join("<br>");
+
+        lista.innerHTML += `<li>${productos}</li>`;
+    });
+}
+
+/* ACTIVIDAD */
+async function cargarActividad(){
+    const lista = document.getElementById("actividad");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"actividad"));
+
+    snap.forEach(d=>{
+        lista.innerHTML += `<li>${d.data().accion} - ${d.data().fecha}</li>`;
+    });
+}
+
+/* EDITAR */
+window.editarProducto = async function(id,nombre,precio){
+    let n = prompt("Nuevo nombre:", nombre);
+    let p = prompt("Nuevo precio:", precio);
+
+    if(!n || isNaN(p)) return;
+
+    await updateDoc(doc(db,"productos",id),{
+        nombre:n,
+        precio:Number(p)
+    });
+
+    await addDoc(collection(db,"actividad"),{
+        accion:"Producto editado: "+n,
+        fecha:new Date().toLocaleString()
+    });
+
+    cargarProductos();
+}
+
+/* ELIMINAR */
+window.eliminarProducto = async function(id){
+    if(!confirm("Eliminar producto?")) return;
+
+    await deleteDoc(doc(db,"productos",id));
+
+    await addDoc(collection(db,"actividad"),{
+        accion:"Producto eliminado",
+        fecha:new Date().toLocaleString()
+    });
+
+    cargarProductos();
+}
+
+/* CREAR */
+window.crearProducto = async function(){
+    let nombre = document.getElementById("nombre").value;
+    let precio = Number(document.getElementById("precio").value);
+    let imagen = document.getElementById("imagen").value;
+
+    if(!nombre || isNaN(precio)){
+        alert("Datos inválidos");
         return;
     }
 
-    try{
-        await signInWithEmailAndPassword(auth, email, pass);
-        console.log("Login correcto");
-    }catch(e){
-        console.error(e);
-        alert("Error: " + e.message);
-    }
-};
+    await addDoc(collection(db,"productos"),{
+        nombre,
+        precio,
+        imagen,
+        stock:10
+    });
 
-/* 🔐 LOGOUT */
-btnLogout.onclick = () => signOut(auth);
+    await addDoc(collection(db,"actividad"),{
+        accion:"Producto creado: "+nombre,
+        fecha:new Date().toLocaleString()
+    });
 
-/* 🔐 VERIFICAR ADMIN POR UID (SOLUCIÓN REAL) */
-onAuthStateChanged(auth, async (user)=>{
+    alert("Producto creado 🔥");
 
-    if(user){
-        console.log("UID:", user.uid);
+    document.getElementById("nombre").value="";
+    document.getElementById("precio").value="";
+    document.getElementById("imagen").value="";
 
-        try{
-            const ref = doc(db, "usuarios", user.uid);
-            const snap = await getDoc(ref);
-
-            if(!snap.exists()){
-                alert("No existe usuario en Firestore ❌");
-                signOut(auth);
-                return;
-            }
-
-            const data = snap.data();
-
-            if(!data.admin){
-                alert("No eres admin ❌");
-                signOut(auth);
-                return;
-            }
-
-            // 🔥 ACCESO PERMITIDO
-            loginBox.style.display = "none";
-            panel.style.display = "block";
-
-        }catch(e){
-            console.error(e);
-            alert("Error Firestore");
-        }
-
-    }else{
-        loginBox.style.display = "flex";
-        panel.style.display = "none";
-    }
-
-});
+    cargarProductos();
+}
 
 </script>
 
