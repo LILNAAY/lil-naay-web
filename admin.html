@@ -103,7 +103,7 @@ li{font-size:13px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.0
 </div>
 
 </div>
-</div>
+</div><!-- SOLO TE DOY LA PARTE ARREGLADA CLAVE -->
 
 <script type="module">
 
@@ -148,7 +148,10 @@ if(!user){loginBox.style.display="flex";panel.style.display="none";return;}
 
 const snap=await getDocs(collection(db,"usuarios"));
 let ok=false;
-snap.forEach(d=>{if(d.id===user.uid && d.data().admin) ok=true;});
+
+snap.forEach(d=>{
+if(d.id===user.uid && d.data().admin) ok=true;
+});
 
 if(!ok){alert("No admin");logout();return;}
 
@@ -157,18 +160,9 @@ panel.style.display="flex";
 cargarTodo();
 });
 
-/* CARGA */
-function cargarTodo(){
-cargarStats();
-cargarProductos();
-cargarSuscriptores();
-cargarCompras();
-cargarActividad();
-cargarChatAdmin();
-}
-
-/* CHAT ADMIN */
+/* ================= CHAT ADMIN ================= */
 function cargarChatAdmin(){
+
 onSnapshot(collection(db,"chat"),snap=>{
 
 chatAdmin.innerHTML="";
@@ -177,17 +171,22 @@ snap.forEach(docSnap=>{
 let m=docSnap.data();
 let id=docSnap.id;
 
+/* 🎨 COLORES POR ROL */
 let color = m.rol==="admin"?"red":
 m.rol==="mod"?"cyan":
 m.rol==="vip"?"gold":"white";
 
 chatAdmin.innerHTML += `
-<li>
+<li style="color:${color}">
 <b>${m.usuario}</b>: ${m.texto}
 <br>
+
 <button onclick="eliminarMensaje('${id}')">🗑️</button>
+
 <button onclick="cambiarRol('${m.email}')">🎭 Rol</button>
+
 <button onclick="banearUsuario('${m.email}')">🚫 BAN</button>
+
 </li>`;
 });
 
@@ -195,6 +194,7 @@ chatAdmin.innerHTML += `
 let docs=snap.docs;
 if(docs.length){
 let ultimo=docs[docs.length-1].data();
+
 if(ultimo.texto!==ultimoMensaje){
 mostrarNoti();
 ultimoMensaje=ultimo.texto;
@@ -204,54 +204,73 @@ ultimoMensaje=ultimo.texto;
 });
 }
 
+/* 🔔 NOTI */
 function mostrarNoti(){
 noti.style.display="block";
 setTimeout(()=>noti.style.display="none",3000);
 }
 
-/* MODERACION */
-window.eliminarMensaje=id=>deleteDoc(doc(db,"chat",id));
-
-window.cambiarRol = async function(email){
-
-    let rol = prompt("admin / mod / vip / user");
-    if(!rol) return;
-
-    const snap = await getDocs(collection(db,"usuarios"));
-
-    snap.forEach(async d=>{
-        if(d.data().email === email){
-
-            await updateDoc(doc(db,"usuarios",d.id),{
-                admin: rol === "admin",
-                mod: rol === "mod",
-                vip: rol === "vip"
-            });
-
-            console.log("ROL CAMBIADO:", email);
-        }
-    });
-
-    alert("Rol actualizado 🔥");
+/* 🗑️ BORRAR MENSAJE */
+window.eliminarMensaje=id=>{
+deleteDoc(doc(db,"chat",id));
 }
 
-window.banearUsuario=async nombre=>{
+/* 🎭 CAMBIAR ROL (FIX REAL) */
+window.cambiarRol = async function(email){
+
+if(!email){
+alert("Este usuario no tiene email guardado ❌");
+return;
+}
+
+let rol = prompt("admin / mod / vip / user");
+
+if(!rol) return;
+
+const snap = await getDocs(collection(db,"usuarios"));
+
+snap.forEach(async d=>{
+let data = d.data();
+
+if(data.email === email){
+
+await updateDoc(doc(db,"usuarios",d.id),{
+admin: rol==="admin",
+mod: rol==="mod",
+vip: rol==="vip"
+});
+
+console.log("ROL ACTUALIZADO:", email);
+}
+});
+
+alert("Rol actualizado 🔥");
+}
+
+/* 🚫 BAN */
+window.banearUsuario=async function(email){
+
 let min=prompt("Minutos BAN");
 if(!min) return;
 
 const snap=await getDocs(collection(db,"usuarios"));
 
 snap.forEach(async d=>{
-if(d.data().username===nombre){
+let data = d.data();
+
+if(data.email===email){
+
 await updateDoc(doc(db,"usuarios",d.id),{
 ban:true,
 banHasta:Date.now()+min*60000
 });
 }
 });
-alert("Baneado");
+
+alert("Usuario baneado 🚫");
 }
 
+/* RESTO IGUAL */
 /* RESTO */
 async function cargarStats(){
 totalUsuarios.innerText=(await getDocs(collection(db,"usuarios"))).size;
