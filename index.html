@@ -20,7 +20,7 @@ body{
     font-family:'Segoe UI',sans-serif;
     color:white;
     background:black;
-    overflow:hidden; /* 🔥 quita el scroll */
+    overflow-x:hidden; /* 🔥 SOLO horizontal */
     height:100vh;
 }
 
@@ -28,12 +28,13 @@ body{
 .hero{
     position:relative;
     width:100%;
-    height:60vh; /* 🔥 ocupa 60% de pantalla */
+    height:60vh;
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
 }
+
 /* CAPAS */
 .hero::before{
     content:"";
@@ -66,19 +67,22 @@ body{
 
 /* artista */
 .hero-artista{
-   pointer-events:none;
+    position:absolute;
+    pointer-events:none;
     bottom:0;
     left:50%;
-   transform:translateX(-24%);
+    transform:translateX(-30%); /* 🔥 mejor centrado */
     height:94%;
     max-height:420px;
     object-fit:contain;
     z-index:2;
     opacity:0.9;
 }
+
 /* texto */
 .hero-texto{
-   pointer-events:none;
+    position:absolute;
+    pointer-events:none;
     top:40%;
     left:50%;
     transform:translateX(-50%);
@@ -87,7 +91,7 @@ body{
     z-index:3;
 }
 
-    /* agregado nuevo */
+/* bio */
 .hero-bio{
     position:absolute;
     top:65%;
@@ -100,7 +104,6 @@ body{
     text-align:center;
 }
 
-    
 /* botones */
 .hero-buttons{
     position:absolute;
@@ -111,7 +114,7 @@ body{
     gap:15px;
     z-index:4;
 }
- 
+
 .btn-img{
     background:none;
     border:none;
@@ -129,7 +132,7 @@ body{
     filter:drop-shadow(0 0 25px red);
 }
 
-    /* TEXTO CARD */
+/* TEXTO CARD */
 .card p{
     margin-top:20px;
     color:#ccc;
@@ -140,7 +143,7 @@ body{
 .container{
     max-width:1000px;
     margin:auto;
-    height:40vh; /* 🔥 ocupa el resto */
+    height:40vh;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -151,12 +154,9 @@ body{
     width:100%;
     max-width:750px;
     padding:40px;
-
     border-radius:20px;
 
-    /* 🔥 fondo rojo oscuro con efecto */
     background:radial-gradient(circle at center, rgba(255,0,0,0.15), rgba(0,0,0,0.95));
-
     border:1px solid rgba(255,0,0,0.3);
 
     box-shadow:
@@ -164,9 +164,9 @@ body{
         inset 0 0 40px rgba(255,0,0,0.15);
 
     backdrop-filter:blur(10px);
-
     text-align:left;
 }
+
 .card h2{
     font-size:26px;
     margin-bottom:20px;
@@ -174,6 +174,7 @@ body{
     align-items:center;
     gap:10px;
 }
+
 .btn{
     background:linear-gradient(45deg,#8b0000,#ff0000);
     padding:12px 25px;
@@ -243,11 +244,7 @@ input:focus{
     z-index:10000;
 }
 
-/* ========================= */
-/* 📱 RESPONSIVE */
-/* ========================= */
-
-/* TABLET */
+/* RESPONSIVE */
 @media (max-width: 900px){
 
     .hero{
@@ -255,24 +252,18 @@ input:focus{
     }
 
     .hero-artista{
-    left:50%;
-    transform:translateX(-50%);
-    max-width:80%;
-    height:auto;
-}
-
-.hero-buttons{
-    left:50%;
-    transform:translateX(-50%);
-    bottom:20px;
-}
-    .btn-img img{
-        width:90px;
+        left:50%;
+        transform:translateX(-50%);
+        max-width:80%;
+        height:auto;
     }
 
-    .card{
-        margin-top:-40px;
-        padding:30px;
+    .hero-buttons{
+        bottom:20px;
+    }
+
+    .btn-img img{
+        width:90px;
     }
 }
 
@@ -285,11 +276,10 @@ input:focus{
 
     .hero-artista{
         left:50%;
-      transform:translate(-8%, 70px);
+        transform:translateX(-50%) translateY(40px); /* 🔥 baja sin romper */
         max-width:90%;
         height:auto;
         opacity:0.8;
-        top:-150px;
     }
 
     .hero-texto{
@@ -304,7 +294,6 @@ input:focus{
     .btn-img img{
         width:65px;
     }
-
 
     .container{
         padding:20px 10px;
