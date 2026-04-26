@@ -45,12 +45,6 @@ button{
     color:white;
     cursor:pointer;
     border-radius:8px;
-    transition:0.3s;
-}
-
-button:hover{
-    transform:scale(1.05);
-    opacity:0.9;
 }
 
 /* LAYOUT */
@@ -79,7 +73,6 @@ button:hover{
     border-radius:6px;
     color:#ccc;
     text-decoration:none;
-    transition:0.3s;
 }
 
 .sidebar a:hover{
@@ -97,7 +90,6 @@ button:hover{
 .navbar{
     display:flex;
     justify-content:space-between;
-    align-items:center;
     margin-bottom:20px;
 }
 
@@ -114,19 +106,11 @@ button:hover{
     padding:20px;
     border-radius:12px;
     border:1px solid rgba(255,0,0,0.2);
-    box-shadow:0 0 15px rgba(255,0,0,0.1);
-    transition:0.3s;
     max-height:300px;
     overflow:auto;
 }
 
-.card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 0 25px rgba(255,0,0,0.3);
-}
-
 .card h3{
-    margin-bottom:10px;
     color:#ff4d4d;
 }
 
@@ -135,14 +119,12 @@ li{
     font-size:13px;
     margin-bottom:8px;
     border-bottom:1px solid rgba(255,255,255,0.05);
-    padding-bottom:5px;
 }
 
 /* STATS */
 .stats{
-    font-size:20px;
+    font-size:18px;
     margin:10px 0;
-    font-weight:bold;
     color:#ff4d4d;
 }
 </style>
@@ -163,11 +145,11 @@ li{
 
     <div class="sidebar">
         <h2>🔥 LIL NAAY</h2>
-        <a href="#">📊 Dashboard</a>
-        <a href="#">👥 Usuarios</a>
-        <a href="#">💳 Compras</a>
-        <a href="#">🛍️ Productos</a>
-        <a href="#">📡 Actividad</a>
+        <a href="#" onclick="mostrarSeccion('dashboard')">📊 Dashboard</a>
+        <a href="#" onclick="mostrarSeccion('usuarios')">👥 Usuarios</a>
+        <a href="#" onclick="mostrarSeccion('compras')">💳 Compras</a>
+        <a href="#" onclick="mostrarSeccion('productos')">🛍️ Productos</a>
+        <a href="#" onclick="mostrarSeccion('actividad')">📡 Actividad</a>
         <a href="#" onclick="logout()">🚪 Salir</a>
     </div>
 
@@ -178,31 +160,37 @@ li{
             <button onclick="logout()">Cerrar sesión</button>
         </div>
 
-        <div class="container">
-
-            <div class="card">
-                <h3>📊 Estadísticas</h3>
-                <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
-                <div class="stats">Compras: <span id="totalCompras">0</span></div>
-                <div class="stats">Productos: <span id="totalProductos">0</span></div>
-                <div class="stats">Mensajes: <span id="totalChat">0</span></div>
+        <!-- DASHBOARD -->
+        <div id="dashboardSection" class="section">
+            <div class="container">
+                <div class="card">
+                    <h3>📊 Estadísticas</h3>
+                    <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
+                    <div class="stats">Compras: <span id="totalCompras">0</span></div>
+                    <div class="stats">Productos: <span id="totalProductos">0</span></div>
+                    <div class="stats">Mensajes: <span id="totalChat">0</span></div>
+                </div>
             </div>
+        </div>
 
+        <!-- USUARIOS -->
+        <div id="usuariosSection" class="section" style="display:none;">
             <div class="card">
                 <h3>👥 Suscriptores</h3>
                 <ul id="suscriptores"></ul>
             </div>
+        </div>
 
+        <!-- COMPRAS -->
+        <div id="comprasSection" class="section" style="display:none;">
             <div class="card">
                 <h3>💳 Compras</h3>
                 <ul id="compras"></ul>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>📡 Actividad</h3>
-                <ul id="actividad"></ul>
-            </div>
-
+        <!-- PRODUCTOS -->
+        <div id="productosSection" class="section" style="display:none;">
             <div class="card">
                 <h3>🛍️ Productos</h3>
                 <ul id="productos"></ul>
@@ -215,7 +203,14 @@ li{
                 <input id="imagen" placeholder="URL Imagen">
                 <button onclick="crearProducto()">Crear</button>
             </div>
+        </div>
 
+        <!-- ACTIVIDAD -->
+        <div id="actividadSection" class="section" style="display:none;">
+            <div class="card">
+                <h3>📡 Actividad</h3>
+                <ul id="actividad"></ul>
+            </div>
         </div>
 
     </div>
@@ -257,6 +252,24 @@ window.logout = function(){
     signOut(auth);
 }
 
+/* CAMBIO DE SECCIONES */
+window.mostrarSeccion = function(seccion){
+
+    const secciones = [
+        "dashboardSection",
+        "usuariosSection",
+        "comprasSection",
+        "productosSection",
+        "actividadSection"
+    ];
+
+    secciones.forEach(id=>{
+        document.getElementById(id).style.display = "none";
+    });
+
+    document.getElementById(seccion + "Section").style.display = "block";
+}
+
 /* PROTECCIÓN ADMIN */
 onAuthStateChanged(auth, async user=>{
     if(user){
@@ -281,6 +294,7 @@ onAuthStateChanged(auth, async user=>{
         document.getElementById("loginBox").style.display="none";
         document.getElementById("panel").style.display="flex";
 
+        mostrarSeccion("dashboard");
         cargarTodo();
 
     }else{
