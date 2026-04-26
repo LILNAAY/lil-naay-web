@@ -181,13 +181,13 @@ let color = m.rol==="admin"?"red":
 m.rol==="mod"?"cyan":
 m.rol==="vip"?"gold":"white";
 
-chatAdmin.innerHTML+=`
+chatAdmin.innerHTML += `
 <li>
-<b style="color:${color}">${m.usuario}</b>: ${m.texto}
+<b>${m.usuario}</b>: ${m.texto}
 <br>
 <button onclick="eliminarMensaje('${id}')">🗑️</button>
-<button onclick="cambiarRol('${m.usuario}')">🎭 Rol</button>
-<button onclick="banearUsuario('${m.usuario}')">🚫 BAN</button>
+<button onclick="cambiarRol('${m.email}')">🎭 Rol</button>
+<button onclick="banearUsuario('${m.email}')">🚫 BAN</button>
 </li>`;
 });
 
@@ -212,22 +212,27 @@ setTimeout(()=>noti.style.display="none",3000);
 /* MODERACION */
 window.eliminarMensaje=id=>deleteDoc(doc(db,"chat",id));
 
-window.cambiarRol=async nombre=>{
-let rol=prompt("admin/mod/vip/user");
-if(!rol) return;
+window.cambiarRol = async function(email){
 
-const snap=await getDocs(collection(db,"usuarios"));
+    let rol = prompt("admin / mod / vip / user");
+    if(!rol) return;
 
-snap.forEach(async d=>{
-if(d.data().username===nombre){
-await updateDoc(doc(db,"usuarios",d.id),{
-admin:rol==="admin",
-mod:rol==="mod",
-vip:rol==="vip"
-});
-}
-});
-alert("Rol actualizado");
+    const snap = await getDocs(collection(db,"usuarios"));
+
+    snap.forEach(async d=>{
+        if(d.data().email === email){
+
+            await updateDoc(doc(db,"usuarios",d.id),{
+                admin: rol === "admin",
+                mod: rol === "mod",
+                vip: rol === "vip"
+            });
+
+            console.log("ROL CAMBIADO:", email);
+        }
+    });
+
+    alert("Rol actualizado 🔥");
 }
 
 window.banearUsuario=async nombre=>{
