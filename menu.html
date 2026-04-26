@@ -6,16 +6,51 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
-body{background:#0a0a0a;color:white;display:flex;flex-direction:column;min-height:100vh;}
+
+body{
+background:#0a0a0a;
+color:white;
+display:flex;
+flex-direction:column;
+min-height:100vh;
+}
 
 /* NAV */
-.navbar{display:flex;justify-content:space-between;padding:15px 25px;background:#120000;}
-.navbar button{background:#ff0000;border:none;color:white;padding:8px 15px;border-radius:8px;cursor:pointer;}
+.navbar{
+display:flex;
+justify-content:space-between;
+padding:15px 25px;
+background:#120000;
+}
+
+.navbar button{
+background:#ff0000;
+border:none;
+color:white;
+padding:8px 15px;
+border-radius:8px;
+cursor:pointer;
+}
 
 /* TABS */
-.tabs{display:flex;gap:10px;padding:15px 20px;}
-.tabs button{background:#1a1a1a;border:none;padding:10px 15px;color:white;border-radius:8px;cursor:pointer;}
-.tabs button:hover{background:#ff000020;}
+.tabs{
+display:flex;
+gap:10px;
+padding:15px 20px;
+}
+
+.tabs button{
+background:#1a1a1a;
+border:none;
+padding:10px 15px;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+
+.tabs button:hover{
+background:#ff000020;
+}
 
 /* CONTENT */
 .content{flex:1;padding:20px;}
@@ -30,14 +65,16 @@ body{background:#0a0a0a;color:white;display:flex;flex-direction:column;min-heigh
 /* PERFIL */
 .profile{background:#111;padding:20px;border-radius:12px;max-width:400px;}
 
+/* EVENT */
+.event{background:#111;padding:15px;border-radius:12px;margin-bottom:10px;}
+
 /* CHAT */
 .chat-toggle{
 position:fixed;bottom:20px;right:20px;
 background:#ff0000;border:none;color:white;
-padding:12px;border-radius:50%;cursor:pointer;z-index:1000;
+padding:12px;border-radius:50%;cursor:pointer;
 }
 
-/* CHAT BOX */
 .chat-box{
 position:fixed;bottom:80px;right:20px;
 width:320px;height:420px;
@@ -49,22 +86,15 @@ overflow:hidden;
 box-shadow:0 0 25px rgba(255,0,0,0.4);
 }
 
-/* HEADER */
 .chat-header{
 background:#1a0000;
 padding:10px;
-font-weight:bold;
 display:flex;
 justify-content:space-between;
 }
 
-/* ONLINE USERS */
-.online{
-font-size:12px;
-color:#0f0;
-}
+.online{color:#0f0;font-size:12px;}
 
-/* MENSAJES */
 .chat-messages{
 flex:1;
 overflow-y:auto;
@@ -84,6 +114,12 @@ font-size:13px;
 
 .me{background:#ff0000;align-self:flex-end;}
 .other{background:#222;align-self:flex-start;}
+
+.chat-user{
+font-size:10px;
+opacity:0.6;
+margin-bottom:2px;
+}
 
 /* INPUT */
 .chat-input{display:flex;border-top:1px solid #222;}
@@ -117,6 +153,8 @@ display:none;
 
 <div class="tabs">
 <button onclick="mostrar('tienda')">🛍️ Tienda</button>
+<button onclick="mostrar('musica')">🎵 Música</button>
+<button onclick="mostrar('eventos')">🎉 Eventos</button>
 <button onclick="mostrar('perfil')">👤 Perfil</button>
 </div>
 
@@ -132,8 +170,17 @@ display:none;
 <button onclick="pagar()">Pagar</button>
 </div>
 
+<div id="musica" class="section">
+<h2>🎵 Música</h2>
+</div>
+
+<div id="eventos" class="section">
+<h2>🎉 Eventos</h2>
+<div class="event">Próximamente 🔥</div>
+</div>
+
 <div id="perfil" class="section">
-<h2>Perfil</h2>
+<h2>👤 Perfil</h2>
 <div class="profile" id="perfilData"></div>
 </div>
 
@@ -142,6 +189,7 @@ display:none;
 <button class="chat-toggle" onclick="toggleChat()">💬</button>
 
 <div class="chat-box" id="chatBoxDrag">
+
 <div class="chat-header">
 <span>💬 Chat</span>
 <span class="online" id="onlineCount">0 online</span>
@@ -153,6 +201,7 @@ display:none;
 <input id="mensajeInput" placeholder="Escribe...">
 <button onclick="enviarMensaje()">➤</button>
 </div>
+
 </div>
 
 <div class="footer">© 2026 LIL NAAY</div>
@@ -163,7 +212,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
 getFirestore, collection, getDocs, addDoc,
 onSnapshot, query, orderBy, serverTimestamp,
-doc, setDoc, deleteDoc
+doc, setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
@@ -181,32 +230,26 @@ document.getElementById(sec).classList.add("active");
 }
 
 /* PERFIL */
-async function cargarPerfil(){
+function cargarPerfil(){
 let email = localStorage.getItem("usuario");
-if(!email) return;
-
-document.getElementById("perfilData").innerHTML =
-`Usuario: ${email}`;
+document.getElementById("perfilData").innerHTML = `Usuario: ${email}`;
 }
 
-/* ================= CHAT ================= */
-
+/* CHAT */
 let lastMsg="";
 let lastTime=0;
 
-/* ONLINE USERS */
-const onlineRef = collection(db,"online");
-
+/* ONLINE */
 setInterval(async ()=>{
 let email = localStorage.getItem("usuario");
 if(!email) return;
 
-await setDoc(doc(onlineRef,email),{
+await setDoc(doc(collection(db,"online"),email),{
 time:Date.now()
 });
 },5000);
 
-onSnapshot(onlineRef,snap=>{
+onSnapshot(collection(db,"online"),snap=>{
 let count=0;
 let now=Date.now();
 
@@ -214,15 +257,14 @@ snap.forEach(d=>{
 if(now - d.data().time < 10000) count++;
 });
 
-document.getElementById("onlineCount").innerText = count+" online";
+onlineCount.innerText = count+" online";
 });
 
 /* MENSAJES */
 const qChat = query(collection(db,"chat"), orderBy("fecha"));
 
 onSnapshot(qChat,(snap)=>{
-let chat = document.getElementById("chatBox");
-chat.innerHTML="";
+chatBox.innerHTML="";
 
 let email = localStorage.getItem("usuario");
 
@@ -231,37 +273,40 @@ let m = d.data();
 
 let div = document.createElement("div");
 div.className = "msg " + (m.email===email ? "me":"other");
-div.innerText = m.usuario+": "+m.texto;
 
-chat.appendChild(div);
+div.innerHTML = `
+<div class="chat-user">${m.usuario}</div>
+${m.texto}
+`;
+
+chatBox.appendChild(div);
 });
 
 /* NOTI */
-let docs = snap.docs;
+let docs=snap.docs;
 if(docs.length){
-let ultimo = docs[docs.length-1].data();
+let ultimo=docs[docs.length-1].data();
 if(ultimo.texto !== lastMsg){
 noti.style.display="block";
 setTimeout(()=>noti.style.display="none",2000);
-lastMsg = ultimo.texto;
+lastMsg=ultimo.texto;
 }
 }
 
-chat.scrollTop = chat.scrollHeight;
+chatBox.scrollTop = chatBox.scrollHeight;
 });
 
 /* ENVIAR */
 window.enviarMensaje = async ()=>{
 
-let input = document.getElementById("mensajeInput");
-let texto = input.value.trim();
+let texto = mensajeInput.value.trim();
 let email = localStorage.getItem("usuario");
 
 if(!texto || !email) return;
 
 /* ANTI SPAM */
 if(texto === lastMsg && Date.now()-lastTime < 3000){
-return alert("Spam detectado 🚫");
+return alert("Spam 🚫");
 }
 
 lastMsg = texto;
@@ -274,35 +319,32 @@ texto:texto,
 fecha:serverTimestamp()
 });
 
-input.value="";
+mensajeInput.value="";
 }
 
 /* ENTER */
-document.getElementById("mensajeInput")
-.addEventListener("keypress",e=>{
+mensajeInput.addEventListener("keypress",e=>{
 if(e.key==="Enter") enviarMensaje();
 });
 
-/* CHAT UI */
+/* TOGGLE */
 window.toggleChat = ()=>{
-let c=document.getElementById("chatBoxDrag");
-c.style.display = c.style.display==="flex"?"none":"flex";
+chatBoxDrag.style.display =
+chatBoxDrag.style.display==="flex"?"none":"flex";
 }
 
-/* ================= TIENDA ================= */
-
+/* TIENDA */
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 async function cargarProductos(){
-let c = document.getElementById("productos");
-c.innerHTML="";
+productos.innerHTML="";
 
 let snap = await getDocs(collection(db,"productos"));
 
 snap.forEach(doc=>{
 let p = doc.data();
 
-c.innerHTML+=`
+productos.innerHTML+=`
 <div class="product">
 <img src="${p.imagen}">
 <p>${p.nombre}</p>
@@ -319,16 +361,18 @@ mostrarCarrito();
 }
 
 function mostrarCarrito(){
+let totalPrecio=0;
+carrito.innerHTML="";
+
 let ul=document.getElementById("carrito");
 ul.innerHTML="";
-let total=0;
 
 carrito.forEach(p=>{
 ul.innerHTML+=`<li>${p.nombre} $${p.precio}</li>`;
-total+=p.precio;
+totalPrecio+=p.precio;
 });
 
-total.innerText=total;
+document.getElementById("total").innerText=totalPrecio;
 }
 
 window.pagar=async()=>{
