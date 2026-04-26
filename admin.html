@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>Admin LIL NAAY</title>
 
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 *{
     margin:0;
@@ -163,6 +166,7 @@ li{
         <!-- DASHBOARD -->
         <div id="dashboardSection" class="section">
             <div class="container">
+
                 <div class="card">
                     <h3>📊 Estadísticas</h3>
                     <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
@@ -170,6 +174,12 @@ li{
                     <div class="stats">Productos: <span id="totalProductos">0</span></div>
                     <div class="stats">Mensajes: <span id="totalChat">0</span></div>
                 </div>
+
+                <div class="card" style="grid-column: span 2;">
+                    <h3>📈 Actividad en Tiempo Real</h3>
+                    <canvas id="graficoActividad"></canvas>
+                </div>
+
             </div>
         </div>
 
@@ -236,6 +246,8 @@ projectId: "lil-naay"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+let chart;
 
 /* LOGIN */
 window.login = function(){
@@ -310,6 +322,49 @@ function cargarTodo(){
     cargarActividad();
     cargarProductos();
     cargarStats();
+    cargarGrafico();
+}
+
+/* GRAFICO */
+async function cargarGrafico(){
+
+    const snap = await getDocs(collection(db,"actividad"));
+
+    let labels = [];
+    let data = [];
+
+    snap.forEach(d=>{
+        labels.push(d.data().fecha);
+        data.push(1);
+    });
+
+    const ctx = document.getElementById("graficoActividad");
+
+    if(chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Actividad',
+                data: data,
+                borderColor: '#ff0000',
+                backgroundColor: 'rgba(255,0,0,0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { labels: { color: 'white' } }
+            },
+            scales: {
+                x: { ticks: { color: 'white' } },
+                y: { ticks: { color: 'white' } }
+            }
+        }
+    });
 }
 
 /* STATS */
@@ -401,6 +456,7 @@ window.editarProducto = async function(id,nombre,precio){
     });
 
     cargarProductos();
+    cargarGrafico();
 }
 
 /* ELIMINAR */
@@ -415,6 +471,7 @@ window.eliminarProducto = async function(id){
     });
 
     cargarProductos();
+    cargarGrafico();
 }
 
 /* CREAR */
@@ -447,6 +504,7 @@ window.crearProducto = async function(){
     document.getElementById("imagen").value="";
 
     cargarProductos();
+    cargarGrafico();
 }
 
 </script>
