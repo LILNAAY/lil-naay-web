@@ -151,7 +151,7 @@ body{
     box-shadow:0 0 25px red, 0 0 50px rgba(255,0,0,0.6);
 }
 
-/* MODAL (FIX PRINCIPAL) */
+/* MODAL */
 .modal{
     position:fixed;
     width:100%;
@@ -162,8 +162,7 @@ body{
     display:none;
     justify-content:center;
     align-items:center;
-
-    z-index:9999; /* 🔥 SOLUCION */
+    z-index:9999;
 }
 
 /* CAJA */
@@ -203,13 +202,101 @@ input:focus{
     font-size:14px;
     z-index:10000;
 }
+
+/* ========================= */
+/* 📱 RESPONSIVE */
+/* ========================= */
+
+/* TABLET */
+@media (max-width: 900px){
+
+    .hero{
+        height:380px;
+    }
+
+    .hero-artista{
+        height:90%;
+        left:-20px;
+        opacity:0.9;
+    }
+
+    .hero-texto{
+        width:400px;
+    }
+
+    .hero-buttons{
+        right:30px;
+        bottom:30px;
+    }
+
+    .btn-img img{
+        width:90px;
+    }
+
+    .card{
+        margin-top:-40px;
+        padding:30px;
+    }
+}
+
+/* CELULAR */
+@media (max-width: 600px){
+
+    .hero{
+        height:300px;
+    }
+
+    .hero-artista{
+        display:none;
+    }
+
+    .hero-texto{
+        width:260px;
+        top:55%;
+    }
+
+    .hero-buttons{
+        right:50%;
+        transform:translateX(50%);
+        bottom:15px;
+    }
+
+    .btn-img img{
+        width:70px;
+    }
+
+    .container{
+        padding:20px 10px;
+    }
+
+    .card{
+        margin-top:-20px;
+        padding:20px;
+    }
+
+    .card h2{
+        font-size:22px;
+    }
+
+    .btn{
+        padding:10px 18px;
+        font-size:14px;
+    }
+
+    input{
+        padding:8px;
+    }
+
+    .box{
+        width:90%;
+    }
+}
 </style>
 </head>
 
 <body>
 
 <div class="hero">
-
     <img src="fondo.png" class="hero-bg">
     <img src="artista.png" class="hero-artista">
     <img src="texto.png" class="hero-texto">
@@ -223,7 +310,6 @@ input:focus{
             <img src="btn_entrar.png">
         </button>
     </div>
-
 </div>
 
 <div class="container">
@@ -258,7 +344,7 @@ input:focus{
 <input id="lEmail" placeholder="Correo">
 <input id="lPass" type="password" placeholder="Contraseña">
 <button class="btn" onclick="loginUser()">Entrar</button>
-<p style="font-size:13px;color:#ff4d4d;cursor:pointer" onclick="recuperar()">¿Olvidaste tu contraseña?</p>
+<p onclick="recuperar()" style="cursor:pointer;color:#ff4d4d;">¿Olvidaste tu contraseña?</p>
 <button class="btn" onclick="cerrar()">Cancelar</button>
 </div>
 </div>
@@ -278,19 +364,11 @@ input:focus{
 
 <div id="mensaje"></div>
 
-<!-- SCRIPT ORIGINAL SIN TOCAR -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-sendPasswordResetEmail,
-signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const app = initializeApp({
 apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
@@ -301,78 +379,57 @@ projectId:"lil-naay"
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-window.abrirRegistro=()=>document.getElementById("registro").style.display="flex";
-window.abrirLogin=()=>document.getElementById("login").style.display="flex";
+window.abrirRegistro=()=>registro.style.display="flex";
+window.abrirLogin=()=>login.style.display="flex";
 window.abrirPerfil=()=>cargarPerfil();
-window.cerrar=()=>{
-["registro","login","perfil"].forEach(id=>{
-document.getElementById(id).style.display="none";
-});
-}
+window.cerrar=()=>["registro","login","perfil"].forEach(id=>document.getElementById(id).style.display="none");
 
 function msg(t,ok=true){
-let m=document.getElementById("mensaje");
-m.innerText=t;
-m.style.display="block";
-m.style.background=ok?"green":"red";
-setTimeout(()=>m.style.display="none",3000);
+mensaje.innerText=t;
+mensaje.style.display="block";
+mensaje.style.background=ok?"green":"red";
+setTimeout(()=>mensaje.style.display="none",3000);
 }
 
-window.registrar=async function(){
+window.registrar=async()=>{
 try{
-let email=rEmail.value;
-let pass=rPass.value;
-
-const cred=await createUserWithEmailAndPassword(auth,email,pass);
+const cred=await createUserWithEmailAndPassword(auth,rEmail.value,rPass.value);
 
 await addDoc(collection(db,"usuarios"),{
 uid:cred.user.uid,
 usuario:rUser.value,
-email,
+email:rEmail.value,
 pais:rPais.value,
 provincia:rProvincia.value,
 edad:rEdad.value
 });
 
 await addDoc(collection(db,"suscriptores"),{
-email,
+email:rEmail.value,
 fecha:new Date()
 });
 
-localStorage.setItem("usuario",email);
-
-msg("Cuenta creada 🔥");
+localStorage.setItem("usuario",rEmail.value);
+msg("Cuenta creada");
 cerrar();
 cargarContador();
 
-}catch(e){
-msg(e.message,false);
-}
+}catch(e){msg(e.message,false);}
 }
 
-window.loginUser=async function(){
+window.loginUser=async()=>{
 try{
-let email=lEmail.value;
-let pass=lPass.value;
-
-await signInWithEmailAndPassword(auth,email,pass);
-
-localStorage.setItem("usuario",email);
-
-msg("Bienvenido 🔥");
+await signInWithEmailAndPassword(auth,lEmail.value,lPass.value);
+localStorage.setItem("usuario",lEmail.value);
+msg("Bienvenido");
 cerrar();
-
-}catch{
-msg("Datos incorrectos",false);
-}
+}catch{msg("Datos incorrectos",false);}
 }
 
-window.recuperar=async function(){
-let email=lEmail.value;
-if(!email) return msg("Escribe tu correo",false);
-
-await sendPasswordResetEmail(auth,email);
-msg("Correo enviado 📧");
+window.recuperar=async()=>{
+if(!lEmail.value) return msg("Escribe tu correo",false);
+await sendPasswordResetEmail(auth,lEmail.value);
+msg("Correo enviado");
 }
 
 async function cargarPerfil(){
@@ -381,7 +438,7 @@ if(!email) return msg("No has iniciado sesión",false);
 
 const snap=await getDocs(collection(db,"usuarios"));
 let user=snap.docs.find(d=>d.data().email===email);
-if(!user) return msg("Usuario no encontrado",false);
+if(!user) return msg("No encontrado",false);
 
 let u=user.data();
 pUser.innerText=u.usuario;
@@ -390,28 +447,25 @@ pPais.innerText=u.pais;
 pProvincia.innerText=u.provincia;
 pEdad.innerText=u.edad;
 
-document.getElementById("perfil").style.display="flex";
+perfil.style.display="flex";
 }
 
-window.logout=async function(){
+window.logout=async()=>{
 await signOut(auth);
 localStorage.removeItem("usuario");
 msg("Sesión cerrada");
 cerrar();
 }
 
-window.entrarTienda=async function(){
+window.entrarTienda=async()=>{
 let email=localStorage.getItem("usuario");
 if(!email) return msg("Inicia sesión",false);
 
 const snap=await getDocs(collection(db,"suscriptores"));
 let ok=snap.docs.some(d=>d.data().email===email);
 
-if(ok){
-window.location.href="menu.html";
-}else{
-msg("No autorizado",false);
-}
+if(ok) window.location.href="menu.html";
+else msg("No autorizado",false);
 }
 
 async function cargarContador(){
