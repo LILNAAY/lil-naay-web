@@ -262,19 +262,22 @@ async function cargarPerfil(){
 
 /* CHAT */
 const qChat = query(collection(db,"chat"), orderBy("fecha"));
-
-onSnapshot(qChat,(snap)=>{
+onSnapshot(q,(snap)=>{
     let chat = document.getElementById("chatBox");
     chat.innerHTML="";
 
     snap.forEach(d=>{
         let m = d.data();
 
-        let color = m.vip ? "#FFD700" : "#fff";
+        let color = "#fff";
+
+        if(m.rol === "admin") color = "red";
+        else if(m.rol === "mod") color = "cyan";
+        else if(m.rol === "vip") color = "gold";
 
         chat.innerHTML += `
-        <div style="margin-bottom:8px;">
-            <b style="color:${color}">${m.usuario || "Usuario"}</b>: ${m.texto}
+        <div style="color:${color}">
+            <b>${m.usuario}</b>: ${m.texto}
         </div>`;
     });
 
@@ -283,6 +286,7 @@ onSnapshot(qChat,(snap)=>{
 
 /* ENVIAR MENSAJE (FIX TOTAL) */
 window.enviarMensaje = async function(){
+
     let input = document.getElementById("mensajeInput");
     let texto = input.value.trim();
     let email = localStorage.getItem("usuario");
@@ -292,16 +296,27 @@ window.enviarMensaje = async function(){
 
     let perfil = await obtenerPerfil(email);
 
+    // 🚫 BLOQUEO POR BAN
+    if(perfil?.ban){
+        if(Date.now() < perfil.banHasta){
+            return alert("Estás baneado 🚫");
+        }
+    }
+
+    let nombre = perfil?.username || email;
+
     await addDoc(collection(db,"chat"),{
-        usuario: perfil?.username || email,
-        texto,
-        vip: perfil?.vip || false,
-        fecha: serverTimestamp()
+        usuario: nombre,
+        email: email, // 🔥 IMPORTANTE
+        texto: texto,
+        fecha: serverTimestamp(),
+        rol: perfil?.admin ? "admin" :
+             perfil?.mod ? "mod" :
+             perfil?.vip ? "vip" : "user"
     });
 
     input.value="";
 }
-
 /* ENTER */
 document.getElementById("mensajeInput").addEventListener("keydown",(e)=>{
     if(e.key==="Enter") enviarMensaje();
