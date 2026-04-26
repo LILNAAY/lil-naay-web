@@ -10,24 +10,26 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
 body{background:#0a0a0a;color:white;}
 .login{display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;}
-input{padding:12px;margin:6px;width:260px;border:none;outline:none;border-radius:8px;background:#1a1a1a;color:white;}
-button{padding:12px;background:linear-gradient(45deg,#ff0000,#8b0000);border:none;color:white;cursor:pointer;border-radius:8px;}
+input{padding:12px;margin:6px;width:260px;border:none;border-radius:8px;background:#1a1a1a;color:white;}
+button{padding:12px;background:linear-gradient(45deg,#ff0000,#8b0000);border:none;color:white;border-radius:8px;cursor:pointer;}
 #panel{display:flex;}
-.sidebar{width:220px;height:100vh;background:linear-gradient(180deg,#0d0d0d,#1a0000);padding:20px;border-right:1px solid rgba(255,0,0,0.2);}
-.sidebar h2{margin-bottom:30px;color:#ff4d4d;}
-.sidebar a{display:block;padding:10px;margin:10px 0;border-radius:6px;color:#ccc;text-decoration:none;}
+.sidebar{width:220px;height:100vh;background:linear-gradient(180deg,#0d0d0d,#1a0000);padding:20px;}
+.sidebar h2{color:#ff4d4d;margin-bottom:30px;}
+.sidebar a{display:block;padding:10px;margin:10px 0;color:#ccc;text-decoration:none;}
 .sidebar a:hover{background:#ff000020;color:white;}
 .main{flex:1;padding:20px;}
 .navbar{display:flex;justify-content:space-between;margin-bottom:20px;}
 .container{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.card{background:#111;padding:20px;border-radius:12px;border:1px solid rgba(255,0,0,0.2);max-height:300px;overflow:auto;}
-.card h3{color:#ff4d4d;}
+.card{background:#111;padding:20px;border-radius:12px;border:1px solid rgba(255,0,0,0.2);}
 li{font-size:13px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.05);}
-.stats{font-size:18px;margin:10px 0;color:#ff4d4d;}
+.stats{color:#ff4d4d;margin:5px 0;}
+#noti{position:fixed;top:20px;right:20px;background:red;padding:10px;border-radius:8px;display:none;}
 </style>
 </head>
 
 <body>
+
+<div id="noti">🔔 Nuevo mensaje</div>
 
 <div id="loginBox" class="login">
 <h2>🔐 Acceso Admin</h2>
@@ -40,13 +42,13 @@ li{font-size:13px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.0
 
 <div class="sidebar">
 <h2>🔥 LIL NAAY</h2>
-<a href="#" onclick="mostrarSeccion('dashboard')">📊 Dashboard</a>
-<a href="#" onclick="mostrarSeccion('usuarios')">👥 Usuarios</a>
-<a href="#" onclick="mostrarSeccion('compras')">💳 Compras</a>
-<a href="#" onclick="mostrarSeccion('productos')">🛍️ Productos</a>
-<a href="#" onclick="mostrarSeccion('actividad')">📡 Actividad</a>
-<a href="#" onclick="mostrarSeccion('chat')">💬 Chat</a>
-<a href="#" onclick="logout()">🚪 Salir</a>
+<a onclick="mostrarSeccion('dashboard')">📊 Dashboard</a>
+<a onclick="mostrarSeccion('usuarios')">👥 Usuarios</a>
+<a onclick="mostrarSeccion('compras')">💳 Compras</a>
+<a onclick="mostrarSeccion('productos')">🛍️ Productos</a>
+<a onclick="mostrarSeccion('actividad')">📡 Actividad</a>
+<a onclick="mostrarSeccion('chat')">💬 Chat</a>
+<a onclick="logout()">🚪 Salir</a>
 </div>
 
 <div class="main">
@@ -65,53 +67,37 @@ li{font-size:13px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.0
 <div class="stats">Productos: <span id="totalProductos">0</span></div>
 <div class="stats">Mensajes: <span id="totalChat">0</span></div>
 </div>
-
-<div class="card" style="grid-column: span 2;">
-<h3>📈 Actividad en Tiempo Real</h3>
+<div class="card">
+<h3>📈 Actividad</h3>
 <canvas id="graficoActividad"></canvas>
 </div>
 </div>
 </div>
 
 <div id="usuariosSection" class="section" style="display:none;">
-<div class="card">
-<h3>👥 Suscriptores</h3>
-<ul id="suscriptores"></ul>
-</div>
+<div class="card"><ul id="suscriptores"></ul></div>
 </div>
 
 <div id="comprasSection" class="section" style="display:none;">
-<div class="card">
-<h3>💳 Compras</h3>
-<ul id="compras"></ul>
-</div>
+<div class="card"><ul id="compras"></ul></div>
 </div>
 
 <div id="productosSection" class="section" style="display:none;">
+<div class="card"><ul id="productos"></ul></div>
 <div class="card">
-<h3>🛍️ Productos</h3>
-<ul id="productos"></ul>
-</div>
-
-<div class="card">
-<h3>➕ Crear Producto</h3>
 <input id="nombre" placeholder="Nombre">
 <input id="precio" placeholder="Precio">
-<input id="imagen" placeholder="URL Imagen">
+<input id="imagen" placeholder="Imagen">
 <button onclick="crearProducto()">Crear</button>
 </div>
 </div>
 
 <div id="actividadSection" class="section" style="display:none;">
-<div class="card">
-<h3>📡 Actividad</h3>
-<ul id="actividad"></ul>
-</div>
+<div class="card"><ul id="actividad"></ul></div>
 </div>
 
 <div id="chatSection" class="section" style="display:none;">
 <div class="card">
-<h3>💬 Moderación de Chat</h3>
 <ul id="chatAdmin"></ul>
 </div>
 </div>
@@ -138,126 +124,130 @@ projectId:"lil-naay"
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let chart;
+let ultimoMensaje="";
 
 /* LOGIN */
-window.login = function(){
-let email = email.value;
-let pass = pass.value;
-
-signInWithEmailAndPassword(auth,email,pass)
-.then(()=> alert("Bienvenido 🔥"))
-.catch(e=> alert("Error: "+e.message));
+window.login=()=>{
+signInWithEmailAndPassword(auth,email.value,pass.value)
+.catch(e=>alert(e.message));
 }
 
-/* LOGOUT */
-window.logout = ()=> signOut(auth);
+window.logout=()=>signOut(auth);
 
 /* SECCIONES */
-window.mostrarSeccion = function(seccion){
+window.mostrarSeccion=s=>{
+["dashboard","usuarios","compras","productos","actividad","chat"]
+.forEach(x=>document.getElementById(x+"Section").style.display="none");
 
-const secciones = [
-"dashboardSection","usuariosSection","comprasSection",
-"productosSection","actividadSection","chatSection"
-];
-
-secciones.forEach(id=> document.getElementById(id).style.display="none");
-
-document.getElementById(seccion+"Section").style.display="block";
+document.getElementById(s+"Section").style.display="block";
 }
 
 /* AUTH */
 onAuthStateChanged(auth, async user=>{
-if(!user){
-loginBox.style.display="flex";
-panel.style.display="none";
-return;
-}
+if(!user){loginBox.style.display="flex";panel.style.display="none";return;}
 
-const snap = await getDocs(collection(db,"usuarios"));
-let esAdmin=false;
+const snap=await getDocs(collection(db,"usuarios"));
+let ok=false;
+snap.forEach(d=>{if(d.id===user.uid && d.data().admin) ok=true;});
 
-snap.forEach(d=>{
-if(d.id===user.uid && d.data().admin===true) esAdmin=true;
-});
-
-if(!esAdmin){
-alert("No eres admin");
-logout();
-return;
-}
+if(!ok){alert("No admin");logout();return;}
 
 loginBox.style.display="none";
 panel.style.display="flex";
-
-mostrarSeccion("dashboard");
 cargarTodo();
 });
 
 /* CARGA */
 function cargarTodo(){
+cargarStats();
+cargarProductos();
 cargarSuscriptores();
 cargarCompras();
 cargarActividad();
-cargarProductos();
-cargarStats();
-cargarGrafico();
 cargarChatAdmin();
 }
 
 /* CHAT ADMIN */
 function cargarChatAdmin(){
-const lista = document.getElementById("chatAdmin");
-if(!lista) return;
+onSnapshot(collection(db,"chat"),snap=>{
 
-onSnapshot(collection(db,"chat"), snap=>{
-lista.innerHTML="";
+chatAdmin.innerHTML="";
 
 snap.forEach(docSnap=>{
-let m = docSnap.data();
-let id = docSnap.id;
+let m=docSnap.data();
+let id=docSnap.id;
 
-lista.innerHTML += `
+let color = m.rol==="admin"?"red":
+m.rol==="mod"?"cyan":
+m.rol==="vip"?"gold":"white";
+
+chatAdmin.innerHTML+=`
 <li>
-<b>${m.usuario || "Anonimo"}</b>: ${m.texto || ""}
+<b style="color:${color}">${m.usuario}</b>: ${m.texto}
 <br>
 <button onclick="eliminarMensaje('${id}')">🗑️</button>
-<button onclick="hacerVIP('${m.usuario}')">👑 VIP</button>
+<button onclick="cambiarRol('${m.usuario}')">🎭 Rol</button>
 <button onclick="banearUsuario('${m.usuario}')">🚫 BAN</button>
 </li>`;
 });
+
+/* 🔔 NOTIFICACION */
+let docs=snap.docs;
+if(docs.length){
+let ultimo=docs[docs.length-1].data();
+if(ultimo.texto!==ultimoMensaje){
+mostrarNoti();
+ultimoMensaje=ultimo.texto;
+}
+}
+
 });
 }
 
-window.eliminarMensaje = id=> deleteDoc(doc(db,"chat",id));
+function mostrarNoti(){
+noti.style.display="block";
+setTimeout(()=>noti.style.display="none",3000);
+}
 
-window.hacerVIP = async nombre=>{
-const snap = await getDocs(collection(db,"usuarios"));
+/* MODERACION */
+window.eliminarMensaje=id=>deleteDoc(doc(db,"chat",id));
+
+window.cambiarRol=async nombre=>{
+let rol=prompt("admin/mod/vip/user");
+if(!rol) return;
+
+const snap=await getDocs(collection(db,"usuarios"));
+
 snap.forEach(async d=>{
 if(d.data().username===nombre){
-await updateDoc(doc(db,"usuarios",d.id),{vip:true});
+await updateDoc(doc(db,"usuarios",d.id),{
+admin:rol==="admin",
+mod:rol==="mod",
+vip:rol==="vip"
+});
 }
 });
-alert("VIP 👑");
+alert("Rol actualizado");
 }
 
-window.banearUsuario = async nombre=>{
-let min = prompt("Minutos BAN");
+window.banearUsuario=async nombre=>{
+let min=prompt("Minutos BAN");
 if(!min) return;
 
-const snap = await getDocs(collection(db,"usuarios"));
+const snap=await getDocs(collection(db,"usuarios"));
+
 snap.forEach(async d=>{
 if(d.data().username===nombre){
 await updateDoc(doc(db,"usuarios",d.id),{
 ban:true,
-banHasta: Date.now()+min*60000
+banHasta:Date.now()+min*60000
 });
 }
 });
-alert("Baneado 🚫");
+alert("Baneado");
 }
 
-/* RESTO IGUAL */
+/* RESTO */
 async function cargarStats(){
 totalUsuarios.innerText=(await getDocs(collection(db,"usuarios"))).size;
 totalCompras.innerText=(await getDocs(collection(db,"compras"))).size;
@@ -266,80 +256,44 @@ totalChat.innerText=(await getDocs(collection(db,"chat"))).size;
 }
 
 async function cargarProductos(){
-const lista=productos; lista.innerHTML="";
-const snap=await getDocs(collection(db,"productos"));
-
-snap.forEach(docSnap=>{
-let p=docSnap.data(), id=docSnap.id;
-lista.innerHTML+=`
-<li><b>${p.nombre}</b> - $${p.precio}
-<br>
-<button onclick="editarProducto('${id}','${p.nombre}',${p.precio})">✏️</button>
+productos.innerHTML="";
+(await getDocs(collection(db,"productos"))).forEach(d=>{
+let p=d.data(),id=d.id;
+productos.innerHTML+=`
+<li>${p.nombre} $${p.precio}
 <button onclick="eliminarProducto('${id}')">🗑️</button>
 </li>`;
 });
 }
 
+window.eliminarProducto=id=>deleteDoc(doc(db,"productos",id));
+
+window.crearProducto=async()=>{
+await addDoc(collection(db,"productos"),{
+nombre:nombre.value,
+precio:Number(precio.value),
+imagen:imagen.value
+});
+nombre.value="";precio.value="";imagen.value="";
+cargarProductos();
+}
+
 async function cargarSuscriptores(){
 suscriptores.innerHTML="";
 (await getDocs(collection(db,"suscriptores")))
-.forEach(d=> suscriptores.innerHTML+=`<li>${d.data().email}</li>`);
+.forEach(d=>suscriptores.innerHTML+=`<li>${d.data().email}</li>`);
 }
 
 async function cargarCompras(){
 compras.innerHTML="";
 (await getDocs(collection(db,"compras")))
-.forEach(docSnap=>{
-let d=docSnap.data();
-let productos=d.productos.map(p=>`${p.nombre} | $${p.precio}`).join("<br>");
-compras.innerHTML+=`<li>${productos}</li>`;
-});
+.forEach(d=>compras.innerHTML+=`<li>${d.data().productos.length} productos</li>`);
 }
 
 async function cargarActividad(){
 actividad.innerHTML="";
 (await getDocs(collection(db,"actividad")))
-.forEach(d=> actividad.innerHTML+=`<li>${d.data().accion}</li>`);
-}
-
-window.editarProducto=async(id,n,p)=>{
-let nn=prompt("Nombre",n);
-let pp=prompt("Precio",p);
-if(!nn||isNaN(pp))return;
-await updateDoc(doc(db,"productos",id),{nombre:nn,precio:Number(pp)});
-cargarProductos();
-}
-
-window.eliminarProducto=async id=>{
-if(!confirm("Eliminar?"))return;
-await deleteDoc(doc(db,"productos",id));
-cargarProductos();
-}
-
-window.crearProducto=async()=>{
-let n=nombre.value;
-let p=Number(precio.value);
-let i=imagen.value;
-if(!n||isNaN(p)) return alert("Error");
-
-await addDoc(collection(db,"productos"),{nombre:n,precio:p,imagen:i});
-alert("Creado 🔥");
-
-nombre.value="";precio.value="";imagen.value="";
-cargarProductos();
-}
-
-async function cargarGrafico(){
-const snap=await getDocs(collection(db,"actividad"));
-let labels=[],data=[];
-snap.forEach(d=>{labels.push(d.data().fecha);data.push(1);});
-
-if(chart) chart.destroy();
-
-chart=new Chart(graficoActividad,{
-type:'line',
-data:{labels,datasets:[{label:'Actividad',data}]}
-});
+.forEach(d=>actividad.innerHTML+=`<li>${d.data().accion}</li>`);
 }
 
 </script>
