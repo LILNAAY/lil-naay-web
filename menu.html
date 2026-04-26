@@ -5,12 +5,7 @@
 <title>Tienda LIL NAAY</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI';
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
 
 body{
     background:#0a0a0a;
@@ -53,30 +48,13 @@ body{
     cursor:pointer;
 }
 
-.tabs button:hover{
-    background:#ff000020;
-}
-
 /* CONTENIDO */
-.content{
-    flex:1;
-    padding:20px;
-}
+.content{flex:1;padding:20px;}
 
-/* SECCIONES */
-.section{
-    display:none;
-}
-.active{
-    display:block;
-}
+.section{display:none;}
+.active{display:block;}
 
-/* PRODUCTOS */
-.store{
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-}
+.store{display:flex;flex-wrap:wrap;gap:20px;}
 
 .product{
     background:#111;
@@ -90,7 +68,6 @@ body{
     border-radius:10px;
 }
 
-/* EVENTOS */
 .event{
     background:#111;
     padding:15px;
@@ -98,7 +75,6 @@ body{
     margin-bottom:10px;
 }
 
-/* PERFIL */
 .profile{
     background:#111;
     padding:20px;
@@ -129,18 +105,15 @@ body{
     background:#0d0d0d;
     border:1px solid #ff000050;
     border-radius:15px;
-    box-shadow:0 0 20px rgba(255,0,0,0.3);
     display:none;
     flex-direction:column;
     overflow:hidden;
-    z-index:999;
 }
 
 .chat-header{
     background:#1a0000;
     padding:10px;
     font-weight:bold;
-    cursor:move;
 }
 
 .chat-messages{
@@ -150,10 +123,7 @@ body{
     font-size:13px;
 }
 
-.chat-input{
-    display:flex;
-    border-top:1px solid #222;
-}
+.chat-input{display:flex;}
 
 .chat-input input{
     flex:1;
@@ -177,11 +147,9 @@ body{
         height:60%;
         right:0;
         bottom:0;
-        border-radius:15px 15px 0 0;
     }
 }
 
-/* FOOTER */
 .footer{
     text-align:center;
     padding:15px;
@@ -245,16 +213,14 @@ body{
     </div>
 </div>
 
-<div class="footer">
-© 2026 LIL NAAY
-</div>
+<div class="footer">© 2026 LIL NAAY</div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
 getFirestore, collection, getDocs, addDoc,
-onSnapshot, query, orderBy, serverTimestamp
+onSnapshot, query, orderBy, serverTimestamp, where
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
@@ -271,11 +237,12 @@ window.mostrar = function(sec){
     document.getElementById(sec).classList.add("active");
 }
 
-/* PERFIL */
+/* PERFIL (ARREGLADO PRO) */
 async function obtenerPerfil(email){
-    const snap = await getDocs(collection(db,"usuarios"));
-    let user = snap.docs.find(doc=>doc.data().email === email);
-    return user ? user.data() : null;
+    const q = query(collection(db,"usuarios"), where("email","==",email));
+    const snap = await getDocs(q);
+    if(!snap.empty) return snap.docs[0].data();
+    return null;
 }
 
 async function cargarPerfil(){
@@ -286,7 +253,7 @@ async function cargarPerfil(){
 
     document.getElementById("perfilData").innerHTML = `
     <p><b>Usuario:</b> ${data?.username || "No definido"}</p>
-    <p><b>Email:</b> ${data?.email || email}</p>
+    <p><b>Email:</b> ${email}</p>
     <p><b>País:</b> ${data?.pais || "-"}</p>
     <p><b>Provincia:</b> ${data?.provincia || "-"}</p>
     <p><b>Edad:</b> ${data?.edad || "-"}</p>
@@ -294,21 +261,27 @@ async function cargarPerfil(){
 }
 
 /* CHAT */
-const q = query(collection(db,"chat"), orderBy("fecha"));
+const qChat = query(collection(db,"chat"), orderBy("fecha"));
 
-onSnapshot(q,(snap)=>{
+onSnapshot(qChat,(snap)=>{
     let chat = document.getElementById("chatBox");
     chat.innerHTML="";
 
     snap.forEach(d=>{
         let m = d.data();
-        chat.innerHTML += `<div><b>${m.usuario}</b>: ${m.texto}</div>`;
+
+        let color = m.vip ? "#FFD700" : "#fff";
+
+        chat.innerHTML += `
+        <div style="margin-bottom:8px;">
+            <b style="color:${color}">${m.usuario || "Usuario"}</b>: ${m.texto}
+        </div>`;
     });
 
     chat.scrollTop = chat.scrollHeight;
 });
 
-/* ENVIAR MENSAJE */
+/* ENVIAR MENSAJE (FIX TOTAL) */
 window.enviarMensaje = async function(){
     let input = document.getElementById("mensajeInput");
     let texto = input.value.trim();
@@ -318,22 +291,20 @@ window.enviarMensaje = async function(){
     if(!texto) return;
 
     let perfil = await obtenerPerfil(email);
-    let nombre = perfil?.username || email;
 
     await addDoc(collection(db,"chat"),{
-        usuario:nombre,
+        usuario: perfil?.username || email,
         texto,
+        vip: perfil?.vip || false,
         fecha: serverTimestamp()
     });
 
     input.value="";
 }
 
-/* ENTER PARA ENVIAR */
-document.getElementById("mensajeInput").addEventListener("keypress",function(e){
-    if(e.key==="Enter"){
-        enviarMensaje();
-    }
+/* ENTER */
+document.getElementById("mensajeInput").addEventListener("keydown",(e)=>{
+    if(e.key==="Enter") enviarMensaje();
 });
 
 /* CHAT UI */
@@ -342,40 +313,15 @@ window.toggleChat = function(){
     chat.style.display = chat.style.display === "flex" ? "none" : "flex";
 }
 
-/* DRAG */
-if(window.innerWidth > 768){
-    let chat = document.getElementById("chatBoxDrag");
-    let header = chat.querySelector(".chat-header");
-
-    let offsetX, offsetY, isDown=false;
-
-    header.onmousedown = e=>{
-        isDown=true;
-        offsetX = e.clientX - chat.offsetLeft;
-        offsetY = e.clientY - chat.offsetTop;
-    }
-
-    document.onmouseup=()=> isDown=false;
-
-    document.onmousemove = e=>{
-        if(!isDown) return;
-        chat.style.left = (e.clientX - offsetX)+"px";
-        chat.style.top = (e.clientY - offsetY)+"px";
-    }
-}
-
 /* TIENDA */
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 async function cargarProductos(){
     let c = document.getElementById("productos");
-    c.innerHTML="";
-
     let snap = await getDocs(collection(db,"productos"));
 
     snap.forEach(doc=>{
         let p = doc.data();
-
         c.innerHTML += `
         <div class="product">
         <img src="${p.imagen}">
