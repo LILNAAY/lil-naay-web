@@ -24,7 +24,7 @@ window.mostrar = function(sec){
 async function obtenerPerfil(email){
     const q = query(collection(db,"usuarios"), where("email","==",email));
     const snap = await getDocs(q);
-    if(!snap.empty) return snap.docs[0];
+    if(!snap.empty) return snap.docs[0].data();
     return null;
 }
 
@@ -32,8 +32,7 @@ async function cargarPerfil(){
     let email = localStorage.getItem("usuario");
     if(!email) return;
 
-    let doc = await obtenerPerfil(email);
-    let data = doc?.data();
+    let data = await obtenerPerfil(email);
 
     document.getElementById("perfilData").innerHTML = `
     <p><b>Usuario:</b> ${data?.username || "No definido"}</p>
@@ -44,13 +43,11 @@ async function cargarPerfil(){
     `;
 }
 
-/* ================= CHAT EN TIEMPO REAL ================= */
-
+/* CHAT */
 const qChat = query(collection(db,"chat"), orderBy("fecha"));
 
-let sonido = new Audio("https://actions.google.com/sounds/v1/notifications/notification_simple.ogg");
+onSnapshot(qChat,(snap)=>{  // ✅ ARREGLADO AQUÍ
 
-onSnapshot(qChat,(snap)=>{
     let chat = document.getElementById("chatBox");
     chat.innerHTML="";
 
@@ -70,13 +67,9 @@ onSnapshot(qChat,(snap)=>{
     });
 
     chat.scrollTop = chat.scrollHeight;
-
-    // 🔔 NOTIFICACIÓN
-    sonido.play().catch(()=>{});
 });
 
-/* ================= ENVIAR MENSAJE ================= */
-
+/* ENVIAR MENSAJE */
 window.enviarMensaje = async function(){
 
     let input = document.getElementById("mensajeInput");
@@ -86,19 +79,11 @@ window.enviarMensaje = async function(){
     if(!email) return alert("Login requerido");
     if(!texto) return;
 
-    let docUser = await obtenerPerfil(email);
-    let perfil = docUser?.data();
+    let perfil = await obtenerPerfil(email);
 
-    // 🚫 BLOQUEO BAN REAL
     if(perfil?.ban){
         if(Date.now() < perfil.banHasta){
             return alert("Estás baneado 🚫");
-        }else{
-            // auto quitar ban expirado
-            await updateDoc(docUser.ref,{
-                ban:false,
-                banHasta:0
-            });
         }
     }
 
@@ -106,7 +91,6 @@ window.enviarMensaje = async function(){
 
     await addDoc(collection(db,"chat"),{
         usuario: nombre,
-        email: email,
         texto: texto,
         fecha: serverTimestamp(),
         rol: perfil?.admin ? "admin" :
@@ -128,8 +112,7 @@ window.toggleChat = function(){
     chat.style.display = chat.style.display === "flex" ? "none" : "flex";
 }
 
-/* ================= TIENDA ================= */
-
+/* TIENDA */
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 async function cargarProductos(){
@@ -183,7 +166,6 @@ window.pagar = async function(){
     alert("Compra realizada");
 }
 
-/* INIT */
 cargarProductos();
 mostrarCarrito();
 cargarPerfil();
