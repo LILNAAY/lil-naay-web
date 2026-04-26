@@ -20,19 +20,19 @@ body{
     font-family:'Segoe UI',sans-serif;
     color:white;
     background:black;
-    overflow-x:hidden;
+    overflow:hidden; /* 🔥 quita el scroll */
+    height:100vh;
 }
 
 /* HERO */
 .hero{
     position:relative;
     width:100%;
-    min-height:420px;
+    height:60vh; /* 🔥 ocupa 60% de pantalla */
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
-    text-align:center;
 }
 /* CAPAS */
 .hero::before{
@@ -140,9 +140,11 @@ body{
 .container{
     max-width:1000px;
     margin:auto;
-    padding:80px 20px;
+    height:40vh; /* 🔥 ocupa el resto */
     display:flex;
+    align-items:center;
     justify-content:center;
+    padding:0 20px;
 }
 
 .card{
