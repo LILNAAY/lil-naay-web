@@ -67,7 +67,6 @@ body{
 .section{
     display:none;
 }
-
 .active{
     display:block;
 }
@@ -97,6 +96,14 @@ body{
     padding:15px;
     border-radius:12px;
     margin-bottom:10px;
+}
+
+/* PERFIL */
+.profile{
+    background:#111;
+    padding:20px;
+    border-radius:12px;
+    max-width:400px;
 }
 
 /* CHAT */
@@ -133,6 +140,7 @@ body{
     background:#1a0000;
     padding:10px;
     font-weight:bold;
+    cursor:move;
 }
 
 .chat-messages{
@@ -162,9 +170,8 @@ body{
     color:white;
 }
 
-/* 📱 MOBILE */
+/* MOBILE */
 @media(max-width:768px){
-
     .chat-box{
         width:100%;
         height:60%;
@@ -195,6 +202,7 @@ body{
     <button onclick="mostrar('tienda')">🛍️ Tienda</button>
     <button onclick="mostrar('musica')">🎵 Música</button>
     <button onclick="mostrar('eventos')">🎉 Eventos</button>
+    <button onclick="mostrar('perfil')">👤 Perfil</button>
 </div>
 
 <div class="content">
@@ -213,29 +221,29 @@ body{
 <!-- MUSICA -->
 <div id="musica" class="section">
     <h2>🎵 Música</h2>
-    <p>Aquí puedes poner videos o canciones 🔥</p>
 </div>
 
 <!-- EVENTOS -->
 <div id="eventos" class="section">
     <h2>🎉 Eventos</h2>
+    <div class="event">Próximamente 🔥</div>
+</div>
 
-    <div class="event">
-        <h3>Concierto</h3>
-        <p>📅 Próximamente</p>
+<!-- PERFIL -->
+<div id="perfil" class="section">
+    <h2>👤 Perfil</h2>
+    <div class="profile" id="perfilData">
+        Cargando...
     </div>
-
 </div>
 
 </div>
-
-<!-- BOTON CHAT -->
-<button class="chat-toggle" onclick="toggleChat()">💬</button>
 
 <!-- CHAT -->
+<button class="chat-toggle" onclick="toggleChat()">💬</button>
+
 <div class="chat-box" id="chatBoxDrag">
     <div class="chat-header">💬 Chat en vivo</div>
-
     <div id="chatBox" class="chat-messages"></div>
 
     <div class="chat-input">
@@ -270,7 +278,32 @@ window.mostrar = function(sec){
     document.getElementById(sec).classList.add("active");
 }
 
-/* CHAT REALTIME */
+/* 🔥 OBTENER PERFIL */
+async function obtenerPerfil(email){
+    const snap = await getDocs(collection(db,"usuarios"));
+    let user = snap.docs.find(doc=>doc.data().email === email);
+    return user ? user.data() : null;
+}
+
+/* CARGAR PERFIL */
+async function cargarPerfil(){
+    let email = localStorage.getItem("usuario");
+    if(!email) return;
+
+    let data = await obtenerPerfil(email);
+
+    if(data){
+        document.getElementById("perfilData").innerHTML = `
+        <p><b>Usuario:</b> ${data.username}</p>
+        <p><b>Email:</b> ${data.email}</p>
+        <p><b>País:</b> ${data.pais}</p>
+        <p><b>Provincia:</b> ${data.provincia}</p>
+        <p><b>Edad:</b> ${data.edad}</p>
+        `;
+    }
+}
+
+/* CHAT */
 const q = query(collection(db,"chat"), orderBy("fecha"));
 
 onSnapshot(q,(snap)=>{
@@ -285,15 +318,18 @@ onSnapshot(q,(snap)=>{
     chat.scrollTop = chat.scrollHeight;
 });
 
-/* ENVIAR MENSAJE */
+/* ENVIAR MENSAJE CON PERFIL */
 window.enviarMensaje = async function(){
     let texto = document.getElementById("mensajeInput").value;
-    let usuario = localStorage.getItem("usuario");
+    let email = localStorage.getItem("usuario");
 
-    if(!usuario) return alert("Login requerido");
+    if(!email) return alert("Login requerido");
+
+    let perfil = await obtenerPerfil(email);
+    let nombre = perfil ? perfil.username : email;
 
     await addDoc(collection(db,"chat"),{
-        usuario,
+        usuario:nombre,
         texto,
         fecha: serverTimestamp()
     });
@@ -301,20 +337,14 @@ window.enviarMensaje = async function(){
     document.getElementById("mensajeInput").value="";
 }
 
-/* TOGGLE CHAT */
+/* CHAT UI */
 window.toggleChat = function(){
     let chat = document.getElementById("chatBoxDrag");
-
-    if(chat.style.display === "none" || chat.style.display === ""){
-        chat.style.display = "flex";
-    }else{
-        chat.style.display = "none";
-    }
+    chat.style.display = chat.style.display === "flex" ? "none" : "flex";
 }
 
-/* DRAG SOLO PC */
+/* DRAG */
 if(window.innerWidth > 768){
-
     let chat = document.getElementById("chatBoxDrag");
     let header = chat.querySelector(".chat-header");
 
@@ -368,7 +398,7 @@ function mostrarCarrito(){
     ul.innerHTML="";
     let total=0;
 
-    carrito.forEach((p,i)=>{
+    carrito.forEach(p=>{
         ul.innerHTML+=`<li>${p.nombre} $${p.precio}</li>`;
         total+=p.precio;
     });
@@ -392,6 +422,7 @@ window.pagar = async function(){
 
 cargarProductos();
 mostrarCarrito();
+cargarPerfil();
 
 </script>
 
