@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <title>Admin LIL NAAY</title>
 
+<!-- CHART JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* TODO TU CSS ORIGINAL (NO TOCADO) */
 *{
     margin:0;
     padding:0;
@@ -40,6 +40,7 @@ input{
     color:white;
 }
 
+/* BOTONES */
 button{
     padding:12px;
     background:linear-gradient(45deg,#ff0000,#8b0000);
@@ -49,10 +50,12 @@ button{
     border-radius:8px;
 }
 
+/* LAYOUT */
 #panel{
     display:flex;
 }
 
+/* SIDEBAR */
 .sidebar{
     width:220px;
     height:100vh;
@@ -80,23 +83,27 @@ button{
     color:white;
 }
 
+/* MAIN */
 .main{
     flex:1;
     padding:20px;
 }
 
+/* NAVBAR */
 .navbar{
     display:flex;
     justify-content:space-between;
     margin-bottom:20px;
 }
 
+/* GRID */
 .container{
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
     gap:20px;
 }
 
+/* CARDS */
 .card{
     background:#111;
     padding:20px;
@@ -110,12 +117,14 @@ button{
     color:#ff4d4d;
 }
 
+/* LISTAS */
 li{
     font-size:13px;
     margin-bottom:8px;
     border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
+/* STATS */
 .stats{
     font-size:18px;
     margin:10px 0;
@@ -126,6 +135,7 @@ li{
 
 <body>
 
+<!-- LOGIN -->
 <div id="loginBox" class="login">
     <h2>🔐 Acceso Admin</h2>
     <input id="email" placeholder="Correo">
@@ -133,17 +143,17 @@ li{
     <button onclick="login()">Entrar</button>
 </div>
 
+<!-- PANEL -->
 <div id="panel" style="display:none;">
 
     <div class="sidebar">
         <h2>🔥 LIL NAAY</h2>
-        <a onclick="mostrarSeccion('dashboard')">📊 Dashboard</a>
-        <a onclick="mostrarSeccion('usuarios')">👥 Usuarios</a>
-        <a onclick="mostrarSeccion('compras')">💳 Compras</a>
-        <a onclick="mostrarSeccion('productos')">🛍️ Productos</a>
-        <a onclick="mostrarSeccion('actividad')">📡 Actividad</a>
-        <a onclick="mostrarSeccion('chat')">💬 Chat</a> <!-- NUEVO -->
-        <a onclick="logout()">🚪 Salir</a>
+        <a href="#" onclick="mostrarSeccion('dashboard')">📊 Dashboard</a>
+        <a href="#" onclick="mostrarSeccion('usuarios')">👥 Usuarios</a>
+        <a href="#" onclick="mostrarSeccion('compras')">💳 Compras</a>
+        <a href="#" onclick="mostrarSeccion('productos')">🛍️ Productos</a>
+        <a href="#" onclick="mostrarSeccion('actividad')">📡 Actividad</a>
+        <a href="#" onclick="logout()">🚪 Salir</a>
     </div>
 
     <div class="main">
@@ -156,6 +166,7 @@ li{
         <!-- DASHBOARD -->
         <div id="dashboardSection" class="section">
             <div class="container">
+
                 <div class="card">
                     <h3>📊 Estadísticas</h3>
                     <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
@@ -165,25 +176,50 @@ li{
                 </div>
 
                 <div class="card" style="grid-column: span 2;">
-                    <h3>📈 Actividad</h3>
+                    <h3>📈 Actividad en Tiempo Real</h3>
                     <canvas id="graficoActividad"></canvas>
                 </div>
+
             </div>
         </div>
 
         <!-- USUARIOS -->
         <div id="usuariosSection" class="section" style="display:none;">
             <div class="card">
-                <h3>👥 Usuarios (CONTROL)</h3>
-                <ul id="usuariosLista"></ul>
+                <h3>👥 Suscriptores</h3>
+                <ul id="suscriptores"></ul>
             </div>
         </div>
 
-        <!-- CHAT MODERACIÓN -->
-        <div id="chatSection" class="section" style="display:none;">
+        <!-- COMPRAS -->
+        <div id="comprasSection" class="section" style="display:none;">
             <div class="card">
-                <h3>💬 Moderar Chat</h3>
-                <ul id="chatAdmin"></ul>
+                <h3>💳 Compras</h3>
+                <ul id="compras"></ul>
+            </div>
+        </div>
+
+        <!-- PRODUCTOS -->
+        <div id="productosSection" class="section" style="display:none;">
+            <div class="card">
+                <h3>🛍️ Productos</h3>
+                <ul id="productos"></ul>
+            </div>
+
+            <div class="card">
+                <h3>➕ Crear Producto</h3>
+                <input id="nombre" placeholder="Nombre">
+                <input id="precio" placeholder="Precio">
+                <input id="imagen" placeholder="URL Imagen">
+                <button onclick="crearProducto()">Crear</button>
+            </div>
+        </div>
+
+        <!-- ACTIVIDAD -->
+        <div id="actividadSection" class="section" style="display:none;">
+            <div class="card">
+                <h3>📡 Actividad</h3>
+                <ul id="actividad"></ul>
             </div>
         </div>
 
@@ -194,115 +230,281 @@ li{
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-getFirestore, collection, getDocs, addDoc,
-deleteDoc, doc, updateDoc, onSnapshot
+getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 import {
 getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const app = initializeApp({
-apiKey:"AIzaSy...",
-authDomain:"lil-naay.firebaseapp.com",
-projectId:"lil-naay"
-});
+const firebaseConfig = {
+apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+authDomain: "lil-naay.firebaseapp.com",
+projectId: "lil-naay"
+};
 
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+let chart;
+
 /* LOGIN */
 window.login = function(){
-    signInWithEmailAndPassword(auth,
-        email.value,
-        pass.value
-    );
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("pass").value;
+
+    signInWithEmailAndPassword(auth,email,pass)
+    .then(()=> alert("Bienvenido 🔥"))
+    .catch(e=> alert("Error: "+e.message));
 }
 
-window.logout = ()=>signOut(auth);
-
-/* SECCIONES */
-window.mostrarSeccion = function(sec){
-    document.querySelectorAll(".section").forEach(s=>s.style.display="none");
-    document.getElementById(sec+"Section").style.display="block";
+/* LOGOUT */
+window.logout = function(){
+    signOut(auth);
 }
 
-/* PROTECCIÓN */
+/* CAMBIO DE SECCIONES */
+window.mostrarSeccion = function(seccion){
+
+    const secciones = [
+        "dashboardSection",
+        "usuariosSection",
+        "comprasSection",
+        "productosSection",
+        "actividadSection"
+    ];
+
+    secciones.forEach(id=>{
+        document.getElementById(id).style.display = "none";
+    });
+
+    document.getElementById(seccion + "Section").style.display = "block";
+}
+
+/* PROTECCIÓN ADMIN */
 onAuthStateChanged(auth, async user=>{
-    if(!user) return;
+    if(user){
 
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("panel").style.display="flex";
+        const uid = user.uid;
+        const userDoc = await getDocs(collection(db,"usuarios"));
 
-    cargarUsuarios();
-    cargarChatAdmin();
+        let esAdmin = false;
+
+        userDoc.forEach(d=>{
+            if(d.id === uid && d.data().admin === true){
+                esAdmin = true;
+            }
+        });
+
+        if(!esAdmin){
+            alert("No eres admin ❌");
+            logout();
+            return;
+        }
+
+        document.getElementById("loginBox").style.display="none";
+        document.getElementById("panel").style.display="flex";
+
+        mostrarSeccion("dashboard");
+        cargarTodo();
+
+    }else{
+        document.getElementById("loginBox").style.display="flex";
+        document.getElementById("panel").style.display="none";
+    }
 });
 
-/* 👥 USUARIOS CONTROL */
-async function cargarUsuarios(){
-    const lista = document.getElementById("usuariosLista");
-    lista.innerHTML="";
+/* CARGAR TODO */
+function cargarTodo(){
+    cargarSuscriptores();
+    cargarCompras();
+    cargarActividad();
+    cargarProductos();
+    cargarStats();
+    cargarGrafico();
+}
 
-    const snap = await getDocs(collection(db,"usuarios"));
+/* GRAFICO */
+async function cargarGrafico(){
+
+    const snap = await getDocs(collection(db,"actividad"));
+
+    let labels = [];
+    let data = [];
+
+    snap.forEach(d=>{
+        labels.push(d.data().fecha);
+        data.push(1);
+    });
+
+    const ctx = document.getElementById("graficoActividad");
+
+    if(chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Actividad',
+                data: data,
+                borderColor: '#ff0000',
+                backgroundColor: 'rgba(255,0,0,0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { labels: { color: 'white' } }
+            },
+            scales: {
+                x: { ticks: { color: 'white' } },
+                y: { ticks: { color: 'white' } }
+            }
+        }
+    });
+}
+
+/* STATS */
+async function cargarStats(){
+    document.getElementById("totalUsuarios").innerText = (await getDocs(collection(db,"usuarios"))).size;
+    document.getElementById("totalCompras").innerText = (await getDocs(collection(db,"compras"))).size;
+    document.getElementById("totalProductos").innerText = (await getDocs(collection(db,"productos"))).size;
+    document.getElementById("totalChat").innerText = (await getDocs(collection(db,"chat"))).size;
+}
+
+/* PRODUCTOS */
+async function cargarProductos(){
+    const lista = document.getElementById("productos");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"productos"));
 
     snap.forEach(docSnap=>{
-        let u = docSnap.data();
+        let p = docSnap.data();
         let id = docSnap.id;
 
         lista.innerHTML += `
         <li>
-        ${u.username || "Sin nombre"} (${u.email})
+        <b>${p.nombre}</b> - $${p.precio}
         <br>
-        <button onclick="vip('${id}',true)">VIP</button>
-        <button onclick="vip('${id}',false)">Quitar VIP</button>
-        <button onclick="ban('${id}')">BAN</button>
+        <button onclick="editarProducto('${id}','${p.nombre}',${p.precio})">✏️</button>
+        <button onclick="eliminarProducto('${id}')">🗑️</button>
         </li>`;
     });
 }
 
-/* VIP */
-window.vip = async function(id,val){
-    await updateDoc(doc(db,"usuarios",id),{vip:val});
-    alert("Actualizado");
-}
+/* SUSCRIPTORES */
+async function cargarSuscriptores(){
+    const lista = document.getElementById("suscriptores");
+    lista.innerHTML = "";
 
-/* BAN */
-window.ban = async function(id){
-    let tiempo = prompt("Minutos de ban:");
-    let hasta = Date.now() + tiempo*60000;
+    const snap = await getDocs(collection(db,"suscriptores"));
 
-    await updateDoc(doc(db,"usuarios",id),{
-        ban:true,
-        banHasta:hasta
-    });
-
-    alert("Usuario baneado");
-}
-
-/* 💬 MODERACIÓN CHAT */
-function cargarChatAdmin(){
-    const lista = document.getElementById("chatAdmin");
-
-    onSnapshot(collection(db,"chat"), snap=>{
-        lista.innerHTML="";
-
-        snap.forEach(docSnap=>{
-            let m = docSnap.data();
-            let id = docSnap.id;
-
-            lista.innerHTML += `
-            <li>
-            <b>${m.usuario}</b>: ${m.texto}
-            <br>
-            <button onclick="eliminarMsg('${id}')">🗑️ Eliminar</button>
-            </li>`;
-        });
+    snap.forEach(d=>{
+        lista.innerHTML += `<li>${d.data().email}</li>`;
     });
 }
 
-/* ELIMINAR MENSAJE */
-window.eliminarMsg = async function(id){
-    await deleteDoc(doc(db,"chat",id));
+/* COMPRAS */
+async function cargarCompras(){
+    const lista = document.getElementById("compras");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"compras"));
+
+    snap.forEach(docSnap=>{
+        let d = docSnap.data();
+
+        let productos = d.productos.map(p =>
+            `${p.nombre} | ${p.talla || "-"} | ${p.color || "-"} | $${p.precio}`
+        ).join("<br>");
+
+        lista.innerHTML += `<li>${productos}</li>`;
+    });
+}
+
+/* ACTIVIDAD */
+async function cargarActividad(){
+    const lista = document.getElementById("actividad");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db,"actividad"));
+
+    snap.forEach(d=>{
+        lista.innerHTML += `<li>${d.data().accion} - ${d.data().fecha}</li>`;
+    });
+}
+
+/* EDITAR */
+window.editarProducto = async function(id,nombre,precio){
+    let n = prompt("Nuevo nombre:", nombre);
+    let p = prompt("Nuevo precio:", precio);
+
+    if(!n || isNaN(p)) return;
+
+    await updateDoc(doc(db,"productos",id),{
+        nombre:n,
+        precio:Number(p)
+    });
+
+    await addDoc(collection(db,"actividad"),{
+        accion:"Producto editado: "+n,
+        fecha:new Date().toLocaleString()
+    });
+
+    cargarProductos();
+    cargarGrafico();
+}
+
+/* ELIMINAR */
+window.eliminarProducto = async function(id){
+    if(!confirm("Eliminar producto?")) return;
+
+    await deleteDoc(doc(db,"productos",id));
+
+    await addDoc(collection(db,"actividad"),{
+        accion:"Producto eliminado",
+        fecha:new Date().toLocaleString()
+    });
+
+    cargarProductos();
+    cargarGrafico();
+}
+
+/* CREAR */
+window.crearProducto = async function(){
+    let nombre = document.getElementById("nombre").value;
+    let precio = Number(document.getElementById("precio").value);
+    let imagen = document.getElementById("imagen").value;
+
+    if(!nombre || isNaN(precio)){
+        alert("Datos inválidos");
+        return;
+    }
+
+    await addDoc(collection(db,"productos"),{
+        nombre,
+        precio,
+        imagen,
+        stock:10
+    });
+
+    await addDoc(collection(db,"actividad"),{
+        accion:"Producto creado: "+nombre,
+        fecha:new Date().toLocaleString()
+    });
+
+    alert("Producto creado 🔥");
+
+    document.getElementById("nombre").value="";
+    document.getElementById("precio").value="";
+    document.getElementById("imagen").value="";
+
+    cargarProductos();
+    cargarGrafico();
 }
 
 </script>
