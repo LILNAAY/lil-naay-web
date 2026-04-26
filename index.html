@@ -14,107 +14,161 @@
     --rojo-oscuro:#8b0000;
 }
 
-/* FONDO GLOBAL */
+/* RESET */
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
     color:white;
-
-    background:
-    linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.9)),
-    url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee');
-
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
+    background:black;
 }
 
-/* HEADER */
-.header{
+/* HERO (PORTADA) */
+.hero{
+    position:relative;
+    width:100%;
+    height:420px;
+    overflow:hidden;
+}
+
+/* 🔥 CAPA OSCURA PROFESIONAL */
+.hero::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.9));
+    z-index:1;
+}
+
+/* 🔥 BORDE ROJO ABAJO */
+.hero::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:3px;
+    background:red;
+    box-shadow:0 0 15px red, 0 0 30px red;
+    z-index:3;
+}
+
+/* fondo */
+.hero-bg{
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:brightness(0.6);
+}
+
+/* artista */
+.hero-artista{
+    position:absolute;
+    left:40px;
+    bottom:0;
+    height:95%;
+    z-index:2;
+
+    /* 🔥 sombra pro */
+    filter:drop-shadow(0 0 25px rgba(255,0,0,0.7));
+}
+
+/* texto central */
+.hero-texto{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:500px;
+    z-index:2;
+
+    /* 🔥 glow pro */
+    filter:drop-shadow(0 0 20px red);
+}
+
+/* botones derecha */
+.hero-buttons{
+    position:absolute;
+    right:40px;
+    bottom:40px;
     display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:40px 30px;
-
-    background:linear-gradient(90deg,#1a0000,#000);
-    border-bottom:1px solid #ff000030;
-
-    box-shadow:0 0 40px rgba(255,0,0,0.2);
+    gap:15px;
+    z-index:3;
 }
 
-.header img{
-    width:110px;
-    border-radius:15px;
-    margin-right:20px;
-
-    box-shadow:
-    0 0 10px #ff0000,
-    0 0 25px rgba(255,0,0,0.5);
-}
-
-/* TITULO */
-.header h2{
-    font-size:26px;
-    letter-spacing:2px;
-    text-shadow:0 0 10px rgba(255,0,0,0.6);
-}
-
-small{
-    color:#bbb;
-}
-
-/* BOTONES */
-.btn{
-    background:linear-gradient(45deg,#8b0000,#ff0000);
-    padding:10px 20px;
+/* botones imagen */
+.btn-img{
+    background:none;
     border:none;
-    border-radius:25px;
-    color:white;
     cursor:pointer;
-
-    box-shadow:0 0 10px rgba(255,0,0,0.4);
-    transition:0.3s;
 }
 
-.btn:hover{
-    background:linear-gradient(45deg,#ff0000,#ff4d4d);
-    transform:scale(1.08);
+.btn-img img{
+    width:120px;
+    transition:0.3s;
+    filter:drop-shadow(0 0 10px rgba(255,0,0,0.6));
+}
 
-    box-shadow:
-    0 0 15px #ff0000,
-    0 0 40px rgba(255,0,0,0.6);
+.btn-img img:hover{
+    transform:scale(1.1);
+    filter:drop-shadow(0 0 25px red);
 }
 
 /* CONTENEDOR */
 .container{
     max-width:900px;
     margin:auto;
-    padding:20px;
+    padding:40px 20px;
 }
 
 /* CARD */
 .card{
-    background:rgba(0,0,0,0.65);
-    padding:30px;
+    background:rgba(0,0,0,0.75);
+    padding:40px;
     border-radius:20px;
-    margin-top:30px;
+    margin-top:-80px;
 
     border:1px solid rgba(255,0,0,0.2);
 
     box-shadow:
-    0 0 25px rgba(255,0,0,0.2),
+    0 0 40px rgba(255,0,0,0.3),
     inset 0 0 20px rgba(255,0,0,0.1);
 
-    backdrop-filter:blur(10px);
+    backdrop-filter:blur(12px);
+    text-align:center;
+}
 
+/* TITULO */
+.card h2{
+    font-size:28px;
+    margin-bottom:20px;
+    text-shadow:0 0 10px red;
+}
+
+/* BOTONES */
+.btn{
+    background:linear-gradient(45deg,#8b0000,#ff0000);
+    padding:12px 25px;
+    border:none;
+    border-radius:30px;
+    color:white;
+    cursor:pointer;
+    margin:10px;
+
+    box-shadow:0 0 15px rgba(255,0,0,0.4);
     transition:0.3s;
 }
 
-.card:hover{
-    transform:translateY(-5px);
+.btn:hover{
+    transform:scale(1.08);
     box-shadow:
-    0 0 35px rgba(255,0,0,0.4),
-    inset 0 0 25px rgba(255,0,0,0.2);
+    0 0 25px red,
+    0 0 50px rgba(255,0,0,0.6);
+}
+
+/* TEXTO */
+p{
+    font-size:18px;
 }
 
 /* MODAL */
@@ -124,9 +178,7 @@ small{
     height:100%;
     top:0;
     left:0;
-
-    background:rgba(0,0,0,0.85);
-
+    background:rgba(0,0,0,0.9);
     display:none;
     justify-content:center;
     align-items:center;
@@ -151,20 +203,15 @@ input{
     width:100%;
     padding:10px;
     margin:8px 0;
-
     border:none;
     border-radius:8px;
-
     background:#111;
     color:white;
-
-    outline:none;
-    transition:0.2s;
 }
 
 input:focus{
     background:#1a0000;
-    box-shadow:0 0 10px rgba(255,0,0,0.6);
+    box-shadow:0 0 10px red;
 }
 
 /* MENSAJE */
@@ -174,19 +221,8 @@ input:focus{
     right:20px;
     padding:12px 18px;
     border-radius:10px;
-
     display:none;
-
     font-size:14px;
-
-    box-shadow:
-    0 0 15px rgba(0,0,0,0.8),
-    0 0 20px rgba(255,0,0,0.5);
-}
-
-/* TITULOS */
-h2{
-    text-shadow:0 0 10px rgba(255,0,0,0.5);
 }
 </style>
 </head>
@@ -194,19 +230,26 @@ h2{
 <body>
 
 <!-- HEADER -->
-<div class="header">
+<div class="hero">
 
-    <div class="header-left">
-        <img src="Lil Naay.png">
-        <div>
-            <h2>LIL NAAY</h2>
-            <small>Artista urbano • Trap</small>
-        </div>
-    </div>
+    <!-- FONDO -->
+    <img src="fondo.png" class="hero-bg">
 
-    <div>
-        <button class="btn" onclick="abrirPerfil()">👤 Perfil</button>
-        <button class="btn" onclick="entrarTienda()">Entrar</button>
+    <!-- ARTISTA -->
+    <img src="artista.png" class="hero-artista">
+
+    <!-- TEXTO -->
+    <img src="texto.png" class="hero-texto">
+
+    <!-- BOTONES -->
+    <div class="hero-buttons">
+        <button class="btn-img" onclick="abrirPerfil()">
+            <img src="btn_perfil.png">
+        </button>
+
+        <button class="btn-img" onclick="entrarTienda()">
+            <img src="btn_entrar.png">
+        </button>
     </div>
 
 </div>
