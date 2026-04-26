@@ -5,10 +5,15 @@
 <title>Admin LIL NAAY</title>
 
 <style>
-body{
+*{
     margin:0;
-    font-family:Arial;
-    background:#0d0d0d;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body{
+    background:#0a0a0a;
     color:white;
 }
 
@@ -22,57 +27,123 @@ body{
 }
 
 input{
-    padding:10px;
-    margin:5px;
-    width:250px;
+    padding:12px;
+    margin:6px;
+    width:260px;
     border:none;
-    border-radius:5px;
+    outline:none;
+    border-radius:8px;
+    background:#1a1a1a;
+    color:white;
+}
+
+/* BOTONES */
+button{
+    padding:12px;
+    background:linear-gradient(45deg,#ff0000,#8b0000);
+    border:none;
+    color:white;
+    cursor:pointer;
+    border-radius:8px;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    opacity:0.9;
+}
+
+/* LAYOUT */
+#panel{
+    display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:220px;
+    height:100vh;
+    background:linear-gradient(180deg,#0d0d0d,#1a0000);
+    padding:20px;
+    border-right:1px solid rgba(255,0,0,0.2);
+}
+
+.sidebar h2{
+    margin-bottom:30px;
+    color:#ff4d4d;
+}
+
+.sidebar a{
+    display:block;
+    padding:10px;
+    margin:10px 0;
+    border-radius:6px;
+    color:#ccc;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    background:#ff000020;
+    color:white;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:20px;
 }
 
 /* NAVBAR */
 .navbar{
     display:flex;
     justify-content:space-between;
-    padding:15px 20px;
-    background:#140909;
+    align-items:center;
+    margin-bottom:20px;
 }
 
 /* GRID */
 .container{
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
     gap:20px;
-    padding:20px;
 }
 
 /* CARDS */
 .card{
-    background:rgba(255,255,255,0.05);
-    padding:15px;
-    border-radius:10px;
+    background:#111;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid rgba(255,0,0,0.2);
+    box-shadow:0 0 15px rgba(255,0,0,0.1);
+    transition:0.3s;
     max-height:300px;
     overflow:auto;
 }
 
-button{
-    padding:10px;
-    background:#8b0000;
-    border:none;
-    color:white;
-    cursor:pointer;
-    border-radius:5px;
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 25px rgba(255,0,0,0.3);
 }
 
+.card h3{
+    margin-bottom:10px;
+    color:#ff4d4d;
+}
+
+/* LISTAS */
 li{
     font-size:13px;
-    margin-bottom:5px;
-    border-bottom:1px solid rgba(255,255,255,0.1);
+    margin-bottom:8px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
     padding-bottom:5px;
 }
 
+/* STATS */
 .stats{
-    font-size:18px;
-    margin:5px 0;
+    font-size:20px;
+    margin:10px 0;
+    font-weight:bold;
+    color:#ff4d4d;
 }
 </style>
 </head>
@@ -89,47 +160,62 @@ li{
 
 <!-- PANEL -->
 <div id="panel" style="display:none;">
-    <div class="navbar">
-        <h2>⚙️ Panel Admin GOD</h2>
-        <button onclick="logout()">Cerrar sesión</button>
+
+    <div class="sidebar">
+        <h2>🔥 LIL NAAY</h2>
+        <a href="#">📊 Dashboard</a>
+        <a href="#">👥 Usuarios</a>
+        <a href="#">💳 Compras</a>
+        <a href="#">🛍️ Productos</a>
+        <a href="#">📡 Actividad</a>
+        <a href="#" onclick="logout()">🚪 Salir</a>
     </div>
 
-    <div class="container">
+    <div class="main">
 
-        <div class="card">
-            <h3>📊 Estadísticas</h3>
-            <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
-            <div class="stats">Compras: <span id="totalCompras">0</span></div>
-            <div class="stats">Productos: <span id="totalProductos">0</span></div>
-            <div class="stats">Mensajes: <span id="totalChat">0</span></div>
+        <div class="navbar">
+            <h2>⚙️ Panel Admin GOD</h2>
+            <button onclick="logout()">Cerrar sesión</button>
         </div>
 
-        <div class="card">
-            <h3>👥 Suscriptores</h3>
-            <ul id="suscriptores"></ul>
-        </div>
+        <div class="container">
 
-        <div class="card">
-            <h3>💳 Compras</h3>
-            <ul id="compras"></ul>
-        </div>
+            <div class="card">
+                <h3>📊 Estadísticas</h3>
+                <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
+                <div class="stats">Compras: <span id="totalCompras">0</span></div>
+                <div class="stats">Productos: <span id="totalProductos">0</span></div>
+                <div class="stats">Mensajes: <span id="totalChat">0</span></div>
+            </div>
 
-        <div class="card">
-            <h3>📡 Actividad</h3>
-            <ul id="actividad"></ul>
-        </div>
+            <div class="card">
+                <h3>👥 Suscriptores</h3>
+                <ul id="suscriptores"></ul>
+            </div>
 
-        <div class="card">
-            <h3>🛍️ Productos</h3>
-            <ul id="productos"></ul>
-        </div>
+            <div class="card">
+                <h3>💳 Compras</h3>
+                <ul id="compras"></ul>
+            </div>
 
-        <div class="card">
-            <h3>➕ Crear Producto</h3>
-            <input id="nombre" placeholder="Nombre">
-            <input id="precio" placeholder="Precio">
-            <input id="imagen" placeholder="URL Imagen">
-            <button onclick="crearProducto()">Crear</button>
+            <div class="card">
+                <h3>📡 Actividad</h3>
+                <ul id="actividad"></ul>
+            </div>
+
+            <div class="card">
+                <h3>🛍️ Productos</h3>
+                <ul id="productos"></ul>
+            </div>
+
+            <div class="card">
+                <h3>➕ Crear Producto</h3>
+                <input id="nombre" placeholder="Nombre">
+                <input id="precio" placeholder="Precio">
+                <input id="imagen" placeholder="URL Imagen">
+                <button onclick="crearProducto()">Crear</button>
+            </div>
+
         </div>
 
     </div>
@@ -171,13 +257,11 @@ window.logout = function(){
     signOut(auth);
 }
 
-/* 🔥 PROTECCIÓN ADMIN (UID SYSTEM) */
+/* PROTECCIÓN ADMIN */
 onAuthStateChanged(auth, async user=>{
     if(user){
 
         const uid = user.uid;
-
-        // 🔥 BUSCAR DIRECTO POR UID (SOLUCIÓN PRO)
         const userDoc = await getDocs(collection(db,"usuarios"));
 
         let esAdmin = false;
@@ -195,7 +279,7 @@ onAuthStateChanged(auth, async user=>{
         }
 
         document.getElementById("loginBox").style.display="none";
-        document.getElementById("panel").style.display="block";
+        document.getElementById("panel").style.display="flex";
 
         cargarTodo();
 
