@@ -207,7 +207,6 @@ body{
 
 <div class="content">
 
-<!-- TIENDA -->
 <div id="tienda" class="section active">
     <h2>Productos</h2>
     <div class="store" id="productos"></div>
@@ -218,28 +217,22 @@ body{
     <button onclick="pagar()">Pagar</button>
 </div>
 
-<!-- MUSICA -->
 <div id="musica" class="section">
     <h2>🎵 Música</h2>
 </div>
 
-<!-- EVENTOS -->
 <div id="eventos" class="section">
     <h2>🎉 Eventos</h2>
     <div class="event">Próximamente 🔥</div>
 </div>
 
-<!-- PERFIL -->
 <div id="perfil" class="section">
     <h2>👤 Perfil</h2>
-    <div class="profile" id="perfilData">
-        Cargando...
-    </div>
+    <div class="profile" id="perfilData">Cargando...</div>
 </div>
 
 </div>
 
-<!-- CHAT -->
 <button class="chat-toggle" onclick="toggleChat()">💬</button>
 
 <div class="chat-box" id="chatBoxDrag">
@@ -278,29 +271,26 @@ window.mostrar = function(sec){
     document.getElementById(sec).classList.add("active");
 }
 
-/* 🔥 OBTENER PERFIL */
+/* PERFIL */
 async function obtenerPerfil(email){
     const snap = await getDocs(collection(db,"usuarios"));
     let user = snap.docs.find(doc=>doc.data().email === email);
     return user ? user.data() : null;
 }
 
-/* CARGAR PERFIL */
 async function cargarPerfil(){
     let email = localStorage.getItem("usuario");
     if(!email) return;
 
     let data = await obtenerPerfil(email);
 
-    if(data){
-        document.getElementById("perfilData").innerHTML = `
-        <p><b>Usuario:</b> ${data.username}</p>
-        <p><b>Email:</b> ${data.email}</p>
-        <p><b>País:</b> ${data.pais}</p>
-        <p><b>Provincia:</b> ${data.provincia}</p>
-        <p><b>Edad:</b> ${data.edad}</p>
-        `;
-    }
+    document.getElementById("perfilData").innerHTML = `
+    <p><b>Usuario:</b> ${data?.username || "No definido"}</p>
+    <p><b>Email:</b> ${data?.email || email}</p>
+    <p><b>País:</b> ${data?.pais || "-"}</p>
+    <p><b>Provincia:</b> ${data?.provincia || "-"}</p>
+    <p><b>Edad:</b> ${data?.edad || "-"}</p>
+    `;
 }
 
 /* CHAT */
@@ -318,15 +308,17 @@ onSnapshot(q,(snap)=>{
     chat.scrollTop = chat.scrollHeight;
 });
 
-/* ENVIAR MENSAJE CON PERFIL */
+/* ENVIAR MENSAJE */
 window.enviarMensaje = async function(){
-    let texto = document.getElementById("mensajeInput").value;
+    let input = document.getElementById("mensajeInput");
+    let texto = input.value.trim();
     let email = localStorage.getItem("usuario");
 
     if(!email) return alert("Login requerido");
+    if(!texto) return;
 
     let perfil = await obtenerPerfil(email);
-    let nombre = perfil ? perfil.username : email;
+    let nombre = perfil?.username || email;
 
     await addDoc(collection(db,"chat"),{
         usuario:nombre,
@@ -334,8 +326,15 @@ window.enviarMensaje = async function(){
         fecha: serverTimestamp()
     });
 
-    document.getElementById("mensajeInput").value="";
+    input.value="";
 }
+
+/* ENTER PARA ENVIAR */
+document.getElementById("mensajeInput").addEventListener("keypress",function(e){
+    if(e.key==="Enter"){
+        enviarMensaje();
+    }
+});
 
 /* CHAT UI */
 window.toggleChat = function(){
