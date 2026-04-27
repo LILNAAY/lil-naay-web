@@ -82,11 +82,7 @@ border-radius:12px;
 border:1px solid rgba(255,0,0,0.2);
 }
 
-li{
-font-size:13px;
-margin-bottom:8px;
-}
-
+li{font-size:13px;margin-bottom:8px;}
 .stats{color:#ff4d4d;margin:5px 0;}
 
 #noti{
@@ -142,6 +138,9 @@ display:none;
 <div class="stats">Compras: <span id="totalCompras">0</span></div>
 <div class="stats">Productos: <span id="totalProductos">0</span></div>
 <div class="stats">Chat: <span id="totalChat">0</span></div>
+
+<canvas id="grafico"></canvas>
+
 </div>
 </div>
 </div>
@@ -196,7 +195,7 @@ onAuthStateChanged, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const app = initializeApp({
-apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+apiKey:"TU_API_KEY",
 authDomain:"lil-naay.firebaseapp.com",
 projectId:"lil-naay"
 });
@@ -205,6 +204,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 let ultimoMensaje = "";
+let chart;
 
 /* LOGIN */
 window.login = ()=>{
@@ -257,18 +257,26 @@ cargarCompras();
 cargarChatAdmin();
 }
 
-/* USUARIOS + ROLES */
+/* USUARIOS */
 async function cargarUsuarios(){
 usuariosLista.innerHTML="";
 
 const snap = await getDocs(collection(db,"usuarios"));
 
-snap.forEach(d=>{
+snap.forEach(async d=>{
 let u = d.data();
+
+if(u.ban && u.banHasta < Date.now()){
+await updateDoc(doc(db,"usuarios",d.id),{ban:false});
+}
+
+let baneado = u.ban && u.banHasta > Date.now();
 
 usuariosLista.innerHTML += `
 <li>
-${u.email}
+${u.email || "⚠️ Sin correo"}
+<br>
+Estado: ${baneado ? "🚫 BANEADO" : "✅ Activo"}
 <br>
 <button onclick="cambiarRol('${u.email}')">🎭 Rol</button>
 <button onclick="banearUsuario('${u.email}')">🚫 Ban</button>
@@ -276,32 +284,23 @@ ${u.email}
 });
 }
 
-/* CHAT ADMIN */
+/* CHAT */
 function cargarChatAdmin(){
 onSnapshot(collection(db,"chat"),snap=>{
-
 chatAdmin.innerHTML="";
 
 snap.forEach(docSnap=>{
 let m = docSnap.data();
 let id = docSnap.id;
 
-let color =
-m.rol==="admin"?"red":
-m.rol==="mod"?"cyan":
-m.rol==="vip"?"gold":"white";
-
 chatAdmin.innerHTML += `
-<li style="color:${color}">
+<li>
 <b>${m.usuario}</b>: ${m.texto}
 <br>
 <button onclick="eliminarMensaje('${id}')">🗑️</button>
-<button onclick="cambiarRol('${m.email}')">🎭</button>
-<button onclick="banearUsuario('${m.email}')">🚫</button>
 </li>`;
 });
 
-/* NOTI */
 let docs = snap.docs;
 if(docs.length){
 let ultimo = docs[docs.length-1].data();
@@ -359,12 +358,52 @@ banHasta:Date.now()+min*60000
 alert("Usuario baneado");
 }
 
-/* STATS */
-async function cargarStats(){
-totalUsuarios.innerText=(await getDocs(collection(db,"usuarios"))).size;
-totalCompras.innerText=(await getDocs(collection(db,"compras"))).size;
-totalProductos.innerText=(await getDocs(collection(db,"productos"))).size;
-totalChat.innerText=(await getDocs(collection(db,"chat"))).size;
+/* STATS + GRAFICO */
+function cargarStats(){
+
+let usuarios=0, compras=0, productos=0, chat=0;
+
+onSnapshot(collection(db,"usuarios"),snap=>{
+usuarios = snap.size;
+totalUsuarios.innerText = usuarios;
+actualizar();
+});
+
+onSnapshot(collection(db,"compras"),snap=>{
+compras = snap.size;
+totalCompras.innerText = compras;
+actualizar();
+});
+
+onSnapshot(collection(db,"productos"),snap=>{
+productos = snap.size;
+totalProductos.innerText = productos;
+actualizar();
+});
+
+onSnapshot(collection(db,"chat"),snap=>{
+chat = snap.size;
+totalChat.innerText = chat;
+actualizar();
+});
+
+function actualizar(){
+if(!document.getElementById("grafico")) return;
+
+if(chart) chart.destroy();
+
+chart = new Chart(document.getElementById("grafico"),{
+type:"bar",
+data:{
+labels:["Usuarios","Compras","Productos","Chat"],
+datasets:[{
+label:"Datos en vivo",
+data:[usuarios,compras,productos,chat]
+}]
+}
+});
+}
+
 }
 
 /* PRODUCTOS */
