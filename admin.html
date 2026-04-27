@@ -138,9 +138,7 @@ display:none;
 <div class="stats">Compras: <span id="totalCompras">0</span></div>
 <div class="stats">Productos: <span id="totalProductos">0</span></div>
 <div class="stats">Chat: <span id="totalChat">0</span></div>
-
 <canvas id="grafico"></canvas>
-
 </div>
 </div>
 </div>
@@ -175,6 +173,8 @@ display:none;
 <div id="chatSection" class="section" style="display:none;">
 <div class="card">
 <ul id="chatAdmin"></ul>
+<input id="mensajeAdmin" placeholder="Escribir mensaje...">
+<button onclick="enviarMensajeAdmin()">Enviar</button>
 </div>
 </div>
 
@@ -199,6 +199,7 @@ apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
 authDomain:"lil-naay.firebaseapp.com",
 projectId:"lil-naay"
 });
+
 const db = getFirestore(app);
 const auth = getAuth(app);
 
@@ -217,8 +218,22 @@ window.logout = ()=>signOut(auth);
 window.mostrarSeccion = s=>{
 ["dashboard","usuarios","compras","productos","chat"]
 .forEach(x=>document.getElementById(x+"Section").style.display="none");
-
 document.getElementById(s+"Section").style.display="block";
+}
+
+/* ENVIAR MENSAJE ADMIN */
+window.enviarMensajeAdmin = async ()=>{
+if(!mensajeAdmin.value) return;
+
+await addDoc(collection(db,"chat"),{
+usuario:"ADMIN",
+email:auth.currentUser.email,
+texto:mensajeAdmin.value,
+rol:"admin",
+fecha:Date.now()
+});
+
+mensajeAdmin.value="";
 }
 
 /* AUTH */
@@ -271,9 +286,17 @@ await updateDoc(doc(db,"usuarios",d.id),{ban:false});
 
 let baneado = u.ban && u.banHasta > Date.now();
 
+let rol =
+u.admin ? "👑 Admin" :
+u.mod ? "🛡️ Mod" :
+u.vip ? "💎 VIP" :
+"👤 User";
+
 usuariosLista.innerHTML += `
 <li>
 ${u.email || "⚠️ Sin correo"}
+<br>
+Rol: ${rol}
 <br>
 Estado: ${baneado ? "🚫 BANEADO" : "✅ Activo"}
 <br>
@@ -292,8 +315,13 @@ snap.forEach(docSnap=>{
 let m = docSnap.data();
 let id = docSnap.id;
 
+let color =
+m.rol==="admin"?"red":
+m.rol==="mod"?"cyan":
+m.rol==="vip"?"gold":"white";
+
 chatAdmin.innerHTML += `
-<li>
+<li style="color:${color}">
 <b>${m.usuario}</b>: ${m.texto}
 <br>
 <button onclick="eliminarMensaje('${id}')">🗑️</button>
@@ -357,7 +385,7 @@ banHasta:Date.now()+min*60000
 alert("Usuario baneado");
 }
 
-/* STATS + GRAFICO */
+/* STATS */
 function cargarStats(){
 
 let usuarios=0, compras=0, productos=0, chat=0;
@@ -387,8 +415,6 @@ actualizar();
 });
 
 function actualizar(){
-if(!document.getElementById("grafico")) return;
-
 if(chart) chart.destroy();
 
 chart = new Chart(document.getElementById("grafico"),{
