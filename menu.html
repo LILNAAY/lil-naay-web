@@ -1,700 +1,646 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda LIL NAAY</title>
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Tienda LIL NAAY</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
 
-        body {
-            background: radial-gradient(circle at top, rgba(255, 0, 0, 0.2), transparent 60%),
-                        radial-gradient(circle at bottom, rgba(255, 0, 0, 0.15), transparent 70%), #0a0a0a;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+body {
+    background: radial-gradient(circle at top, rgba(255,0,0,0.2), transparent 60%),
+                radial-gradient(circle at bottom, rgba(255,0,0,0.15), transparent 70%),
+                #0a0a0a;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-        /* NAV */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            background: linear-gradient(90deg, #120000, #1a0000);
-            border-bottom: 1px solid rgba(255, 0, 0, 0.3);
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
-        }
+/* NAV */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(90deg,#120000,#1a0000);
+    border-bottom: 1px solid rgba(255,0,0,0.3);
+    box-shadow: 0 0 15px rgba(255,0,0,0.2);
+}
 
-        .navbar h2 {
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+.navbar button {
+    background: #ff0000;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-        .navbar button {
-            background: #ff0000;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s, transform 0.2s;
-        }
+.navbar button:hover {
+    background: #990000;
+}
 
-        .navbar button:hover {
-            background: #cc0000;
-            transform: translateY(-2px);
-        }
+/* TABS */
+.tabs {
+    display: flex;
+    gap: 10px;
+    padding: 15px 20px;
+    overflow-x: auto;
+}
 
-        /* TABS */
-        .tabs {
-            display: flex;
-            gap: 12px;
-            padding: 20px 30px;
-            overflow-x: auto;
-        }
+.tabs button {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,0,0,0.3);
+    padding: 10px 18px;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    white-space: nowrap;
+}
 
-        .tabs button {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            padding: 10px 20px;
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
+.tabs button:hover, .tabs button.active {
+    background: #ff0000;
+    box-shadow: 0 0 15px red;
+}
 
-        .tabs button:hover, .tabs button.active-tab {
-            background: #ff0000;
-            box-shadow: 0 0 15px #ff0000;
-            border-color: #ff0000;
-        }
+/* CONTENT */
+.content {
+    flex: 1; 
+    padding: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+}
 
-        /* CONTENT */
-        .content {
-            flex: 1;
-            padding: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-        }
+.section { display: none; }
+.active { display: block; }
 
-        .section {
-            display: none;
-            animation: fadeIn 0.4s ease-in-out;
-        }
+/* PRODUCTOS */
+.store {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
 
-        .section.active {
-            display: block;
-        }
+.product {
+    background: rgba(0,0,0,0.6);
+    padding: 15px;
+    border-radius: 15px;
+    width: 220px;
+    border: 1px solid rgba(255,0,0,0.3);
+    box-shadow: 0 0 20px rgba(255,0,0,0.2);
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.product:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 30px red;
+}
 
-        /* PRODUCTOS */
-        .store {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            justify-content: flex-start;
-            margin-bottom: 30px;
-        }
+.product img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
 
-        .product {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 20px;
-            border-radius: 16px;
-            width: 220px;
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.15);
-            transition: transform 0.3s, box-shadow 0.3s;
-            display: flex;
-            flex-direction: column;
-        }
+.product p {
+    color: #ff4d4d;
+    font-weight: 600;
+    margin-top: 5px;
+}
 
-        .product:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
-            border-color: rgba(255, 0, 0, 0.6);
-        }
+.product button {
+    background: #ff0000;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: auto;
+    cursor: pointer;
+}
 
-        .product img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 12px;
-        }
+.product button:hover {
+    background: #990000;
+}
 
-        .product h4 {
-            font-size: 1.1rem;
-            margin-bottom: 6px;
-        }
+/* CARRITO */
+.cart-section {
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+    border: 1px solid rgba(255,0,0,0.2);
+}
 
-        .product p {
-            color: #ff4d4d;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
+.cart-section ul {
+    list-style: none;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
 
-        .product button {
-            background: #ff0000;
-            border: none;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: auto;
-            transition: background 0.2s;
-        }
+.cart-section li {
+    padding: 6px 0;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+}
 
-        .product button:hover {
-            background: #990000;
-        }
+/* PERFIL */
+.profile {
+    background: rgba(0,0,0,0.7);
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 400px;
+    border: 1px solid rgba(255,0,0,0.3);
+    box-shadow: 0 0 20px rgba(255,0,0,0.2);
+    margin: 0 auto;
+    text-align: center;
+}
 
-        /* CARRITO */
-        .cart-section {
-            background: rgba(0,0,0,0.5);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,0,0,0.2);
-            margin-top: 20px;
-        }
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ff0000;
+    margin: 0 auto 15px auto;
+    display: block;
+}
 
-        .cart-section h3 { margin-bottom: 15px; color: #ff0000; }
+.btn-action {
+    background: #ff0000;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 12px;
+    transition: 0.2s;
+}
 
-        .cart-list {
-            list-style: none;
-            max-height: 200px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-            padding-right: 5px;
-        }
+.btn-action:hover {
+    background: #990000;
+}
 
-        .cart-list li {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+/* CHAT */
+.chat-toggle {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #ff0000;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 0 15px rgba(255,0,0,0.5);
+    transition: 0.2s;
+}
 
-        .cart-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.chat-toggle:hover {
+    transform: scale(1.1);
+    background: #990000;
+}
 
-        .cart-actions button {
-            background: #ff0000;
-            border: none;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
+.chat-box {
+    position: fixed;
+    bottom: 95px;
+    right: 25px;
+    width: 320px;
+    height: 440px;
+    background: #0d0d0d;
+    border-radius: 15px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(255,0,0,0.4);
+    border: 1px solid rgba(255,0,0,0.3);
+    z-index: 999;
+}
 
-        .cart-actions button:hover { background: #990000; }
+.chat-header {
+    background: #1a0000;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    cursor: move;
+}
 
-        /* PERFIL */
-        .profile {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 25px;
-            border-radius: 16px;
-            max-width: 450px;
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
-            line-height: 1.8;
-        }
+.online { color: #00ff66; font-size: 12px; }
 
-        /* CHAT */
-        .chat-toggle {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #ff0000;
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
-            transition: transform 0.2s, background-color 0.3s;
-        }
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-        .chat-toggle:hover {
-            transform: scale(1.1);
-            background-color: #cc0000;
-        }
+/* BURBUJAS */
+.msg {
+    max-width: 80%;
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
 
-        .chat-box {
-            position: fixed;
-            bottom: 95px;
-            right: 25px;
-            width: 320px;
-            height: 440px;
-            background: #0d0d0d;
-            border-radius: 16px;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            z-index: 999;
-        }
+.msg b {
+    display: block;
+    font-size: 11px;
+    opacity: 0.8;
+    margin-bottom: 3px;
+}
 
-        .chat-header {
-            background: #1a0000;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            cursor: move;
-            border-bottom: 1px solid rgba(255,0,0,0.3);
-        }
+.me { background: #ff0000; align-self: flex-end; }
+.other { background: #222; align-self: flex-start; }
 
-        .online {
-            color: #00ff66;
-            font-size: 12px;
-            font-weight: 600;
-        }
+.role-admin { border-left: 4px solid red; }
+.role-mod { border-left: 4px solid cyan; }
+.role-vip { border-left: 4px solid gold; }
 
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+.avatar-chat {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 6px;
+}
 
-        .msg {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 14px;
-            font-size: 13px;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-word;
-            white-space: pre-wrap;
-            color: white;
-        }
+/* INPUT */
+.chat-input { display: flex; border-top: 1px solid #222; background: #111; padding: 4px; }
+.chat-input input { flex: 1; padding: 8px; border: none; background: #0a0a0a; color: white; border-radius: 6px; outline: none; margin-right: 4px;}
+.chat-input button { background: #ff0000; border: none; padding: 8px 12px; color: white; border-radius: 6px; cursor: pointer; }
 
-        .msg b {
-            display: block;
-            font-size: 11px;
-            opacity: 0.7;
-            margin-bottom: 3px;
-            word-break: break-word;
-        }
+/* NOTIFICACIÓN */
+#noti {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ff0000;
+    padding: 12px 20px;
+    border-radius: 8px;
+    display: none;
+    z-index: 1001;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
 
-        .me { background: #ff0000; align-self: flex-end; border: 1px solid #ff4d4d; }
-        .other { background: #222222; align-self: flex-start; border: 1px solid #333; }
-
-        .role-admin { border-left: 4px solid #ff0000; }
-        .role-mod { border-left: 4px solid #00ffff; }
-        .role-vip { border-left: 4px solid #ffd700; }
-
-        .chat-input {
-            display: flex;
-            border-top: 1px solid #222;
-            padding: 6px;
-            background: #111;
-        }
-
-        .chat-input input {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: #080808;
-            color: white;
-            border-radius: 8px;
-            outline: none;
-            margin-right: 6px;
-        }
-
-        .chat-input button {
-            background: #ff0000;
-            border: none;
-            padding: 10px 14px;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .chat-input button:hover { background: #990000; }
-
-        /* NOTIFICACIÓN */
-        #noti {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #ff0000;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            display: none;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            z-index: 1001;
-            font-weight: 600;
-        }
-
-        /* FOOTER */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            background: #080808;
-            margin-top: auto;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: #666;
-            font-size: 0.85rem;
-        }
-    </style>
+/* FOOTER */
+.footer { text-align: center; padding: 15px; background: #0d0d0d; margin-top: auto; color: #666; }
+</style>
 </head>
+
 <body>
 
-    <div id="noti">🔔 Nuevo mensaje</div>
+<div id="noti">🔔 Nuevo mensaje</div>
 
-    <div class="navbar">
-        <h2>🔥 LIL NAAY</h2>
-        <a href="index.html"><button>⬅ Volver</button></a>
-    </div>
+<div class="navbar">
+    <h2>🔥 LIL NAAY</h2>
+    <a href="index.html"><button>⬅ Volver</button></a>
+</div>
 
-    <div class="tabs">
-        <button class="active-tab" onclick="mostrar('tienda', this)">🛍️ Tienda</button>
-        <button onclick="mostrar('musica', this)">🎵 Música</button>
-        <button onclick="mostrar('eventos', this)">🎉 Eventos</button>
-        <button onclick="mostrar('perfil', this)">👤 Perfil</button>
-    </div>
+<div class="tabs">
+    <button class="active" onclick="mostrar('tienda', this)">🛍️ Tienda</button>
+    <button onclick="mostrar('musica', this)">🎵 Música</button>
+    <button onclick="mostrar('eventos', this)">🎉 Eventos</button>
+    <button onclick="mostrar('perfil', this)">👤 Perfil</button>
+</div>
 
-    <div class="content">
+<div class="content">
+    <div id="tienda" class="section active">
+        <h2>Productos</h2>
+        <div class="store" id="productos"></div>
 
-        <div id="tienda" class="section active">
-            <h2>Productos</h2>
-            <div class="store" id="productos"></div>
-
-            <div class="cart-section">
-                <h3>🛒 Carrito</h3>
-                <ul class="cart-list" id="carritoLista"></ul>
-                <div class="cart-actions">
-                    <h3>Total: $<span id="total">0</span></h3>
-                    <button onclick="pagar()">Pagar</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="musica" class="section">
-            <h2>🎵 Música</h2>
-            <p style="margin-top: 15px; color: #888;">Próximamente disponible el nuevo catálogo.</p>
-        </div>
-
-        <div id="eventos" class="section">
-            <h2>🎉 Eventos</h2>
-            <p style="margin-top: 15px; color: #888;">Pronto anunciaremos las fechas de los conciertos. ¡Activa las notificaciones! 🔥</p>
-        </div>
-
-        <div id="perfil" class="section">
-            <h2>👤 Perfil</h2>
-            <div class="profile" id="perfilData">Cargando perfil...</div>
-        </div>
-
-    </div>
-
-    <button class="chat-toggle" onclick="toggleChat()">💬</button>
-
-    <div class="chat-box" id="chatBoxDrag">
-        <div class="chat-header">
-            <span>💬 Chat Público</span>
-            <span class="online" id="onlineCount">0 online</span>
-        </div>
-
-        <div id="chatBox" class="chat-messages"></div>
-
-        <div class="chat-input">
-            <input id="mensajeInput" placeholder="Escribe tu mensaje...">
-            <button onclick="enviarMensaje()">➤</button>
+        <div class="cart-section">
+            <h3>🛒 Carrito</h3>
+            <ul id="carrito"></ul>
+            <h3>Total: $<span id="total">0</span></h3>
+            <button class="btn-action" onclick="pagar()">Pagar</button>
         </div>
     </div>
 
-    <div class="footer">© 2026 LIL NAAY. Todos los derechos reservados.</div>
+    <div id="musica" class="section"><h2>🎵 Música</h2></div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import {
-            getFirestore, collection, getDocs, addDoc,
-            onSnapshot, query, orderBy, serverTimestamp,
-            where, doc, setDoc
-        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    <div id="eventos" class="section">
+        <h2>🎉 Eventos</h2>
+        <div style="color: #666; margin-top: 15px;">Próximamente 🔥</div>
+    </div>
 
-        const app = initializeApp({
-            apiKey: "TU_API_KEY",
-            authDomain: "lil-naay.firebaseapp.com",
-            projectId: "lil-naay"
-        });
+    <div id="perfil" class="section">
+        <h2>👤 Perfil</h2>
+        <br>
+        <div class="profile" id="perfilData">Cargando perfil...</div>
+    </div>
+</div>
 
-        const db = getFirestore(app);
+<button class="chat-toggle" onclick="toggleChat()">💬</button>
 
-        let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-        let lastMsg = "", lastTime = 0;
+<div class="chat-box" id="chatBoxDrag">
+    <div class="chat-header">
+        <span>💬 Chat</span>
+        <span class="online" id="onlineCount">0 online</span>
+    </div>
 
-        /* SECCIONES */
-        window.mostrar = (sec, btn) => {
-            document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-            document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active-tab"));
-            
-            document.getElementById(sec).classList.add("active");
-            if (btn) btn.classList.add("active-tab");
-        };
+    <div id="chatBox" class="chat-messages"></div>
 
-        /* PERFIL */
-        async function obtenerPerfil(email) {
-            try {
-                const q = query(collection(db, "usuarios"), where("email", "==", email));
-                const snap = await getDocs(q);
-                return snap.empty ? null : snap.docs[0].data();
-            } catch (e) {
-                console.error("Error al obtener el perfil:", e);
-                return null;
-            }
-        }
+    <div class="chat-input">
+        <input id="mensajeInput" placeholder="Escribe...">
+        <button onclick="enviarMensaje()">➤</button>
+    </div>
+</div>
 
-        async function cargarPerfil() {
-            let email = localStorage.getItem("usuario");
-            if (!email) {
-                document.getElementById("perfilData").innerHTML = `<p>No hay sesión iniciada en este dispositivo.</p>`;
-                return;
-            }
+<div class="footer">© 2026 LIL NAAY</div>
 
-            let data = await obtenerPerfil(email);
+<script type="module">
 
-            document.getElementById("perfilData").innerHTML = `
-                <p><b>Usuario:</b> ${data?.username || email}</p>
-                <p><b>Email:</b> ${email}</p>
-                <p><b>Rol:</b> ${data?.admin ? "ADMIN" : data?.mod ? "MOD" : data?.vip ? "VIP" : "USER"}</p>
-                <p><b>País:</b> ${data?.pais || "-"}</p>
-            `;
-        }
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+    getFirestore, collection, getDocs, addDoc,
+    onSnapshot, query, orderBy, serverTimestamp,
+    where, doc, setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        /* ONLINE */
-        const onlineRef: {
-            const onlineRef = collection(db, "online");
+const app = initializeApp({
+    apiKey: "TU_API_KEY",
+    authDomain: "lil-naay.firebaseapp.com",
+    projectId: "lil-naay"
+});
 
-            setInterval(async () => {
-                let email = localStorage.getItem("usuario");
-                if (!email) return;
+const db = getFirestore(app);
 
-                try {
-                    await setDoc(doc(onlineRef, email), {
-                        time: Date.now()
-                    });
-                } catch (e) {
-                    console.error("Error al actualizar presencia en línea:", e);
-                }
-            }, 5000);
+/* SECCIONES */
+window.mostrar = (sec, btn) => {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+    
+    document.getElementById(sec).classList.add("active");
+    if(btn) btn.classList.add("active");
+}
 
-            onSnapshot(onlineRef, snap => {
-                let count = 0;
-                let now = Date.now();
+/* PERFIL */
+async function obtenerPerfil(email){
+    const q = query(collection(db, "usuarios"), where("email", "==", email));
+    const snap = await getDocs(q);
+    return snap.empty ? null : snap.docs[0].data();
+}
 
-                snap.forEach(d => {
-                    if (now - d.data().time < 10000) count++;
-                });
+window.cargarPerfil = async () => {
+    let email = localStorage.getItem("usuario");
+    if (!email) {
+        document.getElementById("perfilData").innerHTML = `<p>No hay sesión iniciada.</p>`;
+        return;
+    }
 
-                const countElem = document.getElementById("onlineCount");
-                if (countElem) countElem.innerText = count + " online";
+    let data = await obtenerPerfil(email);
+    let defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+    document.getElementById("perfilData").innerHTML = `
+        <img src="${data?.fotoPerfil || defaultAvatar}" class="profile-avatar" alt="Foto de perfil">
+        <p><b>Usuario:</b> ${data?.username || email.split('@')[0]}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Rol:</b> ${data?.admin ? "ADMIN" : data?.mod ? "MOD" : data?.vip ? "VIP" : "USER"}</p>
+        <p><b>País:</b> ${data?.pais || "-"}</p>
+        
+        <input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="subirFoto()">
+        <button class="btn-action" onclick="document.getElementById('fotoInput').click()">📷 Cambiar Foto</button>
+    `;
+}
+
+window.subirFoto = async () => {
+    let fileInput = document.getElementById("fotoInput");
+    let file = fileInput.files[0];
+    if (!file) return;
+    
+    let email = localStorage.getItem("usuario");
+    if (!email) return alert("Inicia sesión primero");
+
+    let reader = new FileReader();
+    reader.onload = async function(e) {
+        let fotoBase64 = e.target.result;
+        let q = query(collection(db, "usuarios"), where("email", "==", email));
+        let snap = await getDocs(q);
+
+        if (snap.empty) {
+            await addDoc(collection(db, "usuarios"), {
+                email: email,
+                username: email.split('@')[0],
+                fotoPerfil: fotoBase64
             });
+        } else {
+            let docId = snap.docs[0].id;
+            await setDoc(doc(db, "usuarios", docId), { fotoPerfil: fotoBase64 }, { merge: true });
         }
-
-        /* CHAT */
-        const qChat = query(collection(db, "chat"), orderBy("fecha"));
-
-        onSnapshot(qChat, async snap => {
-            let chat = document.getElementById("chatBox");
-            if (!chat) return;
-            chat.innerHTML = "";
-
-            let email = localStorage.getItem("usuario");
-
-            for (const d of snap.docs) {
-                let m = d.data();
-                let perfil = await obtenerPerfil(m.email);
-
-                let div = document.createElement("div");
-
-                div.className = "msg " + (m.email === email ? "me" : "other");
-
-                if (perfil?.admin) div.classList.add("role-admin");
-                else if (perfil?.mod) div.classList.add("role-mod");
-                else if (perfil?.vip) div.classList.add("role-vip");
-
-                div.innerHTML = `<b>${m.usuario}</b>${m.texto}`;
-                chat.appendChild(div);
-            }
-
-            /* NOTIFICACIONES */
-            if (snap.docs.length > 0) {
-                let ultimo = snap.docs[snap.docs.length - 1].data();
-                const noti = document.getElementById("noti");
-
-                if (ultimo.texto !== lastMsg) {
-                    noti.style.display = "block";
-                    setTimeout(() => noti.style.display = "none", 2500);
-                    lastMsg = ultimo.texto;
-                }
-            }
-
-            chat.scrollTop = chat.scrollHeight;
-        });
-
-        /* ENVIAR MENSAJE */
-        window.enviarMensaje = async () => {
-            let input = document.getElementById("mensajeInput");
-            let texto = input.value.trim();
-            let email = localStorage.getItem("usuario");
-
-            if (!texto || !email) return;
-
-            let perfil = await obtenerPerfil(email);
-
-            /* BAN CHECK */
-            if (perfil?.ban && Date.now() < perfil.banHasta) {
-                return alert("🚫 Estás baneado");
-            }
-
-            /* ANTI SPAM */
-            if (texto === lastMsg && Date.now() - lastTime < 3000) {
-                return alert("Spam 🚫");
-            }
-
-            lastMsg = texto;
-            lastTime = Date.now();
-
-            try {
-                await addDoc(collection(db, "chat"), {
-                    usuario: perfil?.username || email,
-                    email,
-                    texto,
-                    fecha: serverTimestamp()
-                });
-                input.value = "";
-            } catch (e) {
-                console.error("Error al enviar mensaje:", e);
-                alert("No se pudo enviar el mensaje.");
-            }
-        };
-
-        /* ENTER */
-        document.getElementById("mensajeInput").addEventListener("keypress", e => {
-            if (e.key === "Enter") enviarMensaje();
-        });
-
-        /* CHAT UI */
-        window.toggleChat = () => {
-            let box = document.getElementById("chatBoxDrag");
-            box.style.display = box.style.display === "flex" ? "none" : "flex";
-        };
-
-        /* TIENDA Y CARRITO */
-        window.cargarProductos = async () => {
-            let c = document.getElementById("productos");
-            if (!c) return;
-            c.innerHTML = "";
-
-            try {
-                let snap = await getDocs(collection(db, "productos"));
-
-                if (snap.empty) {
-                    c.innerHTML = `<p style="color: #666;">No hay productos disponibles actualmente.</p>`;
-                    return;
-                }
-
-                snap.forEach(doc => {
-                    let p = doc.data();
-                    c.innerHTML += `
-                        <div class="product">
-                            <img src="${p.imagen || 'https://via.placeholder.com/220x180'}" alt="${p.nombre}">
-                            <h4>${p.nombre}</h4>
-                            <p>$${p.precio}</p>
-                            <button onclick="agregar('${p.nombre}', ${p.precio})">Comprar</button>
-                        </div>
-                    `;
-                });
-            } catch (e) {
-                console.error("Error al cargar productos:", e);
-            }
-        };
-
-        window.agregar = (n, p) => {
-            carrito.push({ nombre: n, precio: p });
-            localStorage.setItem("carrito", JSON.stringify(carrito));
-            mostrarCarrito();
-        };
-
-        function mostrarCarrito() {
-            let lista = document.getElementById("carritoLista");
-            if (!lista) return;
-            
-            lista.innerHTML = "";
-            let total = 0;
-
-            if (carrito.length === 0) {
-                lista.innerHTML = `<li style="color:#666;">El carrito está vacío.</li>`;
-            } else {
-                carrito.forEach((p, index) => {
-                    lista.innerHTML += `
-                        <li>
-                            <span>${p.nombre}</span>
-                            <span>$${p.precio}</span>
-                        </li>
-                    `;
-                    total += p.precio;
-                });
-            }
-
-            document.getElementById("total").innerText = total;
-        }
-
-        window.pagar = async () => {
-            if (carrito.length === 0) return alert("El carrito está vacío.");
-
-            try {
-                await addDoc(collection(db, "compras"), {
-                    productos: carrito,
-                    fecha: new Date()
-                });
-
-                carrito = [];
-                localStorage.removeItem("carrito");
-                mostrarCarrito();
-                alert("🎉 Compra realizada con éxito.");
-            } catch (e) {
-                console.error("Error al procesar el pago:", e);
-                alert("Ocurrió un error al procesar tu compra.");
-            }
-        };
-
-        /* INIT */
-        cargarProductos();
-        mostrarCarrito();
+        alert("Foto de perfil actualizada con éxito.");
         cargarPerfil();
-    </script>
+    }
+    reader.readAsDataURL(file);
+}
+
+/* ONLINE */
+const onlineRef = collection(db, "online");
+setInterval(async () => {
+    let email = localStorage.getItem("usuario");
+    if(!email) return;
+    await setDoc(doc(onlineRef, email), {
+        time: Date.now()
+    });
+}, 5000);
+
+onSnapshot(onlineRef, snap => {
+    let count = 0;
+    let now = Date.now();
+    snap.forEach(d => {
+        if (now - d.data().time < 10000) count++;
+    });
+    
+    let onlineCount = document.getElementById("onlineCount");
+    if (onlineCount) onlineCount.innerText = count + " online";
+});
+
+/* CHAT */
+let lastMsg = "", lastTime = 0;
+const qChat = query(collection(db, "chat"), orderBy("fecha"));
+
+onSnapshot(qChat, async snap => {
+    let chat = document.getElementById("chatBox");
+    if(!chat) return;
+    chat.innerHTML = "";
+    
+    let email = localStorage.getItem("usuario");
+
+    for (const d of snap.docs) {
+        let m = d.data();
+        let perfil = await obtenerPerfil(m.email);
+
+        let div = document.createElement("div");
+        div.className = "msg " + (m.email === email ? "me" : "other");
+
+        if (perfil?.admin) div.classList.add("role-admin");
+        else if (perfil?.mod) div.classList.add("role-mod");
+        else if (perfil?.vip) div.classList.add("role-vip");
+
+        let defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+        let fotoMostrada = m.fotoPerfil || defaultAvatar;
+
+        div.innerHTML = `
+            <div style="display:flex; align-items:center; gap:6px;">
+                <img src="${fotoMostrada}" class="avatar-chat">
+                <b>${m.usuario}</b>
+            </div>
+            <p style="margin-top: 5px;">${m.texto}</p>
+        `;
+        chat.appendChild(div);
+    }
+
+    /* NOTIFICACIÓN */
+    if (snap.docs.length > 0) {
+        let ultimo = snap.docs[snap.docs.length - 1].data();
+        let noti = document.getElementById("noti");
+        if (ultimo.texto !== lastMsg) {
+            noti.style.display = "block";
+            setTimeout(() => noti.style.display = "none", 2500);
+            lastMsg = ultimo.texto;
+        }
+    }
+    chat.scrollTop = chat.scrollHeight;
+});
+
+/* ENVIAR MENSAJE */
+window.enviarMensaje = async () => {
+    let input = document.getElementById("mensajeInput");
+    let texto = input.value.trim();
+    let email = localStorage.getItem("usuario");
+
+    if (!texto || !email) return;
+
+    let perfil = await obtenerPerfil(email);
+
+    /* BAN */
+    if (perfil?.ban && Date.now() < perfil.banHasta) {
+        return alert("🚫 Estás baneado");
+    }
+
+    /* ANTI SPAM */
+    if (texto === lastMsg && Date.now() - lastTime < 3000) {
+        return alert("Spam 🚫");
+    }
+
+    lastMsg = texto;
+    lastTime = Date.now();
+
+    await addDoc(collection(db, "chat"), {
+        usuario: perfil?.username || email,
+        email: email,
+        texto: texto,
+        fotoPerfil: perfil?.fotoPerfil || null,
+        fecha: serverTimestamp()
+    });
+
+    input.value = "";
+}
+
+/* ENTER */
+document.getElementById("mensajeInput").addEventListener("keypress", e => {
+    if (e.key === "Enter") enviarMensaje();
+});
+
+/* CHAT UI */
+window.toggleChat = () => {
+    let box = document.getElementById("chatBoxDrag");
+    box.style.display = box.style.display === "flex" ? "none" : "flex";
+}
+
+/* TIENDA */
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+async function cargarProductos() {
+    let c = document.getElementById("productos");
+    if (!c) return;
+    c.innerHTML = "";
+
+    let snap = await getDocs(collection(db, "productos"));
+
+    if(snap.empty) {
+        c.innerHTML = `<p style="color:#666;">No hay productos disponibles por el momento.</p>`;
+    }
+
+    snap.forEach(doc => {
+        let p = doc.data();
+        c.innerHTML += `
+            <div class="product">
+                <img src="${p.imagen || 'https://via.placeholder.com/220x160'}" alt="${p.nombre}">
+                <h4>${p.nombre}</h4>
+                <p>$${p.precio}</p>
+                <button onclick="agregar('${p.nombre}', ${p.precio})">Comprar</button>
+            </div>`;
+    });
+}
+
+window.agregar = (n, p) => {
+    carrito.push({ nombre: n, precio: p });
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    mostrarCarrito();
+}
+
+function mostrarCarrito() {
+    let lista = document.getElementById("carrito");
+    if(!lista) return;
+    lista.innerHTML = "";
+    let total = 0;
+
+    if (carrito.length === 0) {
+        lista.innerHTML = `<li style="color:#666">El carrito está vacío</li>`;
+    } else {
+        carrito.forEach((p) => {
+            lista.innerHTML += `<li><span>${p.nombre}</span> <span>$${p.precio}</span></li>`;
+            total += p.precio;
+        });
+    }
+
+    document.getElementById("total").innerText = total;
+}
+
+window.pagar = async () => {
+    if (carrito.length === 0) return alert("Tu carrito está vacío");
+
+    await addDoc(collection(db, "compras"), {
+        productos: carrito,
+        fecha: new Date()
+    });
+
+    carrito = [];
+    localStorage.removeItem("carrito");
+    mostrarCarrito();
+    alert("🎉 ¡Compra realizada con éxito!");
+}
+
+/* INIT */
+cargarProductos();
+mostrarCarrito();
+cargarPerfil();
+
+</script>
+
 </body>
 </html>
