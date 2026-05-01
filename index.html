@@ -22,32 +22,6 @@ body{
     min-height:100vh;
 }
 
-
-    .lanzamientos{
-    padding:50px 20px;
-    background:#050505;
-    text-align:center;
-}
-
-.lanzamientos h2{
-    color:red;
-    margin-bottom:30px;
-}
-
-.videos{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(300px,1fr));
-    gap:20px;
-}
-
-.videos iframe{
-    width:100%;
-    height:200px;
-    border:none;
-    border-radius:10px;
-    box-shadow:0 0 15px rgba(255,0,0,0.3);
-}
-
 /* NAVBAR */
 .nav{
     position:absolute;
@@ -56,7 +30,11 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    padding:15px 25px;
+    z-index:10;
+    box-sizing:border-box;
 }
+
 .logo{
     font-weight:bold;
     font-size:20px;
@@ -249,64 +227,6 @@ input{
     border:none;
 }
 
-    .cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
-    gap:25px;
-}
-
-.card{
-    background:#0a0a0a;
-    border-radius:15px;
-    overflow:hidden;
-    box-shadow:0 0 15px rgba(255,0,0,0.2);
-    transition:0.3s;
-}
-
-.card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 0 25px rgba(255,0,0,0.4);
-}
-
-.cover{
-    width:100%;
-    height:220px;
-    object-fit:cover;
-}
-
-.info{
-    padding:15px;
-    text-align:left;
-}
-
-.info h3{
-    margin:0;
-    font-size:16px;
-}
-
-.info p{
-    font-size:13px;
-    color:#aaa;
-    margin:5px 0 10px;
-}
-
-.info a{
-    display:inline-block;
-    padding:8px 12px;
-    border:1px solid red;
-    border-radius:20px;
-    text-decoration:none;
-    color:red;
-    font-size:13px;
-    transition:0.3s;
-}
-
-.info a:hover{
-    background:red;
-    color:white;
-    box-shadow:0 0 10px red;
-}
-
 /* MENSAJE */
 #mensaje{
     position:fixed;
@@ -356,6 +276,15 @@ input{
 <!-- NAVBAR -->
 <div class="nav">
     <div class="logo">LIL NAAY</div>
+
+    <div class="menu" id="menu">
+        <a href="#" class="active">INICIO</a>
+        <a href="#">MÚSICA</a>
+        <a href="#">VIDEOS</a>
+        <a href="#">TIENDA</a>
+        <a href="#">COMUNIDAD</a>
+        <a href="#">SUSCRIPCIÓN</a>
+    </div>
 
     <div class="nav-right">
         <div class="contador-box"> COMUNIDAD 🕷️ <span id="contadorNav">0</span></div>
@@ -419,39 +348,6 @@ input{
 </div>
 </div>
 
-<!-- LANZAMIENTOS -->
-<div class="cards">
-
-    <!-- LANZAMIENTO 1 -->
-    <div class="card">
-        <img src="cover1.jpg" class="cover">
-
-        <div class="info">
-            <h3>Nombre del Tema</h3>
-            <p>📅 10 Mayo 2026</p>
-
-            <a href="https://www.youtube.com/watch?v=VIDEO_ID_1" target="_blank">
-                ▶️ Ver en YouTube
-            </a>
-        </div>
-    </div>
-
-    <!-- LANZAMIENTO 2 -->
-    <div class="card">
-        <img src="cover2.jpg" class="cover">
-
-        <div class="info">
-            <h3>Otro Tema</h3>
-            <p>📅 25 Abril 2026</p>
-
-            <a href="https://www.youtube.com/watch?v=VIDEO_ID_2" target="_blank">
-                ▶️ Ver en YouTube
-            </a>
-        </div>
-    </div>
-
-</div>
-    
 <div id="mensaje"></div>
 
 <script type="module">
