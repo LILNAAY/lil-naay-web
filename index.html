@@ -3,481 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LIL NAAY - Inicio</title>
+<title>LIL NAAY</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-:root{
-    --rojo:#ff0000;
-}
+:root{--rojo:#ff0000;}
 
-/* RESET */
 body{
-    margin:0;
-    font-family:'Segoe UI',sans-serif;
-    color:white;
-    background:black;
-    overflow-x:hidden;
-    min-height:100vh;
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:black;
+color:white;
 }
 
-/* NAVBAR */
+/* NAV */
 .nav{
-    position:absolute;
-    top:0;
-    width:100%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 25px;
-    z-index:10;
-    box-sizing:border-box;
+position:fixed;
+top:0;
+width:100%;
+display:flex;
+justify-content:space-between;
+padding:15px 25px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+z-index:100;
 }
 
-.logo{
-    font-weight:bold;
-    font-size:20px;
-}
-
-.menu{
-    display:flex;
-    gap:25px;
-    position:relative;
-}
-
-.menu a{
-    color:#ccc;
-    text-decoration:none;
-    font-size:14px;
-}
-
-.menu a:hover,
-.menu .active{
-    color:red;
-}
-
-.nav-right{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex-shrink:0;
-}
-
-.contador-box{
-    background:rgba(255,0,0,0.1);
-    padding:6px 12px;
-    border-radius:20px;
-    border:1px solid rgba(255,0,0,0.3);
-}
-
-/* BLOQUEO MENU */
-.menu.bloqueado a{
-    pointer-events:none;
-    opacity:0.4;
-}
-
-.menu.bloqueado::after{
-    content:"🔒 Inicia sesión";
-    position:absolute;
-    top:35px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:12px;
-    color:#ff4d4d;
-}
+.menu a{color:#ccc;margin:0 10px;text-decoration:none;}
+.menu a:hover{color:red;}
 
 .login-top{
-    border:1px solid red;
-    color:red;
-    padding:8px 14px;
-    border-radius:25px;
-    background:none;
-    cursor:pointer;
-    white-space:nowrap;
-    font-size:13px;
-}
-
-.login-top:hover{
-    background:red;
-    color:white;
-    box-shadow:0 0 15px red;
+border:1px solid red;
+padding:8px 14px;
+border-radius:20px;
+background:none;
+color:red;
+cursor:pointer;
 }
 
 /* HERO */
 .hero{
-    position:relative;
-    width:100%;
-    height:60vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
 }
 
-.hero::before{
-    content:"";
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.9));
-    z-index:1;
-}
+.hero img{position:absolute;width:100%;height:100%;object-fit:cover;}
 
-.hero::after{
-    content:"";
-    position:absolute;
-    bottom:0;
-    width:100%;
-    height:3px;
-    background:red;
-    box-shadow:0 0 15px red, 0 0 30px red;
-    z-index:5;
-}
-
-.hero-bg{
-    position:absolute;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    z-index:0;
-}
-
-.hero-artista{
-    position:absolute;
-    bottom:0;
-    left:50%;
-    transform:translate(-135%, 0); /* 🔥 centrado real */
-
-    height:85%;
-    max-height:450px;
-
-    object-fit:contain;
-    z-index:2;
-    opacity:0.9;
-
-    pointer-events:none;
-}
-.hero-texto{
-    pointer-events:none;
-    position:absolute;
-    top:15%;
-    left:50%;
-    transform:translateX(-50%);
-    width:600px;
-    max-width:90%;
-    z-index:3;
-}
-
-/* BOTONES */
 .hero-buttons{
-    position:absolute;
-    right:60px;
-    bottom:40px;
-    display:flex;
-    gap:20px;
-    z-index:4;
+position:absolute;
+bottom:40px;
+display:flex;
+gap:20px;
 }
 
-.btn-img{
-    background:none;
-    border:none;
-    cursor:pointer;
-}
-
-.btn-img img{
-    width:130px;
-    transition:0.3s;
-    filter:drop-shadow(0 0 10px red);
-}
-
-.btn-img img:hover{
-    transform:scale(1.1);
-    filter:drop-shadow(0 0 25px red);
-}
-
-/* MODAL */
-.modal{
-    position:fixed;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    background:rgba(0,0,0,0.95);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
-
-.box{
-    background:#0a0a0a;
-    padding:25px;
-    border-radius:15px;
-    width:320px;
-    border:1px solid #ff000030;
-}
-
-input{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    background:#111;
-    color:white;
-    border:none;
-}
-
-/* MENSAJE */
-#mensaje{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    display:none;
-}
-
-/* RESPONSIVE */
-@media (max-width:768px){
-    .menu{
-        display:none;
-    }
-
-    .nav{
-        padding:10px 15px;
-    }
-
-    .login-top{
-        padding:6px 10px;
-        font-size:12px;
-    }
-
-    .contador-box{
-        padding:4px 8px;
-        font-size:12px;
-    }
-}
-
-@media (max-width:600px){
-    .hero-buttons{
-        right:50%;
-        transform:translateX(50%);
-        bottom:15px;
-        gap:10px;
-    }
-
-    .btn-img img{
-        width:70px;
-    }
+.btn{
+padding:12px 20px;
+border:none;
+background:red;
+color:white;
+cursor:pointer;
+border-radius:8px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
 <div class="nav">
-    <div class="logo">LIL NAAY</div>
+<div>LIL NAAY</div>
 
-    <div class="menu" id="menu">
-        <a href="#" class="active">INICIO</a>
-        <a href="#">MÚSICA</a>
-        <a href="#">VIDEOS</a>
-        <a href="#">TIENDA</a>
-        <a href="#">COMUNIDAD</a>
-        <a href="#">SUSCRIPCIÓN</a>
-    </div>
-
-    <div class="nav-right">
-        <div class="contador-box"> COMUNIDAD 🕷️ <span id="contadorNav">0</span></div>
-        <button class="login-top" onclick="abrirLogin()">INICIAR SESIÓN</button>
-    </div>
+<div class="menu" id="menu">
+<a href="#">Inicio</a>
+<a href="#">Música</a>
+<a href="#">Tienda</a>
 </div>
 
-<!-- HERO -->
+<button class="login-top" id="btnLogin">Login</button>
+</div>
+
 <div class="hero">
-    <img src="fondo.png" class="hero-bg">
-    <img src="artista.png" class="hero-artista">
-    <img src="texto.png" class="hero-texto">
+<img src="fondo.png">
 
-    <div class="hero-buttons">
-        <button class="btn-img" onclick="abrirPerfil()">
-            <img src="btn_perfil.png">
-        </button>
-
-        <button class="btn-img" onclick="entrarTienda()">
-            <img src="btn_entrar.png">
-        </button>
-    </div>
-</div>
-
-<!-- MODALES -->
-<div class="modal" id="registro">
-<div class="box">
-<h3>Crear Cuenta</h3>
-<input id="rUser" placeholder="Usuario">
-<input id="rEmail" placeholder="Correo">
-<input id="rPass" type="password" placeholder="Contraseña">
-<input id="rPais" placeholder="País">
-<input id="rProvincia" placeholder="Provincia">
-<input id="rEdad" placeholder="Edad">
-<button onclick="registrar()">Crear</button>
-<button onclick="cerrar()">Cancelar</button>
+<div class="hero-buttons">
+<button class="btn" onclick="entrar()">Entrar</button>
 </div>
 </div>
-
-<div class="modal" id="login">
-<div class="box">
-<h3>Iniciar Sesión</h3>
-<input id="lEmail" placeholder="Correo">
-<input id="lPass" type="password" placeholder="Contraseña">
-<button onclick="loginUser()">Entrar</button>
-<p onclick="recuperar()" style="cursor:pointer;color:#ff4d4d;">¿Olvidaste tu contraseña?</p>
-<button onclick="cerrar()">Cancelar</button>
-</div>
-</div>
-
-<div class="modal" id="perfil">
-<div class="box">
-<h3>👤 Mi Perfil</h3>
-<p><b>Usuario:</b> <span id="pUser"></span></p>
-<p><b>Email:</b> <span id="pEmail"></span></p>
-<p><b>País:</b> <span id="pPais"></span></p>
-<p><b>Provincia:</b> <span id="pProvincia"></span></p>
-<p><b>Edad:</b> <span id="pEdad"></span></p>
-<button onclick="logout()">Cerrar sesión</button>
-<button onclick="cerrar()">Cerrar</button>
-</div>
-</div>
-
-<div id="mensaje"></div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const app = initializeApp({
-apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+apiKey:"TU_API_KEY",
 authDomain:"lil-naay.firebaseapp.com",
 projectId:"lil-naay"
 });
 
-const db = getFirestore(app);
 const auth = getAuth(app);
 
-window.abrirRegistro=()=>registro.style.display="flex";
-window.abrirLogin=()=>login.style.display="flex";
-window.abrirPerfil=()=>cargarPerfil();
-window.cerrar=()=>["registro","login","perfil"].forEach(id=>document.getElementById(id).style.display="none");
+const btn = document.getElementById("btnLogin");
 
-function msg(t,ok=true){
-mensaje.innerText=t;
-mensaje.style.display="block";
-mensaje.style.background=ok?"green":"red";
-setTimeout(()=>mensaje.style.display="none",3000);
-}
-
-function verificarSesion(){
-    let email = localStorage.getItem("usuario");
-    let menu = document.getElementById("menu");
-
-    if(!email){
-        menu.classList.add("bloqueado");
-    }else{
-        menu.classList.remove("bloqueado");
-    }
-}
-
-window.registrar=async()=>{
-try{
-const cred=await createUserWithEmailAndPassword(auth,rEmail.value,rPass.value);
-
-await addDoc(collection(db,"usuarios"),{
-uid:cred.user.uid,
-usuario:rUser.value,
-email:rEmail.value,
-pais:rPais.value,
-provincia:rProvincia.value,
-edad:rEdad.value
-});
-
-await addDoc(collection(db,"suscriptores"),{
-email:rEmail.value,
-fecha:new Date()
-});
-
-localStorage.setItem("usuario",rEmail.value);
-msg("Cuenta creada");
-cerrar();
-cargarContador();
-verificarSesion();
-
-}catch(e){msg(e.message,false);}
-}
-
-window.loginUser=async()=>{
-try{
-await signInWithEmailAndPassword(auth,lEmail.value,lPass.value);
-localStorage.setItem("usuario",lEmail.value);
-msg("Bienvenido");
-cerrar();
-verificarSesion();
-}catch{msg("Datos incorrectos",false);}
-}
-
-window.recuperar=async()=>{
-if(!lEmail.value) return msg("Escribe tu correo",false);
-await sendPasswordResetEmail(auth,lEmail.value);
-msg("Correo enviado");
-}
-
-async function cargarPerfil(){
-let email=localStorage.getItem("usuario");
-if(!email) return msg("No has iniciado sesión",false);
-
-const snap=await getDocs(collection(db,"usuarios"));
-let user=snap.docs.find(d=>d.data().email===email);
-if(!user) return msg("No encontrado",false);
-
-let u=user.data();
-pUser.innerText=u.usuario;
-pEmail.innerText=u.email;
-pPais.innerText=u.pais;
-pProvincia.innerText=u.provincia;
-pEdad.innerText=u.edad;
-
-perfil.style.display="flex";
-}
-
-window.logout=async()=>{
-await signOut(auth);
+/* 🔥 CONTROL GLOBAL */
+onAuthStateChanged(auth,(user)=>{
+if(user){
+btn.innerText="Perfil";
+btn.onclick=()=>window.location.href="menu.html";
+localStorage.setItem("usuario",user.email);
+}else{
+btn.innerText="Login";
+btn.onclick=()=>alert("Usa tu sistema actual de login");
 localStorage.removeItem("usuario");
-msg("Sesión cerrada");
-cerrar();
-verificarSesion();
 }
+});
 
-window.entrarTienda=async()=>{
-let email=localStorage.getItem("usuario");
-if(!email){
-    msg("Debes iniciar sesión",false);
-    return;
+window.entrar=()=>{
+if(localStorage.getItem("usuario")){
+window.location.href="menu.html";
+}else{
+alert("Inicia sesión");
 }
-
-const snap=await getDocs(collection(db,"suscriptores"));
-let ok=snap.docs.some(d=>d.data().email===email);
-
-if(ok) window.location.href="menu.html";
-else msg("No autorizado",false);
 }
-
-async function cargarContador(){
-const snap=await getDocs(collection(db,"suscriptores"));
-contadorNav.innerText=snap.size;
-}
-
-cargarContador();
-verificarSesion();
 
 </script>
 
