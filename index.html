@@ -10,8 +10,6 @@
 <style>
 :root{
     --rojo:#ff0000;
-    --rojo-fuerte:#ff1a1a;
-    --rojo-oscuro:#8b0000;
 }
 
 /* RESET */
@@ -20,8 +18,8 @@ body{
     font-family:'Segoe UI',sans-serif;
     color:white;
     background:black;
-    overflow:hidden;
-    height:100vh;
+    overflow-x:hidden;
+    min-height:100vh;
 }
 
 /* NAVBAR */
@@ -44,29 +42,18 @@ body{
 .menu{
     display:flex;
     gap:25px;
+    position:relative;
 }
 
 .menu a{
     color:#ccc;
     text-decoration:none;
     font-size:14px;
-    position:relative;
 }
 
 .menu a:hover,
 .menu .active{
     color:red;
-}
-
-.menu .active::after{
-    content:"";
-    position:absolute;
-    bottom:-5px;
-    left:0;
-    width:100%;
-    height:2px;
-    background:red;
-    box-shadow:0 0 10px red;
 }
 
 .nav-right{
@@ -79,18 +66,32 @@ body{
     background:rgba(255,0,0,0.1);
     padding:6px 12px;
     border-radius:20px;
-    font-size:13px;
     border:1px solid rgba(255,0,0,0.3);
 }
 
+/* BLOQUEO MENU */
+.menu.bloqueado a{
+    pointer-events:none;
+    opacity:0.4;
+}
+
+.menu.bloqueado::after{
+    content:"🔒 Inicia sesión";
+    position:absolute;
+    top:35px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:12px;
+    color:#ff4d4d;
+}
+
 .login-top{
-    background:transparent;
     border:1px solid red;
     color:red;
     padding:8px 18px;
     border-radius:25px;
+    background:none;
     cursor:pointer;
-    transition:0.3s;
 }
 
 .login-top:hover{
@@ -146,7 +147,6 @@ body{
     transform:translateX(-24%);
     height:94%;
     max-height:420px;
-    object-fit:contain;
     z-index:2;
     opacity:0.9;
 }
@@ -181,66 +181,12 @@ body{
 .btn-img img{
     width:130px;
     transition:0.3s;
-    filter:
-        drop-shadow(0 0 10px rgba(255,0,0,0.6))
-        drop-shadow(0 0 20px rgba(255,0,0,0.4));
+    filter:drop-shadow(0 0 10px red);
 }
 
 .btn-img img:hover{
     transform:scale(1.1);
-    filter:
-        drop-shadow(0 0 25px red)
-        drop-shadow(0 0 50px red);
-}
-
-/* CARD */
-.container{
-    max-width:1000px;
-    margin:auto;
-    height:40vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0 20px;
-}
-
-.card{
-    width:100%;
-    max-width:750px;
-    padding:40px;
-    border-radius:20px;
-    background:radial-gradient(circle at center, rgba(255,0,0,0.15), rgba(0,0,0,0.95));
-    border:1px solid rgba(255,0,0,0.3);
-    box-shadow:
-        0 0 60px rgba(255,0,0,0.2),
-        inset 0 0 40px rgba(255,0,0,0.15);
-    backdrop-filter:blur(10px);
-    text-align:left;
-}
-
-.card h2{
-    font-size:26px;
-    margin-bottom:20px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.btn{
-    background:linear-gradient(45deg,#8b0000,#ff0000);
-    padding:12px 25px;
-    border:none;
-    border-radius:30px;
-    color:white;
-    cursor:pointer;
-    margin-right:10px;
-    box-shadow:0 0 15px rgba(255,0,0,0.4);
-    transition:0.3s;
-}
-
-.btn:hover{
-    transform:scale(1.08);
-    box-shadow:0 0 25px red, 0 0 50px rgba(255,0,0,0.6);
+    filter:drop-shadow(0 0 25px red);
 }
 
 /* MODAL */
@@ -263,33 +209,36 @@ body{
     border-radius:15px;
     width:320px;
     border:1px solid #ff000030;
-    box-shadow:0 0 25px rgba(255,0,0,0.4), inset 0 0 15px rgba(255,0,0,0.1);
 }
 
 input{
     width:100%;
     padding:10px;
     margin:8px 0;
-    border:none;
-    border-radius:8px;
     background:#111;
     color:white;
-}
-
-input:focus{
-    background:#1a0000;
-    box-shadow:0 0 10px red;
+    border:none;
 }
 
 #mensaje{
     position:fixed;
     bottom:20px;
     right:20px;
-    padding:12px 18px;
-    border-radius:10px;
     display:none;
-    font-size:14px;
-    z-index:10000;
+}
+
+/* RESPONSIVE */
+@media (max-width:600px){
+    .hero-buttons{
+        right:50%;
+        transform:translateX(50%);
+        bottom:15px;
+        gap:10px;
+    }
+
+    .btn-img img{
+        width:70px;
+    }
 }
 </style>
 </head>
@@ -300,7 +249,7 @@ input:focus{
 <div class="nav">
     <div class="logo">LIL NAAY</div>
 
-    <div class="menu">
+    <div class="menu" id="menu">
         <a href="#" class="active">INICIO</a>
         <a href="#">MÚSICA</a>
         <a href="#">VIDEOS</a>
@@ -315,6 +264,7 @@ input:focus{
     </div>
 </div>
 
+<!-- HERO -->
 <div class="hero">
     <img src="fondo.png" class="hero-bg">
     <img src="artista.png" class="hero-artista">
@@ -331,17 +281,6 @@ input:focus{
     </div>
 </div>
 
-<div class="container">
-<div class="card">
-<h2>🔥 Comunidad</h2>
-
-<button class="btn" onclick="abrirRegistro()">Registrarse</button>
-<button class="btn" onclick="abrirLogin()">Iniciar Sesión</button>
-
-<p>Suscriptores: <span id="contador">0</span></p>
-</div>
-</div>
-
 <!-- MODALES -->
 <div class="modal" id="registro">
 <div class="box">
@@ -352,8 +291,8 @@ input:focus{
 <input id="rPais" placeholder="País">
 <input id="rProvincia" placeholder="Provincia">
 <input id="rEdad" placeholder="Edad">
-<button class="btn" onclick="registrar()">Crear</button>
-<button class="btn" onclick="cerrar()">Cancelar</button>
+<button onclick="registrar()">Crear</button>
+<button onclick="cerrar()">Cancelar</button>
 </div>
 </div>
 
@@ -362,9 +301,9 @@ input:focus{
 <h3>Iniciar Sesión</h3>
 <input id="lEmail" placeholder="Correo">
 <input id="lPass" type="password" placeholder="Contraseña">
-<button class="btn" onclick="loginUser()">Entrar</button>
+<button onclick="loginUser()">Entrar</button>
 <p onclick="recuperar()" style="cursor:pointer;color:#ff4d4d;">¿Olvidaste tu contraseña?</p>
-<button class="btn" onclick="cerrar()">Cancelar</button>
+<button onclick="cerrar()">Cancelar</button>
 </div>
 </div>
 
@@ -376,8 +315,8 @@ input:focus{
 <p><b>País:</b> <span id="pPais"></span></p>
 <p><b>Provincia:</b> <span id="pProvincia"></span></p>
 <p><b>Edad:</b> <span id="pEdad"></span></p>
-<button class="btn" onclick="logout()">Cerrar sesión</button>
-<button class="btn" onclick="cerrar()">Cerrar</button>
+<button onclick="logout()">Cerrar sesión</button>
+<button onclick="cerrar()">Cerrar</button>
 </div>
 </div>
 
@@ -410,6 +349,17 @@ mensaje.style.background=ok?"green":"red";
 setTimeout(()=>mensaje.style.display="none",3000);
 }
 
+function verificarSesion(){
+    let email = localStorage.getItem("usuario");
+    let menu = document.getElementById("menu");
+
+    if(!email){
+        menu.classList.add("bloqueado");
+    }else{
+        menu.classList.remove("bloqueado");
+    }
+}
+
 window.registrar=async()=>{
 try{
 const cred=await createUserWithEmailAndPassword(auth,rEmail.value,rPass.value);
@@ -432,6 +382,7 @@ localStorage.setItem("usuario",rEmail.value);
 msg("Cuenta creada");
 cerrar();
 cargarContador();
+verificarSesion();
 
 }catch(e){msg(e.message,false);}
 }
@@ -442,6 +393,7 @@ await signInWithEmailAndPassword(auth,lEmail.value,lPass.value);
 localStorage.setItem("usuario",lEmail.value);
 msg("Bienvenido");
 cerrar();
+verificarSesion();
 }catch{msg("Datos incorrectos",false);}
 }
 
@@ -474,11 +426,15 @@ await signOut(auth);
 localStorage.removeItem("usuario");
 msg("Sesión cerrada");
 cerrar();
+verificarSesion();
 }
 
 window.entrarTienda=async()=>{
 let email=localStorage.getItem("usuario");
-if(!email) return msg("Inicia sesión",false);
+if(!email){
+    msg("Debes iniciar sesión",false);
+    return;
+}
 
 const snap=await getDocs(collection(db,"suscriptores"));
 let ok=snap.docs.some(d=>d.data().email===email);
@@ -489,26 +445,13 @@ else msg("No autorizado",false);
 
 async function cargarContador(){
 const snap=await getDocs(collection(db,"suscriptores"));
-contador.innerText=snap.size;
-
-let nav=document.getElementById("contadorNav");
-if(nav) nav.innerText=snap.size;
+contadorNav.innerText=snap.size;
 }
 
 cargarContador();
+verificarSesion();
 
 </script>
 
-<footer style="
-text-align:center;
-padding:20px;
-font-size:13px;
-color:#888;
-border-top:1px solid rgba(255,0,0,0.2);
-margin-top:40px;
-">
-© 2026 LIL NAAY • /DON AYBAR/ Todos los derechos reservados • Trap dominicano
-</footer>
-    
 </body>
 </html>
