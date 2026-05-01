@@ -18,26 +18,27 @@ body {
     font-family: 'Segoe UI', sans-serif;
     color: white;
     background: black;
-    overflow-x: hidden;
-    min-height: 100vh;
+    overflow: hidden; /* Evita que el usuario tenga que mover el scroll */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* NAVBAR */
 .nav {
-    position: absolute;
-    top: 0;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 25px;
+    padding: 12px 25px;
     z-index: 10;
     box-sizing: border-box;
+    height: 8vh;
 }
 
 .logo {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .nav-right {
@@ -49,20 +50,21 @@ body {
 
 .contador-box {
     background: rgba(255, 0, 0, 0.1);
-    padding: 6px 12px;
+    padding: 5px 10px;
     border-radius: 20px;
     border: 1px solid rgba(255, 0, 0, 0.3);
+    font-size: 12px;
 }
 
 .login-top {
     border: 1px solid red;
     color: red;
-    padding: 8px 14px;
+    padding: 6px 12px;
     border-radius: 25px;
     background: none;
     cursor: pointer;
     white-space: nowrap;
-    font-size: 13px;
+    font-size: 12px;
     transition: background 0.3s, color 0.3s, box-shadow 0.3s;
 }
 
@@ -76,7 +78,7 @@ body {
 .hero {
     position: relative;
     width: 100%;
-    height: 60vh;
+    height: 48vh; /* Reducido para dejar espacio a los lanzamientos */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -97,9 +99,9 @@ body {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 3px;
+    height: 2px;
     background: red;
-    box-shadow: 0 0 15px red, 0 0 30px red;
+    box-shadow: 0 0 10px red;
     z-index: 5;
 }
 
@@ -116,8 +118,7 @@ body {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    height: 85%;
-    max-height: 450px;
+    height: 75%;
     object-fit: contain;
     z-index: 2;
     opacity: 0.9;
@@ -127,21 +128,21 @@ body {
 .hero-texto {
     pointer-events: none;
     position: absolute;
-    top: 15%;
+    top: 12%;
     left: 50%;
     transform: translateX(-50%);
-    width: 600px;
-    max-width: 90%;
+    width: 450px;
+    max-width: 85%;
     z-index: 3;
 }
 
 /* BOTONES */
 .hero-buttons {
     position: absolute;
-    right: 60px;
-    bottom: 40px;
+    right: 40px;
+    bottom: 25px;
     display: flex;
-    gap: 20px;
+    gap: 15px;
     z-index: 4;
 }
 
@@ -152,62 +153,67 @@ body {
 }
 
 .btn-img img {
-    width: 130px;
+    width: 100px;
     transition: 0.3s;
-    filter: drop-shadow(0 0 10px red);
+    filter: drop-shadow(0 0 8px red);
 }
 
 .btn-img img:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 25px red);
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 20px red);
 }
 
 /* PREVIEWS DE LANZAMIENTOS */
 .lanzamientos-seccion {
     background-color: #000;
-    padding: 60px 40px;
+    padding: 20px 30px;
     color: #fff;
+    height: 36vh; /* Altura ajustada para no generar barras de desplazamiento */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .lanzamientos-seccion h2 {
     text-align: center;
     color: var(--rojo);
     text-transform: uppercase;
-    font-size: 28px;
-    letter-spacing: 2px;
-    margin-bottom: 40px;
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
 }
 
 .lanzamientos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    max-width: 1200px;
+    display: flex;
+    gap: 20px;
+    max-width: 1100px;
     margin: 0 auto;
+    width: 100%;
 }
 
 .lanzamiento-card {
     background: #0a0a0a;
-    border: 1px solid rgba(255, 0, 0, 0.2);
-    border-radius: 15px;
+    border: 1px solid rgba(255, 0, 0, 0.15);
+    border-radius: 12px;
     overflow: hidden;
-    padding: 20px;
-    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    padding: 12px;
+    width: 32%;
+    transition: transform 0.3s, border-color 0.3s;
 }
 
 .lanzamiento-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     border-color: var(--rojo);
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.15);
 }
 
 .preview-img-container {
     width: 100%;
-    height: 180px;
-    border-radius: 10px;
+    height: 100px;
+    border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .preview-img-container img {
@@ -217,18 +223,19 @@ body {
 }
 
 .lanzamiento-info h3 {
-    font-size: 20px;
-    margin-bottom: 5px;
+    font-size: 15px;
+    margin: 0 0 3px 0;
 }
 
 .lanzamiento-info span {
-    font-size: 13px;
-    color: #888;
+    font-size: 11px;
+    color: #666;
 }
 
 .audio-player {
     width: 100%;
-    margin-top: 20px;
+    height: 30px;
+    margin-top: 10px;
 }
 
 /* MODAL */
@@ -247,16 +254,16 @@ body {
 
 .box {
     background: #0a0a0a;
-    padding: 25px;
+    padding: 20px;
     border-radius: 15px;
-    width: 320px;
+    width: 300px;
     border: 1px solid #ff000030;
 }
 
 input {
     width: 100%;
-    padding: 10px;
-    margin: 8px 0;
+    padding: 8px;
+    margin: 6px 0;
     background: #111;
     color: white;
     border: none;
@@ -265,38 +272,42 @@ input {
 /* MENSAJE */
 #mensaje {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 15px;
+    right: 15px;
     display: none;
+    font-size: 13px;
+    padding: 8px 15px;
+    border-radius: 4px;
 }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+    body {
+        overflow: auto; /* Permite desplazamiento en pantallas muy pequeñas */
+        height: auto;
+    }
+
     .nav {
-        padding: 10px 15px;
+        padding: 8px 12px;
+        height: auto;
     }
 
-    .login-top {
-        padding: 6px 10px;
-        font-size: 12px;
+    .hero {
+        height: 55vh;
+    }
+    
+    .lanzamientos-seccion {
+        height: auto;
+        padding: 20px;
     }
 
-    .contador-box {
-        padding: 4px 8px;
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 600px) {
-    .hero-buttons {
-        right: 50%;
-        transform: translateX(50%);
-        bottom: 15px;
-        gap: 10px;
+    .lanzamientos-grid {
+        flex-direction: column;
     }
 
-    .btn-img img {
-        width: 70px;
+    .lanzamiento-card {
+        width: 100%;
+        margin-bottom: 15px;
     }
 }
 </style>
@@ -314,7 +325,7 @@ input {
 </div>
 
 <div class="hero">
-    <img src="fondo.png" class="hero-bg" alt="Fondo de pantalla" loading="lazy">
+    <img src="fondo.png" class="hero-bg" alt="Fondo" loading="lazy">
     <img src="artista.png" class="hero-artista" alt="Artista" loading="lazy">
     <img src="texto.png" class="hero-texto" alt="Texto central" loading="lazy">
 
@@ -332,6 +343,7 @@ input {
 <section class="lanzamientos-seccion">
     <h2>Próximos Lanzamientos</h2>
     <div class="lanzamientos-grid">
+        
         <div class="lanzamiento-card">
             <div class="preview-img-container">
                 <img src="portada1.png" alt="Lanzamiento 1" loading="lazy">
@@ -342,7 +354,7 @@ input {
             </div>
             <audio controls class="audio-player" preload="none">
                 <source src="preview1.mp3" type="audio/mpeg">
-                Tu navegador no soporta el reproductor de audio.
+                Audio no soportado.
             </audio>
         </div>
 
@@ -356,7 +368,7 @@ input {
             </div>
             <audio controls class="audio-player" preload="none">
                 <source src="preview2.mp3" type="audio/mpeg">
-                Tu navegador no soporta el reproductor de audio.
+                Audio no soportado.
             </audio>
         </div>
 
@@ -370,9 +382,10 @@ input {
             </div>
             <audio controls class="audio-player" preload="none">
                 <source src="preview3.mp3" type="audio/mpeg">
-                Tu navegador no soporta el reproductor de audio.
+                Audio no soportado.
             </audio>
         </div>
+
     </div>
 </section>
 
@@ -524,7 +537,6 @@ input {
         document.getElementById("contadorNav").innerText = snap.size;
     }
 
-    // Inicialización al cargar la página
     cargarContador();
     verificarSesion();
 </script>
