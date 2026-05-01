@@ -8,103 +8,198 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
 
 body{
-background:
-radial-gradient(circle at top, rgba(255,0,0,0.2), transparent 60%),
-radial-gradient(circle at bottom, rgba(255,0,0,0.15), transparent 70%),
-#0a0a0a;
-color:white;
-display:flex;
-flex-direction:column;
-min-height:100vh;
+    background:
+    radial-gradient(circle at top, rgba(255,0,0,0.2), transparent 60%),
+    radial-gradient(circle at bottom, rgba(255,0,0,0.15), transparent 70%),
+    #0a0a0a;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
 }
 
+/* NAV */
 .navbar{
-display:flex;
-justify-content:space-between;
-padding:15px 25px;
-background:linear-gradient(90deg,#120000,#1a0000);
-border-bottom:1px solid rgba(255,0,0,0.3);
+    display:flex;
+    justify-content:space-between;
+    padding:15px 25px;
+    background:linear-gradient(90deg,#120000,#1a0000);
+    border-bottom:1px solid rgba(255,0,0,0.3);
+    box-shadow:0 0 15px rgba(255,0,0,0.2);
 }
 
-.tabs{display:flex;gap:10px;padding:15px 20px;}
+.navbar button{
+    background:#ff0000;
+    border:none;
+    color:white;
+    padding:8px 15px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* TABS */
+.tabs{
+    display:flex;
+    gap:10px;
+    padding:15px 20px;
+}
+
 .tabs button{
-background:rgba(0,0,0,0.6);
-border:1px solid rgba(255,0,0,0.3);
-padding:10px 18px;
-color:white;
-border-radius:10px;
-cursor:pointer;
+    background:rgba(0,0,0,0.6);
+    border:1px solid rgba(255,0,0,0.3);
+    padding:10px 18px;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
 }
 
-.tabs button:hover{background:#ff0000;}
+.tabs button:hover{
+    background:#ff0000;
+    box-shadow:0 0 15px red;
+}
 
+/* CONTENT */
 .content{flex:1;padding:20px;}
 .section{display:none;}
 .active{display:block;}
 
+/* PRODUCTOS */
 .store{display:flex;flex-wrap:wrap;gap:20px;}
-
 .product{
-background:#111;
-padding:15px;
-border-radius:15px;
-width:200px;
-border:1px solid rgba(255,0,0,0.3);
+    background:rgba(0,0,0,0.6);
+    padding:15px;
+    border-radius:15px;
+    width:200px;
+    border:1px solid rgba(255,0,0,0.3);
+    box-shadow:0 0 20px rgba(255,0,0,0.2);
+    transition:0.3s;
+}
+
+.product:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 30px red;
 }
 .product img{width:100%;border-radius:10px;}
 
+/* PERFIL */
 .profile{
-background:#111;
-padding:20px;
-border-radius:15px;
-max-width:400px;
+    background:rgba(0,0,0,0.7);
+    padding:20px;
+    border-radius:15px;
+    max-width:400px;
+    border:1px solid rgba(255,0,0,0.3);
+    box-shadow:0 0 20px rgba(255,0,0,0.2);
 }
 
+/* CHAT */
 .chat-toggle{
 position:fixed;bottom:20px;right:20px;
 background:#ff0000;color:white;border:none;
-padding:12px;border-radius:50%;
+padding:12px;border-radius:50%;cursor:pointer;z-index:1000;
+}
+
+.chat-toggle:hover{
+transform:scale(1.1);
 }
 
 .chat-box{
 position:fixed;bottom:80px;right:20px;
 width:320px;height:420px;
 background:#0d0d0d;
-display:none;flex-direction:column;
+border-radius:15px;
+display:none;
+flex-direction:column;
+overflow:hidden;
+box-shadow:0 0 25px rgba(255,0,0,0.4);
+}
+/* HEADER */
+.chat-header{
+background:#1a0000;
+padding:10px;
+display:flex;
+justify-content:space-between;
+font-weight:bold;
+cursor:move;
 }
 
+.online{color:#0f0;font-size:12px;}
+
+/* MENSAJES */
 .chat-messages{
-flex:1;overflow-y:auto;padding:10px;
-display:flex;flex-direction:column;gap:6px;
+flex:1;
+overflow-y:auto;
+padding:10px;
+display:flex;
+flex-direction:column;
+gap:6px;
 }
 
+/* BURBUJAS */
 .msg{
 max-width:75%;
 padding:8px 12px;
 border-radius:12px;
 font-size:13px;
-word-break:break-word;
+
+/* 🔥 FIX IMPORTANTE */
+word-wrap: break-word;
+overflow-wrap: break-word;
+word-break: break-word;
+white-space: pre-wrap;
+}
+
+/* 🔥 NOMBRE DEL USUARIO */
+.msg b{
+display:block;
+font-size:11px;
+opacity:0.7;
+margin-bottom:2px;
+word-break: break-word;
 }
 
 .me{background:#ff0000;align-self:flex-end;}
-.other{background:#222;}
 
-.chat-input{display:flex;}
-.chat-input input{flex:1;padding:10px;background:#111;color:white;border:none;}
-.chat-input button{background:red;color:white;border:none;padding:10px;}
+.other{background:#222;align-self:flex-start;}
 
+.role-admin{border-left:4px solid red;}
+.role-mod{border-left:4px solid cyan;}
+.role-vip{border-left:4px solid gold;}
+
+/* INPUT */
+.chat-input{display:flex;border-top:1px solid #222;}
+.chat-input input{flex:1;padding:10px;border:none;background:#111;color:white;}
+.chat-input button{background:red;border:none;padding:10px;color:white;}
+
+/* NOTI */
+#noti{
+position:fixed;
+top:20px;
+right:20px;
+background:red;
+padding:10px;
+border-radius:8px;
+display:none;
+}
+
+/* FOOTER */
 .footer{text-align:center;padding:15px;background:#0d0d0d;margin-top:auto;}
 </style>
 </head>
 
 <body>
 
+<div id="noti">🔔 Nuevo mensaje</div>
+
 <div class="navbar">
 <h2>🔥 LIL NAAY</h2>
+<a href="index.html"><button>⬅ Volver</button></a>
 </div>
 
 <div class="tabs">
 <button onclick="mostrar('tienda')">🛍️ Tienda</button>
+<button onclick="mostrar('musica')">🎵 Música</button>
+<button onclick="mostrar('eventos')">🎉 Eventos</button>
 <button onclick="mostrar('perfil')">👤 Perfil</button>
 </div>
 
@@ -112,13 +207,6 @@ word-break:break-word;
 
 <div id="tienda" class="section active">
 <h2>Productos</h2>
-
-<!-- SUBIR PRODUCTO -->
-<input id="nombreProd" placeholder="Nombre">
-<input id="precioProd" type="number" placeholder="Precio">
-<input id="imgProd" type="file">
-<button onclick="subirProducto()">Subir</button>
-
 <div class="store" id="productos"></div>
 
 <h3>🛒 Carrito</h3>
@@ -127,12 +215,15 @@ word-break:break-word;
 <button onclick="pagar()">Pagar</button>
 </div>
 
+<div id="musica" class="section"><h2>🎵 Música</h2></div>
+
+<div id="eventos" class="section">
+<h2>🎉 Eventos</h2>
+<div class="event">Próximamente 🔥</div>
+</div>
+
 <div id="perfil" class="section">
-<h2>Perfil</h2>
-
-<input type="file" id="fotoPerfil">
-<button onclick="subirFoto()">Guardar Foto</button>
-
+<h2>👤 Perfil</h2>
 <div class="profile" id="perfilData"></div>
 </div>
 
@@ -141,15 +232,20 @@ word-break:break-word;
 <button class="chat-toggle" onclick="toggleChat()">💬</button>
 
 <div class="chat-box" id="chatBoxDrag">
+<div class="chat-header">
+<span>💬 Chat</span>
+<span class="online" id="onlineCount">0 online</span>
+</div>
+
 <div id="chatBox" class="chat-messages"></div>
 
 <div class="chat-input">
-<input id="mensajeInput">
+<input id="mensajeInput" placeholder="Escribe...">
 <button onclick="enviarMensaje()">➤</button>
 </div>
 </div>
 
-<div class="footer">© 2026</div>
+<div class="footer">© 2026 LIL NAAY</div>
 
 <script type="module">
 
@@ -168,7 +264,7 @@ projectId:"lil-naay"
 
 const db = getFirestore(app);
 
-/* CAMBIAR SECCION */
+/* SECCIONES */
 window.mostrar = sec=>{
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById(sec).classList.add("active");
@@ -187,40 +283,136 @@ if(!email) return;
 
 let data = await obtenerPerfil(email);
 
-perfilData.innerHTML=`
-<img src="${data?.foto||''}" width="80" style="border-radius:50%;">
-<p>${data?.username||email}</p>
-<p>${email}</p>
+document.getElementById("perfilData").innerHTML=`
+<p><b>Usuario:</b> ${data?.username || email}</p>
+<p><b>Email:</b> ${email}</p>
+<p><b>Rol:</b> ${data?.admin?"ADMIN":data?.mod?"MOD":data?.vip?"VIP":"USER"}</p>
+<p><b>País:</b> ${data?.pais||"-"}</p>
 `;
 }
 
-/* FOTO PERFIL */
-window.subirFoto = async ()=>{
-let file = fotoPerfil.files[0];
+/* ONLINE */
+const onlineRef = collection(db,"online");
+
+setInterval(async ()=>{
+let email = localStorage.getItem("usuario");
+if(!email) return;
+
+await setDoc(doc(onlineRef,email),{
+time:Date.now()
+});
+},5000);
+
+onSnapshot(onlineRef,snap=>{
+let count=0;
+let now=Date.now();
+
+snap.forEach(d=>{
+if(now - d.data().time < 10000) count++;
+});
+
+onlineCount.innerText = count+" online";
+});
+
+/* CHAT */
+let lastMsg="", lastTime=0;
+
+const qChat = query(collection(db,"chat"), orderBy("fecha"));
+
+onSnapshot(qChat,async snap=>{
+let chat = document.getElementById("chatBox");
+chat.innerHTML="";
+
 let email = localStorage.getItem("usuario");
 
-let reader = new FileReader();
-reader.onload = async e=>{
-await setDoc(doc(db,"usuarios",email),{
-foto:e.target.result
-},{merge:true});
+for(const d of snap.docs){
+let m = d.data();
+let perfil = await obtenerPerfil(m.email);
 
-cargarPerfil();
-};
+let div = document.createElement("div");
 
-reader.readAsDataURL(file);
+div.className="msg "+(m.email===email?"me":"other");
+
+if(perfil?.admin) div.classList.add("role-admin");
+else if(perfil?.mod) div.classList.add("role-mod");
+else if(perfil?.vip) div.classList.add("role-vip");
+
+div.innerHTML = `<b>${m.usuario}</b>${m.texto}`;
+
+chat.appendChild(div);
 }
 
-/* PRODUCTOS */
+/* NOTI */
+if(snap.docs.length){
+let ultimo = snap.docs[snap.docs.length-1].data();
+if(ultimo.texto !== lastMsg){
+noti.style.display="block";
+setTimeout(()=>noti.style.display="none",2000);
+lastMsg = ultimo.texto;
+}
+}
+
+chat.scrollTop = chat.scrollHeight;
+});
+
+/* ENVIAR */
+window.enviarMensaje = async ()=>{
+
+let input = mensajeInput;
+let texto = input.value.trim();
+let email = localStorage.getItem("usuario");
+
+if(!texto || !email) return;
+
+let perfil = await obtenerPerfil(email);
+
+/* BAN */
+if(perfil?.ban && Date.now() < perfil.banHasta){
+return alert("🚫 Estás baneado");
+}
+
+/* ANTI SPAM */
+if(texto === lastMsg && Date.now()-lastTime < 3000){
+return alert("Spam 🚫");
+}
+
+lastMsg = texto;
+lastTime = Date.now();
+
+await addDoc(collection(db,"chat"),{
+usuario: perfil?.username || email,
+email,
+texto,
+fecha: serverTimestamp()
+});
+
+input.value="";
+}
+
+/* ENTER */
+mensajeInput.addEventListener("keypress",e=>{
+if(e.key==="Enter") enviarMensaje();
+});
+
+/* CHAT UI */
+window.toggleChat = ()=>{
+chatBoxDrag.style.display =
+chatBoxDrag.style.display==="flex"?"none":"flex";
+}
+
+/* TIENDA */
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 async function cargarProductos(){
-productos.innerHTML="";
+let c = productos;
+c.innerHTML="";
+
 let snap = await getDocs(collection(db,"productos"));
 
-snap.forEach(d=>{
-let p=d.data();
-productos.innerHTML+=`
+snap.forEach(doc=>{
+let p = doc.data();
+
+c.innerHTML+=`
 <div class="product">
 <img src="${p.imagen}">
 <p>${p.nombre}</p>
@@ -230,24 +422,6 @@ productos.innerHTML+=`
 });
 }
 
-/* SUBIR PRODUCTO */
-window.subirProducto=()=>{
-let file=imgProd.files[0];
-let reader=new FileReader();
-
-reader.onload=async e=>{
-await addDoc(collection(db,"productos"),{
-nombre:nombreProd.value,
-precio:Number(precioProd.value),
-imagen:e.target.result
-});
-cargarProductos();
-};
-
-reader.readAsDataURL(file);
-}
-
-/* CARRITO */
 window.agregar=(n,p)=>{
 carrito.push({nombre:n,precio:p});
 localStorage.setItem("carrito",JSON.stringify(carrito));
@@ -255,70 +429,31 @@ mostrarCarrito();
 }
 
 function mostrarCarrito(){
-carritoEl.innerHTML="";
+let ul=carrito;
+let lista=document.getElementById("carrito");
+lista.innerHTML="";
 let total=0;
+
 carrito.forEach(p=>{
-carrito.innerHTML+=`<li>${p.nombre} $${p.precio}</li>`;
+lista.innerHTML+=`<li>${p.nombre} $${p.precio}</li>`;
 total+=p.precio;
 });
-total.innerText=total;
+
+document.getElementById("total").innerText=total;
 }
 
-/* PAGAR */
 window.pagar=async()=>{
+if(carrito.length===0) return;
+
 await addDoc(collection(db,"compras"),{
 productos:carrito,
 fecha:new Date()
 });
+
 carrito=[];
 localStorage.removeItem("carrito");
 mostrarCarrito();
-}
-
-/* CHAT */
-const qChat = query(collection(db,"chat"), orderBy("fecha"));
-
-onSnapshot(qChat,async snap=>{
-chatBox.innerHTML="";
-let email=localStorage.getItem("usuario");
-
-for(const d of snap.docs){
-let m=d.data();
-let perfil=await obtenerPerfil(m.email);
-
-let div=document.createElement("div");
-div.className="msg "+(m.email===email?"me":"other");
-
-div.innerHTML=`
-<img src="${perfil?.foto||''}" width="25" style="border-radius:50%;">
-<b>${m.usuario}</b>
-${m.texto}`;
-
-chatBox.appendChild(div);
-}
-});
-
-/* ENVIAR */
-window.enviarMensaje=async()=>{
-let texto=mensajeInput.value;
-let email=localStorage.getItem("usuario");
-
-let perfil=await obtenerPerfil(email);
-
-await addDoc(collection(db,"chat"),{
-usuario:perfil?.username||email,
-email,
-texto,
-fecha:serverTimestamp()
-});
-
-mensajeInput.value="";
-}
-
-/* CHAT UI */
-window.toggleChat=()=>{
-chatBoxDrag.style.display=
-chatBoxDrag.style.display==="flex"?"none":"flex";
+alert("Compra realizada");
 }
 
 /* INIT */
