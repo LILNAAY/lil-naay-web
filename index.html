@@ -12,11 +12,6 @@
     --rojo:#ff0000;
 }
 
-/* 🔥 NUEVO */
-html{
-    scroll-behavior:smooth;
-}
-
 /* RESET */
 body{
     margin:0;
@@ -25,29 +20,6 @@ body{
     background:black;
     overflow-x:hidden;
     min-height:100vh;
-}
-
-/* 🔥 PARTÍCULAS */
-.particulas{
-    position:fixed;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    pointer-events:none;
-    z-index:0;
-}
-.particulas span{
-    position:absolute;
-    width:2px;
-    height:2px;
-    background:red;
-    opacity:0.4;
-    animation:float 10s linear infinite;
-}
-@keyframes float{
-    from{transform:translateY(100vh);}
-    to{transform:translateY(-10vh);}
 }
 
 /* NAVBAR */
@@ -61,10 +33,6 @@ body{
     padding:15px 25px;
     z-index:10;
     box-sizing:border-box;
-
-    /* 🔥 mejora sutil */
-    background:rgba(0,0,0,0.3);
-    backdrop-filter:blur(6px);
 }
 
 .logo{
@@ -101,9 +69,6 @@ body{
     padding:6px 12px;
     border-radius:20px;
     border:1px solid rgba(255,0,0,0.3);
-
-    /* 🔥 glow */
-    box-shadow:0 0 10px rgba(255,0,0,0.2);
 }
 
 /* BLOQUEO MENU */
@@ -131,7 +96,6 @@ body{
     cursor:pointer;
     white-space:nowrap;
     font-size:13px;
-    transition:0.3s;
 }
 
 .login-top:hover{
@@ -149,20 +113,6 @@ body{
     align-items:center;
     justify-content:center;
     overflow:hidden;
-
-    animation:fadeUp 1s ease;
-}
-
-/* 🔥 animación entrada */
-@keyframes fadeUp{
-    from{
-        opacity:0;
-        transform:translateY(40px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
 }
 
 .hero::before{
@@ -244,31 +194,86 @@ body{
     filter:drop-shadow(0 0 25px red);
 }
 
-/* 🔥 MENSAJE MEJORADO */
+/* MODAL */
+.modal{
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    background:rgba(0,0,0,0.95);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.box{
+    background:#0a0a0a;
+    padding:25px;
+    border-radius:15px;
+    width:320px;
+    border:1px solid #ff000030;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    background:#111;
+    color:white;
+    border:none;
+}
+
+/* MENSAJE */
 #mensaje{
     position:fixed;
     bottom:20px;
     right:20px;
     display:none;
-    padding:12px 16px;
+    padding:10px 15px;
     border-radius:10px;
     font-size:14px;
-    box-shadow:0 0 15px rgba(255,0,0,0.4);
 }
 
 /* RESPONSIVE */
 @media (max-width:768px){
-    .menu{display:none;}
+    .menu{
+        display:none;
+    }
+
+    .nav{
+        padding:10px 15px;
+    }
+
+    .login-top{
+        padding:6px 10px;
+        font-size:12px;
+    }
+
+    .contador-box{
+        padding:4px 8px;
+        font-size:12px;
+    }
+}
+
+@media (max-width:600px){
+    .hero-buttons{
+        right:50%;
+        transform:translateX(50%);
+        bottom:15px;
+        gap:10px;
+    }
+
+    .btn-img img{
+        width:70px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🔥 PARTÍCULAS -->
-<div class="particulas" id="particulas"></div>
-
-<!-- NAVBAR -->
 <div class="nav">
     <div class="logo">LIL NAAY</div>
 
@@ -287,7 +292,6 @@ body{
     </div>
 </div>
 
-<!-- HERO -->
 <div class="hero">
     <img src="fondo.png" class="hero-bg">
     <img src="artista.png" class="hero-artista">
@@ -304,24 +308,53 @@ body{
     </div>
 </div>
 
+<div class="modal" id="registro">
+<div class="box">
+<h3>Crear Cuenta</h3>
+<input id="rUser" placeholder="Usuario">
+<input id="rEmail" placeholder="Correo">
+<input id="rPass" type="password" placeholder="Contraseña">
+<input id="rPais" placeholder="País">
+<input id="rProvincia" placeholder="Provincia">
+<input id="rEdad" placeholder="Edad">
+<button onclick="registrar()">Crear</button>
+<button onclick="cerrar()">Cancelar</button>
+</div>
+</div>
+
+<div class="modal" id="login">
+<div class="box">
+<h3>Iniciar Sesión</h3>
+<input id="lEmail" placeholder="Correo">
+<input id="lPass" type="password" placeholder="Contraseña">
+<button onclick="loginUser()">Entrar</button>
+<p onclick="recuperar()" style="cursor:pointer;color:#ff4d4d;">¿Olvidaste tu contraseña?</p>
+<button onclick="cerrar()">Cancelar</button>
+</div>
+</div>
+
+<div class="modal" id="perfil">
+<div class="box">
+<h3>👤 Mi Perfil</h3>
+<p><b>Usuario:</b> <span id="pUser"></span></p>
+<p><b>Email:</b> <span id="pEmail"></span></p>
+<p><b>País:</b> <span id="pPais"></span></p>
+<p><b>Provincia:</b> <span id="pProvincia"></span></p>
+<p><b>Edad:</b> <span id="pEdad"></span></p>
+<button onclick="logout()">Cerrar sesión</button>
+<button onclick="cerrar()">Cerrar</button>
+</div>
+</div>
+
 <div id="mensaje"></div>
 
 <script type="module">
 
-/* 🔥 PARTÍCULAS */
-const cont = document.getElementById("particulas");
-for(let i=0;i<40;i++){
-    let p=document.createElement("span");
-    p.style.left=Math.random()*100+"%";
-    p.style.animationDuration=(5+Math.random()*10)+"s";
-    cont.appendChild(p);
-}
-
-/* 🔥 TU FIREBASE ORIGINAL (NO TOCADO) */
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const $ = id => document.getElementById(id);
 
 const app = initializeApp({
 apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
@@ -332,7 +365,121 @@ projectId:"lil-naay"
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/* TODO TU JS SIGUE IGUAL... */
+window.abrirLogin=()=>$("login").style.display="flex";
+window.abrirPerfil=()=>cargarPerfil();
+window.cerrar=()=>["registro","login","perfil"].forEach(id=>$(id).style.display="none");
+
+function msg(t,ok=true){
+const m=$("mensaje");
+m.innerText=t;
+m.style.display="block";
+m.style.background=ok?"green":"red";
+setTimeout(()=>m.style.display="none",3000);
+}
+
+function verificarSesion(){
+let email = localStorage.getItem("usuario");
+let menu = $("menu");
+
+if(!email){
+menu.classList.add("bloqueado");
+}else{
+menu.classList.remove("bloqueado");
+}
+}
+
+window.registrar=async()=>{
+try{
+if(!rEmail.value || !rPass.value) return msg("Completa los campos",false);
+
+const cred=await createUserWithEmailAndPassword(auth,rEmail.value,rPass.value);
+
+await addDoc(collection(db,"usuarios"),{
+uid:cred.user.uid,
+usuario:rUser.value,
+email:rEmail.value,
+pais:rPais.value,
+provincia:rProvincia.value,
+edad:rEdad.value
+});
+
+await addDoc(collection(db,"suscriptores"),{
+email:rEmail.value,
+fecha:new Date()
+});
+
+localStorage.setItem("usuario",rEmail.value);
+msg("Cuenta creada");
+cerrar();
+cargarContador();
+verificarSesion();
+
+}catch(e){msg(e.message,false);}
+}
+
+window.loginUser=async()=>{
+try{
+await signInWithEmailAndPassword(auth,lEmail.value,lPass.value);
+localStorage.setItem("usuario",lEmail.value);
+msg("Bienvenido");
+cerrar();
+verificarSesion();
+}catch(e){msg("Datos incorrectos",false);}
+}
+
+window.recuperar=async()=>{
+if(!lEmail.value) return msg("Escribe tu correo",false);
+await sendPasswordResetEmail(auth,lEmail.value);
+msg("Correo enviado");
+}
+
+async function cargarPerfil(){
+let email=localStorage.getItem("usuario");
+if(!email) return msg("No has iniciado sesión",false);
+
+const snap=await getDocs(collection(db,"usuarios"));
+let user=snap.docs.find(d=>d.data().email===email);
+if(!user) return msg("No encontrado",false);
+
+let u=user.data();
+$("pUser").innerText=u.usuario;
+$("pEmail").innerText=u.email;
+$("pPais").innerText=u.pais;
+$("pProvincia").innerText=u.provincia;
+$("pEdad").innerText=u.edad;
+
+$("perfil").style.display="flex";
+}
+
+window.logout=async()=>{
+await signOut(auth);
+localStorage.removeItem("usuario");
+msg("Sesión cerrada");
+cerrar();
+verificarSesion();
+}
+
+window.entrarTienda=async()=>{
+let email=localStorage.getItem("usuario");
+if(!email){
+msg("Debes iniciar sesión",false);
+return;
+}
+
+const snap=await getDocs(collection(db,"suscriptores"));
+let ok=snap.docs.some(d=>d.data().email===email);
+
+if(ok) window.location.href="menu.html";
+else msg("No autorizado",false);
+}
+
+async function cargarContador(){
+const snap=await getDocs(collection(db,"suscriptores"));
+$("contadorNav").innerText=snap.size;
+}
+
+cargarContador();
+verificarSesion();
 
 </script>
 
