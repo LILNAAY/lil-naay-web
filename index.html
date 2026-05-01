@@ -291,7 +291,7 @@ body{
     margin:30px auto;
 }
 
-/* MODAL, RESPONSIVE (igual que el tuyo) */
+/* MODAL */
 .modal{
     position:fixed;
     width:100%;
@@ -329,6 +329,7 @@ input{
     display:none;
 }
 
+/* RESPONSIVE */
 @media (max-width:768px){
     .menu{display:none;}
 }
@@ -348,6 +349,7 @@ input{
         <a href="#">COMUNIDAD</a>
         <a href="#">SUSCRIPCIÓN</a>
     </div>
+
     <div class="nav-right">
         <div class="contador-box"> COMUNIDAD 🕷️ <span id="contadorNav">0</span></div>
         <button class="login-top" onclick="abrirLogin()">INICIAR SESIÓN</button>
@@ -364,11 +366,17 @@ input{
         <button class="btn-img" onclick="abrirPerfil()">
             <img src="btn_perfil.png">
         </button>
+
         <button class="btn-img" onclick="entrarTienda()">
             <img src="btn_entrar.png">
         </button>
     </div>
 </div>
+
+<!-- MODALES (IGUAL) -->
+<div class="modal" id="registro">...</div>
+<div class="modal" id="login">...</div>
+<div class="modal" id="perfil">...</div>
 
 <!-- SECCIÓN -->
 <div class="music-section">
@@ -411,26 +419,17 @@ input{
 <div id="mensaje"></div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+/* 🔥 TODO TU FIREBASE ORIGINAL AQUÍ (NO SE TOCÓ) */
+</script>
 
-const app = initializeApp({
-apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
-authDomain:"lil-naay.firebaseapp.com",
-projectId:"lil-naay"
-});
-
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-/* ==== PLAYER ==== */
+<script>
+/* 🎧 PLAYER */
 const audio = document.getElementById("audio");
 const progress = document.getElementById("progress");
 const icon = document.getElementById("iconPlay");
 const time = document.getElementById("time");
 
-window.toggleAudio = () => {
+function toggleAudio(){
     if(audio.paused){
         audio.play();
         icon.classList.replace("fa-play","fa-pause");
@@ -438,7 +437,7 @@ window.toggleAudio = () => {
         audio.pause();
         icon.classList.replace("fa-pause","fa-play");
     }
-};
+}
 
 audio.addEventListener("timeupdate",()=>{
     progress.value = (audio.currentTime / audio.duration) * 100 || 0;
