@@ -1,485 +1,584 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LIL NAAY - Inicio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIL NAAY - Inicio</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --rojo: #ff0000;
+            --fondo-oscuro: #070707;
+            --transparencia-rojo: rgba(255, 0, 0, 0.15);
+            --borde-rojo: rgba(255, 0, 0, 0.3);
+        }
 
-<style>
-:root{
-    --rojo:#ff0000;
-}
+        /* RESET BÁSICO */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-/* RESET */
-body{
-    margin:0;
-    font-family:'Segoe UI',sans-serif;
-    color:white;
-    background:black;
-    overflow-x:hidden;
-    min-height:100vh;
-}
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            color: #ffffff;
+            background: var(--fondo-oscuro);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-/* NAVBAR */
-.nav{
-    position:absolute;
-    top:0;
-    width:100%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 25px;
-    z-index:10;
-    box-sizing:border-box;
-}
+        /* NAVBAR */
+        .nav {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            z-index: 10;
+        }
 
-.logo{
-    font-weight:bold;
-    font-size:20px;
-}
+        .logo {
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
-.menu{
-    display:flex;
-    gap:25px;
-    position:relative;
-}
+        .menu {
+            display: flex;
+            gap: 30px;
+            position: relative;
+        }
 
-.menu a{
-    color:#ccc;
-    text-decoration:none;
-    font-size:14px;
-}
+        .menu a {
+            color: #aaaaaa;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
 
-.menu a:hover,
-.menu .active{
-    color:red;
-}
+        .menu a:hover,
+        .menu .active {
+            color: var(--rojo);
+        }
 
-.nav-right{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex-shrink:0;
-}
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0;
+        }
 
-.contador-box{
-    background:rgba(255,0,0,0.1);
-    padding:6px 12px;
-    border-radius:20px;
-    border:1px solid rgba(255,0,0,0.3);
-}
+        .contador-box {
+            background: var(--transparencia-rojo);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--borde-rojo);
+            font-size: 13px;
+            font-weight: 600;
+        }
 
-/* BLOQUEO MENU */
-.menu.bloqueado a{
-    pointer-events:none;
-    opacity:0.4;
-}
+        /* BLOQUEO MENU */
+        .menu.bloqueado a {
+            pointer-events: none;
+            opacity: 0.4;
+        }
 
-.menu.bloqueado::after{
-    content:"🔒 Inicia sesión";
-    position:absolute;
-    top:35px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:12px;
-    color:#ff4d4d;
-}
+        .menu.bloqueado::after {
+            content: "🔒 Inicia sesión para continuar";
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #ff4d4d;
+            white-space: nowrap;
+            font-weight: 600;
+        }
 
-.login-top{
-    border:1px solid red;
-    color:red;
-    padding:8px 14px;
-    border-radius:25px;
-    background:none;
-    cursor:pointer;
-    white-space:nowrap;
-    font-size:13px;
-}
+        .login-top {
+            border: 1px solid var(--rojo);
+            color: var(--rojo);
+            padding: 8px 18px;
+            border-radius: 25px;
+            background: none;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
 
-.login-top:hover{
-    background:red;
-    color:white;
-    box-shadow:0 0 15px red;
-}
+        .login-top:hover {
+            background: var(--rojo);
+            color: white;
+            box-shadow: 0 0 15px var(--rojo);
+        }
 
-/* HERO */
-.hero{
-    position:relative;
-    width:100%;
-    height:60vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-}
+        /* HERO */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 65vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
 
-.hero::before{
-    content:"";
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.9));
-    z-index:1;
-}
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(7, 7, 7, 0.95));
+            z-index: 1;
+        }
 
-.hero::after{
-    content:"";
-    position:absolute;
-    bottom:0;
-    width:100%;
-    height:3px;
-    background:red;
-    box-shadow:0 0 15px red, 0 0 30px red;
-    z-index:5;
-}
+        .hero::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--rojo);
+            box-shadow: 0 0 15px var(--rojo), 0 0 30px var(--rojo);
+            z-index: 5;
+        }
 
-.hero-bg{
-    position:absolute;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    z-index:0;
-}
+        .hero-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
 
-.hero-artista{
-    position:absolute;
-    bottom:0;
-    left:50%;
-    transform:translate(-135%, 0); /* 🔥 centrado real */
+        .hero-artista {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 85%;
+            max-height: 480px;
+            object-fit: contain;
+            z-index: 2;
+            opacity: 0.95;
+            pointer-events: none;
+        }
 
-    height:85%;
-    max-height:450px;
+        .hero-texto {
+            pointer-events: none;
+            position: absolute;
+            top: 18%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            max-width: 85%;
+            z-index: 3;
+        }
 
-    object-fit:contain;
-    z-index:2;
-    opacity:0.9;
+        /* BOTONES HERO */
+        .hero-buttons {
+            position: absolute;
+            right: 60px;
+            bottom: 40px;
+            display: flex;
+            gap: 20px;
+            z-index: 4;
+        }
 
-    pointer-events:none;
-}
-.hero-texto{
-    pointer-events:none;
-    position:absolute;
-    top:15%;
-    left:50%;
-    transform:translateX(-50%);
-    width:600px;
-    max-width:90%;
-    z-index:3;
-}
+        .btn-img {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
 
-/* BOTONES */
-.hero-buttons{
-    position:absolute;
-    right:60px;
-    bottom:40px;
-    display:flex;
-    gap:20px;
-    z-index:4;
-}
+        .btn-img img {
+            width: 130px;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            filter: drop-shadow(0 0 10px var(--rojo));
+        }
 
-.btn-img{
-    background:none;
-    border:none;
-    cursor:pointer;
-}
+        .btn-img img:hover {
+            transform: scale(1.08);
+            filter: drop-shadow(0 0 20px var(--rojo));
+        }
 
-.btn-img img{
-    width:130px;
-    transition:0.3s;
-    filter:drop-shadow(0 0 10px red);
-}
+        /* MODALES */
+        .modal {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+        }
 
-.btn-img img:hover{
-    transform:scale(1.1);
-    filter:drop-shadow(0 0 25px red);
-}
+        .box {
+            background: #101010;
+            padding: 30px;
+            border-radius: 20px;
+            width: 340px;
+            border: 1px solid var(--borde-rojo);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
 
-/* MODAL */
-.modal{
-    position:fixed;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    background:rgba(0,0,0,0.95);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
+        .box h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #ffffff;
+            font-weight: 700;
+        }
 
-.box{
-    background:#0a0a0a;
-    padding:25px;
-    border-radius:15px;
-    width:320px;
-    border:1px solid #ff000030;
-}
+        .box p {
+            font-size: 13px;
+            margin: 10px 0;
+            text-align: left;
+        }
 
-input{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    background:#111;
-    color:white;
-    border:none;
-}
+        .box span {
+            color: var(--rojo);
+            font-weight: bold;
+        }
 
-/* MENSAJE */
-#mensaje{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    display:none;
-}
+        .input-form, input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #181818;
+            color: white;
+            border: 1px solid #333;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
 
-/* RESPONSIVE */
-@media (max-width:768px){
-    .menu{
-        display:none;
-    }
+        .input-form:focus, input:focus {
+            border-color: var(--rojo);
+        }
 
-    .nav{
-        padding:10px 15px;
-    }
+        .btn-modal {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--rojo);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .login-top{
-        padding:6px 10px;
-        font-size:12px;
-    }
+        .btn-modal:hover {
+            background: #e60000;
+            box-shadow: 0 0 10px var(--rojo);
+        }
 
-    .contador-box{
-        padding:4px 8px;
-        font-size:12px;
-    }
-}
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #444;
+            color: #ccc;
+            margin-top: 8px;
+        }
 
-@media (max-width:600px){
-    .hero-buttons{
-        right:50%;
-        transform:translateX(50%);
-        bottom:15px;
-        gap:10px;
-    }
+        .btn-secondary:hover {
+            background: #222;
+            color: #fff;
+        }
 
-    .btn-img img{
-        width:70px;
-    }
-}
-</style>
+        /* MENSAJE FLOTANTE */
+        #mensaje {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 15px 20px;
+            }
+
+            .menu {
+                display: none;
+            }
+
+            .hero {
+                height: 55vh;
+            }
+
+            .hero-artista {
+                height: 75%;
+            }
+
+            .login-top {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .contador-box {
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-buttons {
+                right: 50%;
+                transform: translateX(50%);
+                bottom: 20px;
+                gap: 15px;
+            }
+
+            .btn-img img {
+                width: 90px;
+            }
+
+            .box {
+                width: 90%;
+                max-width: 320px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<div class="nav">
-    <div class="logo">LIL NAAY</div>
+    <nav class="nav">
+        <div class="logo">LIL NAAY</div>
 
-    <div class="menu" id="menu">
-        <a href="#" class="active">INICIO</a>
-        <a href="#">MÚSICA</a>
-        <a href="#">VIDEOS</a>
-        <a href="#">TIENDA</a>
-        <a href="#">COMUNIDAD</a>
-        <a href="#">SUSCRIPCIÓN</a>
+        <div class="menu" id="menu">
+            <a href="#" class="active">INICIO</a>
+            <a href="#">MÚSICA</a>
+            <a href="#">VIDEOS</a>
+            <a href="#">TIENDA</a>
+            <a href="#">COMUNIDAD</a>
+            <a href="#">SUSCRIPCIÓN</a>
+        </div>
+
+        <div class="nav-right">
+            <div class="contador-box">COMUNIDAD 🕷️ <span id="contadorNav">0</span></div>
+            <button class="login-top" onclick="abrirLogin()">INICIAR SESIÓN</button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <img src="fondo.png" class="hero-bg" alt="Fondo">
+        <img src="artista.png" class="hero-artista" alt="Artista">
+        <img src="texto.png" class="hero-texto" alt="Texto Principal">
+
+        <div class="hero-buttons">
+            <button class="btn-img" onclick="abrirRegistro()">
+                <img src="btn_registro.png" alt="Registrarse">
+            </button>
+            <button class="btn-img" onclick="entrarTienda()">
+                <img src="btn_entrar.png" alt="Entrar">
+            </button>
+        </div>
+    </section>
+
+    <div class="modal" id="registro">
+        <div class="box">
+            <h3>Crear Cuenta</h3>
+            <input id="rUser" placeholder="Usuario" class="input-form">
+            <input id="rEmail" type="email" placeholder="Correo" class="input-form">
+            <input id="rPass" type="password" placeholder="Contraseña" class="input-form">
+            <input id="rPais" placeholder="País" class="input-form">
+            <input id="rProvincia" placeholder="Provincia" class="input-form">
+            <input id="rEdad" type="number" placeholder="Edad" class="input-form">
+            <button class="btn-modal" onclick="registrar()">Crear Cuenta</button>
+            <button class="btn-modal btn-secondary" onclick="cerrar()">Cancelar</button>
+        </div>
     </div>
 
-    <div class="nav-right">
-        <div class="contador-box"> COMUNIDAD 🕷️ <span id="contadorNav">0</span></div>
-        <button class="login-top" onclick="abrirLogin()">INICIAR SESIÓN</button>
+    <div class="modal" id="login">
+        <div class="box">
+            <h3>Iniciar Sesión</h3>
+            <input id="lEmail" type="email" placeholder="Correo" class="input-form">
+            <input id="lPass" type="password" placeholder="Contraseña" class="input-form">
+            <button class="btn-modal" onclick="loginUser()">Entrar</button>
+            <p onclick="recuperar()" style="cursor:pointer;color:var(--rojo);font-size:12px;margin:15px 0 5px 0;">¿Olvidaste tu contraseña?</p>
+            <button class="btn-modal btn-secondary" onclick="cerrar()">Cancelar</button>
+        </div>
     </div>
-</div>
 
-<!-- HERO -->
-<div class="hero">
-    <img src="fondo.png" class="hero-bg">
-    <img src="artista.png" class="hero-artista">
-    <img src="texto.png" class="hero-texto">
-
-    <div class="hero-buttons">
-        <button class="btn-img" onclick="abrirPerfil()">
-            <img src="btn_perfil.png">
-        </button>
-
-        <button class="btn-img" onclick="entrarTienda()">
-            <img src="btn_entrar.png">
-        </button>
+    <div class="modal" id="perfil">
+        <div class="box">
+            <h3>👤 Mi Perfil</h3>
+            <p><b>Usuario:</b> <span id="pUser"></span></p>
+            <p><b>Email:</b> <span id="pEmail"></span></p>
+            <p><b>País:</b> <span id="pPais"></span></p>
+            <p><b>Provincia:</b> <span id="pProvincia"></span></p>
+            <p><b>Edad:</b> <span id="pEdad"></span></p>
+            <button class="btn-modal" onclick="logout()">Cerrar sesión</button>
+            <button class="btn-modal btn-secondary" onclick="cerrar()">Cerrar</button>
+        </div>
     </div>
-</div>
 
-<!-- MODALES -->
-<div class="modal" id="registro">
-<div class="box">
-<h3>Crear Cuenta</h3>
-<input id="rUser" placeholder="Usuario">
-<input id="rEmail" placeholder="Correo">
-<input id="rPass" type="password" placeholder="Contraseña">
-<input id="rPais" placeholder="País">
-<input id="rProvincia" placeholder="Provincia">
-<input id="rEdad" placeholder="Edad">
-<button onclick="registrar()">Crear</button>
-<button onclick="cerrar()">Cancelar</button>
-</div>
-</div>
+    <div id="mensaje"></div>
 
-<div class="modal" id="login">
-<div class="box">
-<h3>Iniciar Sesión</h3>
-<input id="lEmail" placeholder="Correo">
-<input id="lPass" type="password" placeholder="Contraseña">
-<button onclick="loginUser()">Entrar</button>
-<p onclick="recuperar()" style="cursor:pointer;color:#ff4d4d;">¿Olvidaste tu contraseña?</p>
-<button onclick="cerrar()">Cancelar</button>
-</div>
-</div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-<div class="modal" id="perfil">
-<div class="box">
-<h3>👤 Mi Perfil</h3>
-<p><b>Usuario:</b> <span id="pUser"></span></p>
-<p><b>Email:</b> <span id="pEmail"></span></p>
-<p><b>País:</b> <span id="pPais"></span></p>
-<p><b>Provincia:</b> <span id="pProvincia"></span></p>
-<p><b>Edad:</b> <span id="pEdad"></span></p>
-<button onclick="logout()">Cerrar sesión</button>
-<button onclick="cerrar()">Cerrar</button>
-</div>
-</div>
+        const app = initializeApp({
+            apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+            authDomain: "lil-naay.firebaseapp.com",
+            projectId: "lil-naay"
+        });
 
-<div id="mensaje"></div>
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-<script type="module">
+        // Hacemos las funciones globales para los botones
+        window.abrirRegistro = () => document.getElementById("registro").style.display = "flex";
+        window.abrirLogin = () => document.getElementById("login").style.display = "flex";
+        window.abrirPerfil = () => cargarPerfil();
+        window.cerrar = () => ["registro", "login", "perfil"].forEach(id => document.getElementById(id).style.display = "none");
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        function msg(t, ok = true) {
+            const mensaje = document.getElementById("mensaje");
+            mensaje.innerText = t;
+            mensaje.style.display = "block";
+            mensaje.style.background = ok ? "#27ae60" : "#c0392b";
+            setTimeout(() => mensaje.style.display = "none", 3000);
+        }
 
-const app = initializeApp({
-apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
-authDomain:"lil-naay.firebaseapp.com",
-projectId:"lil-naay"
-});
+        function verificarSesion() {
+            let email = localStorage.getItem("usuario");
+            let menu = document.getElementById("menu");
 
-const db = getFirestore(app);
-const auth = getAuth(app);
+            if (!email) {
+                menu.classList.add("bloqueado");
+            } else {
+                menu.classList.remove("bloqueado");
+            }
+        }
 
-window.abrirRegistro=()=>registro.style.display="flex";
-window.abrirLogin=()=>login.style.display="flex";
-window.abrirPerfil=()=>cargarPerfil();
-window.cerrar=()=>["registro","login","perfil"].forEach(id=>document.getElementById(id).style.display="none");
+        window.registrar = async () => {
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, document.getElementById("rEmail").value, document.getElementById("rPass").value);
 
-function msg(t,ok=true){
-mensaje.innerText=t;
-mensaje.style.display="block";
-mensaje.style.background=ok?"green":"red";
-setTimeout(()=>mensaje.style.display="none",3000);
-}
+                await addDoc(collection(db, "usuarios"), {
+                    uid: cred.user.uid,
+                    usuario: document.getElementById("rUser").value,
+                    email: document.getElementById("rEmail").value,
+                    pais: document.getElementById("rPais").value,
+                    provincia: document.getElementById("rProvincia").value,
+                    edad: document.getElementById("rEdad").value
+                });
 
-function verificarSesion(){
-    let email = localStorage.getItem("usuario");
-    let menu = document.getElementById("menu");
+                await addDoc(collection(db, "suscriptores"), {
+                    email: document.getElementById("rEmail").value,
+                    fecha: new Date()
+                });
 
-    if(!email){
-        menu.classList.add("bloqueado");
-    }else{
-        menu.classList.remove("bloqueado");
-    }
-}
+                localStorage.setItem("usuario", document.getElementById("rEmail").value);
+                msg("Cuenta creada exitosamente.");
+                cerrar();
+                cargarContador();
+                verificarSesion();
+            } catch (e) {
+                msg(e.message, false);
+            }
+        }
 
-window.registrar=async()=>{
-try{
-const cred=await createUserWithEmailAndPassword(auth,rEmail.value,rPass.value);
+        window.loginUser = async () => {
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById("lEmail").value, document.getElementById("lPass").value);
+                localStorage.setItem("usuario", document.getElementById("lEmail").value);
+                msg("Bienvenido de nuevo.");
+                cerrar();
+                verificarSesion();
+            } catch {
+                msg("Datos incorrectos o usuario no encontrado.", false);
+            }
+        }
 
-await addDoc(collection(db,"usuarios"),{
-uid:cred.user.uid,
-usuario:rUser.value,
-email:rEmail.value,
-pais:rPais.value,
-provincia:rProvincia.value,
-edad:rEdad.value
-});
+        window.recuperar = async () => {
+            const lEmail = document.getElementById("lEmail").value;
+            if (!lEmail) return msg("Escribe tu correo en la sección de inicio de sesión", false);
+            
+            try {
+                await sendPasswordResetPassword(auth, lEmail);
+                msg("Correo enviado, revisa tu bandeja de entrada.");
+            } catch {
+                msg("Error al enviar el correo", false);
+            }
+        }
 
-await addDoc(collection(db,"suscriptores"),{
-email:rEmail.value,
-fecha:new Date()
-});
+        async function cargarPerfil() {
+            let email = localStorage.getItem("usuario");
+            if (!email) return msg("No has iniciado sesión", false);
 
-localStorage.setItem("usuario",rEmail.value);
-msg("Cuenta creada");
-cerrar();
-cargarContador();
-verificarSesion();
+            const snap = await getDocs(collection(db, "usuarios"));
+            let user = snap.docs.find(d => d.data().email === email);
+            if (!user) return msg("Usuario no encontrado", false);
 
-}catch(e){msg(e.message,false);}
-}
+            let u = user.data();
+            document.getElementById("pUser").innerText = u.usuario;
+            document.getElementById("pEmail").innerText = u.email;
+            document.getElementById("pPais").innerText = u.pais;
+            document.getElementById("pProvincia").innerText = u.provincia;
+            document.getElementById("pEdad").innerText = u.edad;
 
-window.loginUser=async()=>{
-try{
-await signInWithEmailAndPassword(auth,lEmail.value,lPass.value);
-localStorage.setItem("usuario",lEmail.value);
-msg("Bienvenido");
-cerrar();
-verificarSesion();
-}catch{msg("Datos incorrectos",false);}
-}
+            document.getElementById("perfil").style.display = "flex";
+        }
 
-window.recuperar=async()=>{
-if(!lEmail.value) return msg("Escribe tu correo",false);
-await sendPasswordResetEmail(auth,lEmail.value);
-msg("Correo enviado");
-}
+        window.logout = async () => {
+            await signOut(auth);
+            localStorage.removeItem("usuario");
+            msg("Sesión cerrada correctamente.");
+            cerrar();
+            verificarSesion();
+        }
 
-async function cargarPerfil(){
-let email=localStorage.getItem("usuario");
-if(!email) return msg("No has iniciado sesión",false);
+        window.entrarTienda = async () => {
+            let email = localStorage.getItem("usuario");
+            if (!email) {
+                msg("Debes iniciar sesión primero", false);
+                return;
+            }
 
-const snap=await getDocs(collection(db,"usuarios"));
-let user=snap.docs.find(d=>d.data().email===email);
-if(!user) return msg("No encontrado",false);
+            const snap = await getDocs(collection(db, "suscriptores"));
+            let ok = snap.docs.some(d => d.data().email === email);
 
-let u=user.data();
-pUser.innerText=u.usuario;
-pEmail.innerText=u.email;
-pPais.innerText=u.pais;
-pProvincia.innerText=u.provincia;
-pEdad.innerText=u.edad;
+            if (ok) window.location.href = "menu.html";
+            else msg("No estás autorizado", false);
+        }
 
-perfil.style.display="flex";
-}
+        async function cargarContador() {
+            const snap = await getDocs(collection(db, "suscriptores"));
+            document.getElementById("contadorNav").innerText = snap.size;
+        }
 
-window.logout=async()=>{
-await signOut(auth);
-localStorage.removeItem("usuario");
-msg("Sesión cerrada");
-cerrar();
-verificarSesion();
-}
-
-window.entrarTienda=async()=>{
-let email=localStorage.getItem("usuario");
-if(!email){
-    msg("Debes iniciar sesión",false);
-    return;
-}
-
-const snap=await getDocs(collection(db,"suscriptores"));
-let ok=snap.docs.some(d=>d.data().email===email);
-
-if(ok) window.location.href="menu.html";
-else msg("No autorizado",false);
-}
-
-async function cargarContador(){
-const snap=await getDocs(collection(db,"suscriptores"));
-contadorNav.innerText=snap.size;
-}
-
-cargarContador();
-verificarSesion();
-
-</script>
-
+        cargarContador();
+        verificarSesion();
+    </script>
 </body>
 </html>
