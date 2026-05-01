@@ -225,10 +225,6 @@ display:none;
 <div id="perfil" class="section">
 <h2>👤 Perfil</h2>
 <div class="profile" id="perfilData"></div>
-
-    <br>
-<input type="file" id="fotoInput" accept="image/*">
-<button onclick="guardarFoto()">Guardar Foto</button>
 </div>
 
 </div>
@@ -254,16 +250,11 @@ display:none;
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-
 import {
 getFirestore, collection, getDocs, addDoc,
 onSnapshot, query, orderBy, serverTimestamp,
-doc, setDoc, getDoc
+where, doc, setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-import {
-getStorage, ref, uploadBytes, getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const app = initializeApp({
 apiKey:"TU_API_KEY",
@@ -272,7 +263,6 @@ projectId:"lil-naay"
 });
 
 const db = getFirestore(app);
-const storage = getStorage(app);
 
 /* SECCIONES */
 window.mostrar = sec=>{
@@ -282,9 +272,9 @@ document.getElementById(sec).classList.add("active");
 
 /* PERFIL */
 async function obtenerPerfil(email){
-const refDoc = doc(db,"usuarios",email);
-const snap = await getDoc(refDoc);
-return snap.exists() ? snap.data() : null;
+const q = query(collection(db,"usuarios"), where("email","==",email));
+const snap = await getDocs(q);
+return snap.empty ? null : snap.docs[0].data();
 }
 
 async function cargarPerfil(){
@@ -294,39 +284,11 @@ if(!email) return;
 let data = await obtenerPerfil(email);
 
 document.getElementById("perfilData").innerHTML=`
-<img src="${data?.foto || 'https://i.imgur.com/4Z7b6QZ.png'}"
-style="width:80px;height:80px;border-radius:50%;margin-bottom:10px;">
-
 <p><b>Usuario:</b> ${data?.username || email}</p>
 <p><b>Email:</b> ${email}</p>
 <p><b>Rol:</b> ${data?.admin?"ADMIN":data?.mod?"MOD":data?.vip?"VIP":"USER"}</p>
 <p><b>País:</b> ${data?.pais||"-"}</p>
 `;
-}
-
-/* SUBIR FOTO */
-window.guardarFoto = async ()=>{
-
-let email = localStorage.getItem("usuario");
-let file = document.getElementById("fotoInput").files[0];
-
-if(!email || !file) return alert("Selecciona una imagen");
-
-/* SUBIR */
-let ruta = ref(storage, "perfiles/"+email);
-await uploadBytes(ruta, file);
-
-/* URL */
-let url = await getDownloadURL(ruta);
-
-/* GUARDAR */
-await setDoc(doc(db,"usuarios",email),{
-foto:url
-},{ merge:true });
-
-alert("Foto subida 🔥");
-
-cargarPerfil();
 }
 
 /* ONLINE */
@@ -375,19 +337,19 @@ if(perfil?.admin) div.classList.add("role-admin");
 else if(perfil?.mod) div.classList.add("role-mod");
 else if(perfil?.vip) div.classList.add("role-vip");
 
-div.innerHTML = `
-<div style="display:flex;gap:8px;align-items:flex-start;">
-<img src="${perfil?.foto || 'https://i.imgur.com/4Z7b6QZ.png'}"
-style="width:30px;height:30px;border-radius:50%;">
-
-<div>
-<b>${m.usuario}</b>
-${m.texto}
-</div>
-</div>
-`;
+div.innerHTML = `<b>${m.usuario}</b>${m.texto}`;
 
 chat.appendChild(div);
+}
+
+/* NOTI */
+if(snap.docs.length){
+let ultimo = snap.docs[snap.docs.length-1].data();
+if(ultimo.texto !== lastMsg){
+noti.style.display="block";
+setTimeout(()=>noti.style.display="none",2000);
+lastMsg = ultimo.texto;
+}
 }
 
 chat.scrollTop = chat.scrollHeight;
@@ -467,6 +429,7 @@ mostrarCarrito();
 }
 
 function mostrarCarrito(){
+let ul=carrito;
 let lista=document.getElementById("carrito");
 lista.innerHTML="";
 let total=0;
