@@ -181,6 +181,18 @@ body {
     display: block;
 }
 
+.input-field {
+    width: 80%;
+    padding: 6px;
+    margin: 6px 0;
+    background: #111;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 5px;
+    outline: none;
+    text-align: center;
+}
+
 .btn-action {
     background: #ff0000;
     color: white;
@@ -191,6 +203,7 @@ body {
     font-weight: 600;
     margin-top: 12px;
     transition: 0.2s;
+    width: 80%;
 }
 
 .btn-action:hover {
@@ -222,8 +235,8 @@ body {
     position: fixed;
     bottom: 95px;
     right: 25px;
-    width: 320px;
-    height: 440px;
+    width: 340px;
+    height: 460px;
     background: #0d0d0d;
     border-radius: 15px;
     display: none;
@@ -256,13 +269,14 @@ body {
 
 /* BURBUJAS */
 .msg {
-    max-width: 80%;
+    max-width: 85%;
     padding: 10px;
     border-radius: 12px;
     font-size: 13px;
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: pre-wrap;
+    cursor: pointer;
 }
 
 .msg b {
@@ -280,12 +294,52 @@ body {
 .role-vip { border-left: 4px solid gold; }
 
 .avatar-chat {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+/* MODAL DE USUARIO */
+.modal-perfil {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #151515;
+    border: 2px solid #ff0000;
+    padding: 25px;
+    border-radius: 15px;
+    z-index: 2000;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(255,0,0,0.6);
+    display: none;
+}
+
+.modal-perfil img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ff0000;
+    margin-bottom: 12px;
+}
+
+.modal-perfil h4 { margin-bottom: 8px; color: #ff3333; }
+.modal-perfil p { font-size: 13px; margin: 4px 0; color: #ddd; }
+.modal-close-btn {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+.modal-close-btn:hover { background: #666; }
 
 /* INPUT */
 .chat-input { display: flex; border-top: 1px solid #222; background: #111; padding: 4px; }
@@ -354,6 +408,11 @@ body {
     </div>
 </div>
 
+<div id="userModal" class="modal-perfil">
+    <div id="modalContent"></div>
+    <button class="modal-close-btn" onclick="cerrarModal()">Cerrar</button>
+</div>
+
 <button class="chat-toggle" onclick="toggleChat()">💬</button>
 
 <div class="chat-box" id="chatBoxDrag">
@@ -378,7 +437,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
     getFirestore, collection, getDocs, addDoc,
     onSnapshot, query, orderBy, serverTimestamp,
-    where, doc, setDoc
+    where, doc, setDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
@@ -402,7 +461,7 @@ window.mostrar = (sec, btn) => {
 async function obtenerPerfil(email){
     const q = query(collection(db, "usuarios"), where("email", "==", email));
     const snap = await getDocs(q);
-    return snap.empty ? null : snap.docs[0].data();
+    return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
 }
 
 window.cargarPerfil = async () => {
@@ -420,11 +479,49 @@ window.cargarPerfil = async () => {
         <p><b>Usuario:</b> ${data?.username || email.split('@')[0]}</p>
         <p><b>Email:</b> ${email}</p>
         <p><b>Rol:</b> ${data?.admin ? "ADMIN" : data?.mod ? "MOD" : data?.vip ? "VIP" : "USER"}</p>
-        <p><b>País:</b> ${data?.pais || "-"}</p>
         
+        <label style="font-size:12px;">Nombre a mostrar:</label><br>
+        <input type="text" id="inputUsername" class="input-field" value="${data?.username || email.split('@')[0]}" placeholder="Nombre"><br>
+
+        <label style="font-size:12px;">País:</label><br>
+        <input type="text" id="inputPais" class="input-field" value="${data?.pais || ''}" placeholder="País"><br>
+        
+        <label style="font-size:12px;">Ciudad:</label><br>
+        <input type="text" id="inputCiudad" class="input-field" value="${data?.ciudad || ''}" placeholder="Ciudad"><br>
+
         <input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="subirFoto()">
-        <button class="btn-action" onclick="document.getElementById('fotoInput').click()">📷 Cambiar Foto</button>
+        <button class="btn-action" onclick="document.getElementById('fotoInput').click()">📷 Cambiar Imagen</button>
+        <button class="btn-action" style="background:#006622;" onclick="guardarDatosPerfil()">Guardar Cambios</button>
     `;
+}
+
+window.guardarDatosPerfil = async () => {
+    let email = localStorage.getItem("usuario");
+    if (!email) return alert("Inicia sesión primero");
+
+    let username = document.getElementById("inputUsername").value;
+    let pais = document.getElementById("inputPais").value;
+    let ciudad = document.getElementById("inputCiudad").value;
+    
+    let userDoc = await obtenerPerfil(email);
+
+    if (userDoc) {
+        await updateDoc(doc(db, "usuarios", userDoc.id), {
+            username: username,
+            pais: pais,
+            ciudad: ciudad
+        });
+    } else {
+        await addDoc(collection(db, "usuarios"), {
+            email: email,
+            username: username,
+            pais: pais,
+            ciudad: ciudad,
+            fotoPerfil: null
+        });
+    }
+    alert("Datos actualizados con éxito.");
+    cargarPerfil();
 }
 
 window.subirFoto = async () => {
@@ -438,20 +535,18 @@ window.subirFoto = async () => {
     let reader = new FileReader();
     reader.onload = async function(e) {
         let fotoBase64 = e.target.result;
-        let q = query(collection(db, "usuarios"), where("email", "==", email));
-        let snap = await getDocs(q);
+        let userDoc = await obtenerPerfil(email);
 
-        if (snap.empty) {
+        if (!userDoc) {
             await addDoc(collection(db, "usuarios"), {
                 email: email,
                 username: email.split('@')[0],
                 fotoPerfil: fotoBase64
             });
         } else {
-            let docId = snap.docs[0].id;
-            await setDoc(doc(db, "usuarios", docId), { fotoPerfil: fotoBase64 }, { merge: true });
+            await setDoc(doc(db, "usuarios", userDoc.id), { fotoPerfil: fotoBase64 }, { merge: true });
         }
-        alert("Foto de perfil actualizada con éxito.");
+        alert("Foto actualizada con éxito.");
         cargarPerfil();
     }
     reader.readAsDataURL(file);
@@ -503,6 +598,8 @@ onSnapshot(qChat, async snap => {
         let defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         let fotoMostrada = m.fotoPerfil || defaultAvatar;
 
+        div.onclick = () => mostrarModalPerfil(m.usuario, fotoMostrada, perfil?.pais, perfil?.ciudad, m.email);
+
         div.innerHTML = `
             <div style="display:flex; align-items:center; gap:6px;">
                 <img src="${fotoMostrada}" class="avatar-chat">
@@ -513,7 +610,6 @@ onSnapshot(qChat, async snap => {
         chat.appendChild(div);
     }
 
-    /* NOTIFICACIÓN */
     if (snap.docs.length > 0) {
         let ultimo = snap.docs[snap.docs.length - 1].data();
         let noti = document.getElementById("noti");
@@ -525,6 +621,25 @@ onSnapshot(qChat, async snap => {
     }
     chat.scrollTop = chat.scrollHeight;
 });
+
+window.mostrarModalPerfil = (usuario, foto, pais, ciudad, email) => {
+    const modal = document.getElementById("userModal");
+    const content = document.getElementById("modalContent");
+    const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+    
+    content.innerHTML = `
+        <img src="${foto || defaultAvatar}" alt="Avatar">
+        <h4>${usuario}</h4>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>País:</b> ${pais || 'No especificado'}</p>
+        <p><b>Ciudad:</b> ${ciudad || 'No especificada'}</p>
+    `;
+    modal.style.display = "block";
+}
+
+window.cerrarModal = () => {
+    document.getElementById("userModal").style.display = "none";
+}
 
 /* ENVIAR MENSAJE */
 window.enviarMensaje = async () => {
