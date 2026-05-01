@@ -40,21 +40,9 @@ body{
     font-size:20px;
 }
 
-.menu{
-    display:flex;
-    gap:25px;
-    position:relative;
-}
-
-.menu a{
-    color:#ccc;
-    text-decoration:none;
-    font-size:14px;
-}
-
-.menu a:hover,
-.menu .active{
-    color:red;
+/* MENÚ ELIMINADO (oculto para asegurar la limpieza del diseño) */
+.menu {
+    display: none !important;
 }
 
 .nav-right{
@@ -69,22 +57,6 @@ body{
     padding:6px 12px;
     border-radius:20px;
     border:1px solid rgba(255,0,0,0.3);
-}
-
-/* BLOQUEO MENU */
-.menu.bloqueado a{
-    pointer-events:none;
-    opacity:0.4;
-}
-
-.menu.bloqueado::after{
-    content:"🔒 Inicia sesión";
-    position:absolute;
-    top:35px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:12px;
-    color:#ff4d4d;
 }
 
 .login-top{
@@ -304,10 +276,6 @@ input{
 
 /* RESPONSIVE */
 @media (max-width:768px){
-    .menu{
-        display:none;
-    }
-
     .nav{
         padding:10px 15px;
     }
@@ -342,15 +310,6 @@ input{
 
 <div class="nav">
     <div class="logo">LIL NAAY</div>
-
-    <div class="menu" id="menu">
-        <a href="#" class="active">INICIO</a>
-        <a href="#">MÚSICA</a>
-        <a href="#">VIDEOS</a>
-        <a href="#">TIENDA</a>
-        <a href="#">COMUNIDAD</a>
-        <a href="#">SUSCRIPCIÓN</a>
-    </div>
 
     <div class="nav-right">
         <div class="contador-box"> COMUNIDAD 🕷️ <span id="contadorNav">0</span></div>
@@ -490,13 +449,7 @@ setTimeout(()=>mensaje.style.display="none",3000);
 
 function verificarSesion(){
     let email = localStorage.getItem("usuario");
-    let menu = document.getElementById("menu");
-
-    if(!email){
-        menu.classList.add("bloqueado");
-    }else{
-        menu.classList.remove("bloqueado");
-    }
+    let contador = document.getElementById("contadorNav"); // Ajustado al elemento existente
 }
 
 window.registrar=async()=>{
@@ -584,7 +537,7 @@ else msg("No autorizado",false);
 
 async function cargarContador(){
 const snap=await getDocs(collection(db,"suscriptores"));
-contadorNav.innerText=snap.size;
+document.getElementById("contadorNav").innerText = snap.size;
 }
 
 cargarContador();
