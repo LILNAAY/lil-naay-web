@@ -30,8 +30,9 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:15px 40px;
+    padding:15px 25px;
     z-index:10;
+    box-sizing:border-box;
 }
 
 .logo{
@@ -59,7 +60,8 @@ body{
 .nav-right{
     display:flex;
     align-items:center;
-    gap:15px;
+    gap:10px;
+    flex-shrink:0;
 }
 
 .contador-box{
@@ -88,10 +90,12 @@ body{
 .login-top{
     border:1px solid red;
     color:red;
-    padding:8px 18px;
+    padding:8px 14px;
     border-radius:25px;
     background:none;
     cursor:pointer;
+    white-space:nowrap;
+    font-size:13px;
 }
 
 .login-top:hover{
@@ -220,6 +224,7 @@ input{
     border:none;
 }
 
+/* MENSAJE */
 #mensaje{
     position:fixed;
     bottom:20px;
@@ -228,6 +233,26 @@ input{
 }
 
 /* RESPONSIVE */
+@media (max-width:768px){
+    .menu{
+        display:none;
+    }
+
+    .nav{
+        padding:10px 15px;
+    }
+
+    .login-top{
+        padding:6px 10px;
+        font-size:12px;
+    }
+
+    .contador-box{
+        padding:4px 8px;
+        font-size:12px;
+    }
+}
+
 @media (max-width:600px){
     .hero-buttons{
         right:50%;
