@@ -360,7 +360,7 @@ input {
                 <h3>Sola (Remix)</h3>
                 <span>Estreno: 12 Mayo 2026</span>
             </div>
-            <audio controls class="audio-player" preload="none">
+            <audio controls class="audio-player" id="player1" onplay="validarSuscripcion(event, 'player1')" preload="none">
                 <source src="preview1.mp3" type="audio/mpeg">
                 Audio no soportado.
             </audio>
@@ -374,7 +374,7 @@ input {
                 <h3>Oscuridad</h3>
                 <span>Estreno: 26 Mayo 2026</span>
             </div>
-            <audio controls class="audio-player" preload="none">
+            <audio controls class="audio-player" id="player2" onplay="validarSuscripcion(event, 'player2')" preload="none">
                 <source src="preview2.mp3" type="audio/mpeg">
                 Audio no soportado.
             </audio>
@@ -388,7 +388,7 @@ input {
                 <h3>Dios Lo Quizo Así (Cap. II)</h3>
                 <span>Estreno: 10 Junio 2026</span>
             </div>
-            <audio controls class="audio-player" preload="none">
+            <audio controls class="audio-player" id="player3" onplay="validarSuscripcion(event, 'player3')" preload="none">
                 <source src="preview3.mp3" type="audio/mpeg">
                 Audio no soportado.
             </audio>
@@ -538,6 +538,32 @@ input {
 
         if(ok) window.location.href = "menu.html";
         else msg("No autorizado", false);
+    }
+
+    // Validación de suscripción global conectada al reproductor
+    window.validarSuscripcion = async (event, playerId) => {
+        let email = localStorage.getItem("usuario");
+        const player = document.getElementById(playerId);
+
+        if (!email) {
+            player.pause();
+            msg("Debes iniciar sesión para escuchar", false);
+            abrirLogin();
+            return;
+        }
+
+        try {
+            const snap = await getDocs(collection(db, "suscriptores"));
+            let ok = snap.docs.some(d => d.data().email === email);
+            
+            if (!ok) {
+                player.pause();
+                msg("Acceso exclusivo para suscriptores", false);
+            }
+        } catch (error) {
+            player.pause();
+            msg("Error al verificar los datos", false);
+        }
     }
 
     async function cargarContador() {
