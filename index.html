@@ -194,6 +194,66 @@ body{
     filter:drop-shadow(0 0 25px red);
 }
 
+/* NUEVA SECCION */
+.lanzamientos{
+    position:relative;
+    padding:80px 20px;
+    text-align:center;
+    z-index:2;
+}
+
+.lanzamientos h2{
+    font-size:28px;
+    margin-bottom:30px;
+    color:red;
+    text-shadow:0 0 10px red;
+}
+
+.cards{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+.card{
+    background:#0a0a0a;
+    border:1px solid #ff000030;
+    border-radius:15px;
+    width:250px;
+    padding:15px;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 0 20px red;
+}
+
+.card img{
+    width:100%;
+    border-radius:10px;
+}
+
+.card h3{
+    margin:10px 0 5px;
+}
+
+audio{
+    width:100%;
+}
+
+/* PARTICULAS */
+#particles{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+}
+
 /* MODAL */
 .modal{
     position:fixed;
@@ -225,58 +285,22 @@ input{
     border:none;
 }
 
-/* MENSAJE */
 #mensaje{
     position:fixed;
     bottom:20px;
     right:20px;
     display:none;
-    padding:10px 15px;
-    border-radius:10px;
-    font-size:14px;
-}
-
-/* RESPONSIVE */
-@media (max-width:768px){
-    .menu{
-        display:none;
-    }
-
-    .nav{
-        padding:10px 15px;
-    }
-
-    .login-top{
-        padding:6px 10px;
-        font-size:12px;
-    }
-
-    .contador-box{
-        padding:4px 8px;
-        font-size:12px;
-    }
-}
-
-@media (max-width:600px){
-    .hero-buttons{
-        right:50%;
-        transform:translateX(50%);
-        bottom:15px;
-        gap:10px;
-    }
-
-    .btn-img img{
-        width:70px;
-    }
 }
 </style>
 </head>
 
 <body>
 
+<canvas id="particles"></canvas>
+
+<!-- NAVBAR -->
 <div class="nav">
     <div class="logo">LIL NAAY</div>
-
     <div class="menu" id="menu">
         <a href="#" class="active">INICIO</a>
         <a href="#">MÚSICA</a>
@@ -285,13 +309,13 @@ input{
         <a href="#">COMUNIDAD</a>
         <a href="#">SUSCRIPCIÓN</a>
     </div>
-
     <div class="nav-right">
         <div class="contador-box"> COMUNIDAD 🕷️ <span id="contadorNav">0</span></div>
         <button class="login-top" onclick="abrirLogin()">INICIAR SESIÓN</button>
     </div>
 </div>
 
+<!-- HERO -->
 <div class="hero">
     <img src="fondo.png" class="hero-bg">
     <img src="artista.png" class="hero-artista">
@@ -308,179 +332,73 @@ input{
     </div>
 </div>
 
-<div class="modal" id="registro">
-<div class="box">
-<h3>Crear Cuenta</h3>
-<input id="rUser" placeholder="Usuario">
-<input id="rEmail" placeholder="Correo">
-<input id="rPass" type="password" placeholder="Contraseña">
-<input id="rPais" placeholder="País">
-<input id="rProvincia" placeholder="Provincia">
-<input id="rEdad" placeholder="Edad">
-<button onclick="registrar()">Crear</button>
-<button onclick="cerrar()">Cancelar</button>
-</div>
-</div>
+<!-- NUEVO CONTENIDO -->
+<section class="lanzamientos">
+    <h2>PRÓXIMOS LANZAMIENTOS</h2>
 
-<div class="modal" id="login">
-<div class="box">
-<h3>Iniciar Sesión</h3>
-<input id="lEmail" placeholder="Correo">
-<input id="lPass" type="password" placeholder="Contraseña">
-<button onclick="loginUser()">Entrar</button>
-<p onclick="recuperar()" style="cursor:pointer;color:#ff4d4d;">¿Olvidaste tu contraseña?</p>
-<button onclick="cerrar()">Cancelar</button>
-</div>
-</div>
+    <div class="cards">
+        <div class="card">
+            <img src="cover1.png">
+            <h3>Tema 1</h3>
+            <audio controls src="preview1.mp3"></audio>
+        </div>
 
-<div class="modal" id="perfil">
-<div class="box">
-<h3>👤 Mi Perfil</h3>
-<p><b>Usuario:</b> <span id="pUser"></span></p>
-<p><b>Email:</b> <span id="pEmail"></span></p>
-<p><b>País:</b> <span id="pPais"></span></p>
-<p><b>Provincia:</b> <span id="pProvincia"></span></p>
-<p><b>Edad:</b> <span id="pEdad"></span></p>
-<button onclick="logout()">Cerrar sesión</button>
-<button onclick="cerrar()">Cerrar</button>
-</div>
-</div>
+        <div class="card">
+            <img src="cover2.png">
+            <h3>Tema 2</h3>
+            <audio controls src="preview2.mp3"></audio>
+        </div>
 
-<div id="mensaje"></div>
+        <div class="card">
+            <img src="cover3.png">
+            <h3>Tema 3</h3>
+            <audio controls src="preview3.mp3"></audio>
+        </div>
+    </div>
+</section>
 
-<script type="module">
+<script>
+// PARTICULAS ULTRA LIGHT
+const c = document.getElementById("particles");
+const ctx = c.getContext("2d");
+c.width = innerWidth;
+c.height = innerHeight;
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+let particles = Array.from({length:60},()=>({
+    x:Math.random()*c.width,
+    y:Math.random()*c.height,
+    r:Math.random()*2,
+    d:Math.random()*1
+}));
 
-const $ = id => document.getElementById(id);
-
-const app = initializeApp({
-apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
-authDomain:"lil-naay.firebaseapp.com",
-projectId:"lil-naay"
-});
-
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-window.abrirLogin=()=>$("login").style.display="flex";
-window.abrirPerfil=()=>cargarPerfil();
-window.cerrar=()=>["registro","login","perfil"].forEach(id=>$(id).style.display="none");
-
-function msg(t,ok=true){
-const m=$("mensaje");
-m.innerText=t;
-m.style.display="block";
-m.style.background=ok?"green":"red";
-setTimeout(()=>m.style.display="none",3000);
+function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.fillStyle="red";
+    particles.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+    });
 }
 
-function verificarSesion(){
-let email = localStorage.getItem("usuario");
-let menu = $("menu");
-
-if(!email){
-menu.classList.add("bloqueado");
-}else{
-menu.classList.remove("bloqueado");
-}
+function update(){
+    particles.forEach(p=>{
+        p.y+=p.d;
+        if(p.y>c.height) p.y=0;
+    });
 }
 
-window.registrar=async()=>{
-try{
-if(!rEmail.value || !rPass.value) return msg("Completa los campos",false);
-
-const cred=await createUserWithEmailAndPassword(auth,rEmail.value,rPass.value);
-
-await addDoc(collection(db,"usuarios"),{
-uid:cred.user.uid,
-usuario:rUser.value,
-email:rEmail.value,
-pais:rPais.value,
-provincia:rProvincia.value,
-edad:rEdad.value
-});
-
-await addDoc(collection(db,"suscriptores"),{
-email:rEmail.value,
-fecha:new Date()
-});
-
-localStorage.setItem("usuario",rEmail.value);
-msg("Cuenta creada");
-cerrar();
-cargarContador();
-verificarSesion();
-
-}catch(e){msg(e.message,false);}
+function loop(){
+    draw();
+    update();
+    requestAnimationFrame(loop);
 }
+loop();
 
-window.loginUser=async()=>{
-try{
-await signInWithEmailAndPassword(auth,lEmail.value,lPass.value);
-localStorage.setItem("usuario",lEmail.value);
-msg("Bienvenido");
-cerrar();
-verificarSesion();
-}catch(e){msg("Datos incorrectos",false);}
-}
-
-window.recuperar=async()=>{
-if(!lEmail.value) return msg("Escribe tu correo",false);
-await sendPasswordResetEmail(auth,lEmail.value);
-msg("Correo enviado");
-}
-
-async function cargarPerfil(){
-let email=localStorage.getItem("usuario");
-if(!email) return msg("No has iniciado sesión",false);
-
-const snap=await getDocs(collection(db,"usuarios"));
-let user=snap.docs.find(d=>d.data().email===email);
-if(!user) return msg("No encontrado",false);
-
-let u=user.data();
-$("pUser").innerText=u.usuario;
-$("pEmail").innerText=u.email;
-$("pPais").innerText=u.pais;
-$("pProvincia").innerText=u.provincia;
-$("pEdad").innerText=u.edad;
-
-$("perfil").style.display="flex";
-}
-
-window.logout=async()=>{
-await signOut(auth);
-localStorage.removeItem("usuario");
-msg("Sesión cerrada");
-cerrar();
-verificarSesion();
-}
-
-window.entrarTienda=async()=>{
-let email=localStorage.getItem("usuario");
-if(!email){
-msg("Debes iniciar sesión",false);
-return;
-}
-
-const snap=await getDocs(collection(db,"suscriptores"));
-let ok=snap.docs.some(d=>d.data().email===email);
-
-if(ok) window.location.href="menu.html";
-else msg("No autorizado",false);
-}
-
-async function cargarContador(){
-const snap=await getDocs(collection(db,"suscriptores"));
-$("contadorNav").innerText=snap.size;
-}
-
-cargarContador();
-verificarSesion();
-
+onresize=()=>{
+    c.width=innerWidth;
+    c.height=innerHeight;
+};
 </script>
 
 </body>
