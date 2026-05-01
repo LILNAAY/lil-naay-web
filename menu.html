@@ -260,6 +260,12 @@ onSnapshot, query, orderBy, serverTimestamp,
 where, doc, setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import {
+    import {
+getFirestore, collection, getDocs, addDoc,
+onSnapshot, query, orderBy, serverTimestamp,
+where, doc, setDoc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    
 getStorage, ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 const app = initializeApp({
@@ -288,12 +294,12 @@ id: snap.docs[0].id,
 ...snap.docs[0].data()
 };
 }
-async function cargarPerfil(){
-let email = localStorage.getItem("usuario");
-if(!email) return;
+async function obtenerPerfil(email){
+const refDoc = doc(db,"usuarios",email);
+const snap = await getDoc(refDoc);
 
-let data = await obtenerPerfil(email);
-
+return snap.exists() ? snap.data() : null;
+}
 document.getElementById("perfilData").innerHTML=`
 <img src="${data?.foto || 'https://i.imgur.com/4Z7b6QZ.png'}"
 style="width:80px;height:80px;border-radius:50%;margin-bottom:10px;">
@@ -312,13 +318,24 @@ let file = document.getElementById("fotoInput").files[0];
 
 if(!email || !file) return alert("Selecciona una imagen");
 
-let perfil = await obtenerPerfil(email);
-if(!perfil) return alert("Usuario no encontrado");
-
 /* SUBIR A STORAGE */
 let ruta = ref(storage, "perfiles/"+email);
 
 await uploadBytes(ruta, file);
+
+/* OBTENER URL */
+let url = await getDownloadURL(ruta);
+
+/* GUARDAR EN FIRESTORE (USANDO EMAIL COMO ID) */
+await setDoc(doc(db,"usuarios",email),{
+foto:url
+},{ merge:true });
+
+alert("Foto subida 🔥");
+
+/* RECARGAR PERFIL */
+cargarPerfil();
+}
 
 /* OBTENER URL */
 let url = await getDownloadURL(ruta);
