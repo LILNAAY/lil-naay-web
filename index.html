@@ -20,21 +20,96 @@ body{
     font-family:'Segoe UI',sans-serif;
     color:white;
     background:black;
-    overflow:hidden; /* 🔥 quita el scroll */
+    overflow:hidden;
     height:100vh;
+}
+
+/* NAVBAR */
+.nav{
+    position:absolute;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 40px;
+    z-index:10;
+}
+
+.logo{
+    font-weight:bold;
+    font-size:20px;
+}
+
+.menu{
+    display:flex;
+    gap:25px;
+}
+
+.menu a{
+    color:#ccc;
+    text-decoration:none;
+    font-size:14px;
+    position:relative;
+}
+
+.menu a:hover,
+.menu .active{
+    color:red;
+}
+
+.menu .active::after{
+    content:"";
+    position:absolute;
+    bottom:-5px;
+    left:0;
+    width:100%;
+    height:2px;
+    background:red;
+    box-shadow:0 0 10px red;
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.contador-box{
+    background:rgba(255,0,0,0.1);
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    border:1px solid rgba(255,0,0,0.3);
+}
+
+.login-top{
+    background:transparent;
+    border:1px solid red;
+    color:red;
+    padding:8px 18px;
+    border-radius:25px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.login-top:hover{
+    background:red;
+    color:white;
+    box-shadow:0 0 15px red;
 }
 
 /* HERO */
 .hero{
     position:relative;
     width:100%;
-    height:60vh; /* 🔥 ocupa 60% de pantalla */
+    height:60vh;
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
 }
-/* CAPAS */
+
 .hero::before{
     content:"";
     position:absolute;
@@ -55,7 +130,6 @@ body{
     z-index:5;
 }
 
-/* fondo */
 .hero-bg{
     position:absolute;
     width:100%;
@@ -64,21 +138,22 @@ body{
     z-index:0;
 }
 
-/* artista */
 .hero-artista{
-   pointer-events:none;
+    pointer-events:none;
+    position:absolute;
     bottom:0;
     left:50%;
-   transform:translateX(-24%);
+    transform:translateX(-24%);
     height:94%;
     max-height:420px;
     object-fit:contain;
     z-index:2;
     opacity:0.9;
 }
-/* texto */
+
 .hero-texto{
-   pointer-events:none;
+    pointer-events:none;
+    position:absolute;
     top:40%;
     left:50%;
     transform:translateX(-50%);
@@ -87,31 +162,16 @@ body{
     z-index:3;
 }
 
-    /* agregado nuevo */
-.hero-bio{
-    position:absolute;
-    top:65%;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:18px;
-    color:#ff4d4d;
-    text-shadow:0 0 10px red;
-    z-index:3;
-    text-align:center;
-}
-
-    
-/* botones */
+/* BOTONES */
 .hero-buttons{
     position:absolute;
-    bottom:25px;
-    left:50%;
-    transform:translateX(-50%);
+    right:60px;
+    bottom:40px;
     display:flex;
-    gap:15px;
+    gap:20px;
     z-index:4;
 }
- 
+
 .btn-img{
     background:none;
     border:none;
@@ -119,28 +179,25 @@ body{
 }
 
 .btn-img img{
-    width:120px;
+    width:130px;
     transition:0.3s;
-    filter:drop-shadow(0 0 10px rgba(255,0,0,0.6));
+    filter:
+        drop-shadow(0 0 10px rgba(255,0,0,0.6))
+        drop-shadow(0 0 20px rgba(255,0,0,0.4));
 }
 
 .btn-img img:hover{
     transform:scale(1.1);
-    filter:drop-shadow(0 0 25px red);
+    filter:
+        drop-shadow(0 0 25px red)
+        drop-shadow(0 0 50px red);
 }
 
-    /* TEXTO CARD */
-.card p{
-    margin-top:20px;
-    color:#ccc;
-    font-size:15px;
-}
-
-/* CONTENIDO */
+/* CARD */
 .container{
     max-width:1000px;
     margin:auto;
-    height:40vh; /* 🔥 ocupa el resto */
+    height:40vh;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -151,22 +208,16 @@ body{
     width:100%;
     max-width:750px;
     padding:40px;
-
     border-radius:20px;
-
-    /* 🔥 fondo rojo oscuro con efecto */
     background:radial-gradient(circle at center, rgba(255,0,0,0.15), rgba(0,0,0,0.95));
-
     border:1px solid rgba(255,0,0,0.3);
-
     box-shadow:
         0 0 60px rgba(255,0,0,0.2),
         inset 0 0 40px rgba(255,0,0,0.15);
-
     backdrop-filter:blur(10px);
-
     text-align:left;
 }
+
 .card h2{
     font-size:26px;
     margin-bottom:20px;
@@ -174,6 +225,7 @@ body{
     align-items:center;
     gap:10px;
 }
+
 .btn{
     background:linear-gradient(45deg,#8b0000,#ff0000);
     padding:12px 25px;
@@ -205,7 +257,6 @@ body{
     z-index:9999;
 }
 
-/* CAJA */
 .box{
     background:#0a0a0a;
     padding:25px;
@@ -215,7 +266,6 @@ body{
     box-shadow:0 0 25px rgba(255,0,0,0.4), inset 0 0 15px rgba(255,0,0,0.1);
 }
 
-/* INPUTS */
 input{
     width:100%;
     padding:10px;
@@ -231,7 +281,6 @@ input:focus{
     box-shadow:0 0 10px red;
 }
 
-/* MENSAJE */
 #mensaje{
     position:fixed;
     bottom:20px;
@@ -242,106 +291,35 @@ input:focus{
     font-size:14px;
     z-index:10000;
 }
-
-/* ========================= */
-/* 📱 RESPONSIVE */
-/* ========================= */
-
-/* TABLET */
-@media (max-width: 900px){
-
-    .hero{
-        height:380px;
-    }
-
-    .hero-artista{
-    left:50%;
-    transform:translateX(-50%);
-    max-width:80%;
-    height:auto;
-}
-
-.hero-buttons{
-    left:50%;
-    transform:translateX(-50%);
-    bottom:20px;
-}
-    .btn-img img{
-        width:90px;
-    }
-
-    .card{
-        margin-top:-40px;
-        padding:30px;
-    }
-}
-
-/* CELULAR */
-@media (max-width: 600px){
-
-    .hero{
-        min-height:380px;
-    }
-
-    .hero-artista{
-        left:50%;
-      transform:translate(-8%, 70px);
-        max-width:90%;
-        height:auto;
-        opacity:0.8;
-        top:-150px;
-    }
-
-    .hero-texto{
-        width:260px;
-        top:35%;
-    }
-
-    .hero-buttons{
-        bottom:10px;
-    }
-
-    .btn-img img{
-        width:65px;
-    }
-
-
-    .container{
-        padding:20px 10px;
-    }
-
-    .card{
-        margin-top:-20px;
-        padding:20px;
-    }
-
-    .card h2{
-        font-size:22px;
-    }
-
-    .btn{
-        padding:10px 18px;
-        font-size:14px;
-    }
-
-    input{
-        padding:8px;
-    }
-
-    .box{
-        width:90%;
-    }
-}
 </style>
 </head>
 
 <body>
 
+<!-- NAVBAR -->
+<div class="nav">
+    <div class="logo">LIL NAAY</div>
+
+    <div class="menu">
+        <a href="#" class="active">INICIO</a>
+        <a href="#">MÚSICA</a>
+        <a href="#">VIDEOS</a>
+        <a href="#">TIENDA</a>
+        <a href="#">COMUNIDAD</a>
+        <a href="#">SUSCRIPCIÓN</a>
+    </div>
+
+    <div class="nav-right">
+        <div class="contador-box">🔥 <span id="contadorNav">0</span></div>
+        <button class="login-top" onclick="abrirLogin()">INICIAR SESIÓN</button>
+    </div>
+</div>
+
 <div class="hero">
     <img src="fondo.png" class="hero-bg">
     <img src="artista.png" class="hero-artista">
     <img src="texto.png" class="hero-texto">
-   
+
     <div class="hero-buttons">
         <button class="btn-img" onclick="abrirPerfil()">
             <img src="btn_perfil.png">
@@ -512,6 +490,9 @@ else msg("No autorizado",false);
 async function cargarContador(){
 const snap=await getDocs(collection(db,"suscriptores"));
 contador.innerText=snap.size;
+
+let nav=document.getElementById("contadorNav");
+if(nav) nav.innerText=snap.size;
 }
 
 cargarContador();
@@ -530,3 +511,4 @@ margin-top:40px;
 </footer>
     
 </body>
+</html>
