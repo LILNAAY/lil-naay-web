@@ -22,6 +22,32 @@ body{
     min-height:100vh;
 }
 
+
+    .lanzamientos{
+    padding:50px 20px;
+    background:#050505;
+    text-align:center;
+}
+
+.lanzamientos h2{
+    color:red;
+    margin-bottom:30px;
+}
+
+.videos{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(300px,1fr));
+    gap:20px;
+}
+
+.videos iframe{
+    width:100%;
+    height:200px;
+    border:none;
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(255,0,0,0.3);
+}
+
 /* NAVBAR */
 .nav{
     position:absolute;
@@ -30,11 +56,7 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:15px 25px;
-    z-index:10;
-    box-sizing:border-box;
 }
-
 .logo{
     font-weight:bold;
     font-size:20px;
@@ -277,15 +299,6 @@ input{
 <div class="nav">
     <div class="logo">LIL NAAY</div>
 
-    <div class="menu" id="menu">
-        <a href="#" class="active">INICIO</a>
-        <a href="#">MÚSICA</a>
-        <a href="#">VIDEOS</a>
-        <a href="#">TIENDA</a>
-        <a href="#">COMUNIDAD</a>
-        <a href="#">SUSCRIPCIÓN</a>
-    </div>
-
     <div class="nav-right">
         <div class="contador-box"> COMUNIDAD 🕷️ <span id="contadorNav">0</span></div>
         <button class="login-top" onclick="abrirLogin()">INICIAR SESIÓN</button>
@@ -348,6 +361,24 @@ input{
 </div>
 </div>
 
+<!-- LANZAMIENTOS -->
+<div class="lanzamientos">
+
+    <h2>🔥 Nuevos Lanzamientos</h2>
+
+    <div class="videos">
+
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" allowfullscreen></iframe>
+
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" allowfullscreen></iframe>
+
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID_3" allowfullscreen></iframe>
+
+    </div>
+
+</div>
+
+    
 <div id="mensaje"></div>
 
 <script type="module">
