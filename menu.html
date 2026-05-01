@@ -37,10 +37,6 @@ body{
     cursor:pointer;
 }
 
-    .msg img{
-object-fit:cover;
-}
-
 /* TABS */
 .tabs{
     display:flex;
@@ -230,9 +226,10 @@ display:none;
 <h2>👤 Perfil</h2>
 <div class="profile" id="perfilData"></div>
 
-<br>
+    <br>
 <input type="text" id="fotoInput" placeholder="URL de tu foto">
 <button onclick="guardarFoto()">Guardar Foto</button>
+</div>
 
 </div>
 
@@ -281,14 +278,28 @@ document.getElementById(sec).classList.add("active");
 async function obtenerPerfil(email){
 const q = query(collection(db,"usuarios"), where("email","==",email));
 const snap = await getDocs(q);
-return snap.empty ? null : snap.docs[0].data();
-}
 
+return snap.empty ? null : {
+id: snap.docs[0].id,
+...snap.docs[0].data()
+};
+}
 async function cargarPerfil(){
 let email = localStorage.getItem("usuario");
 if(!email) return;
 
 let data = await obtenerPerfil(email);
+
+document.getElementById("perfilData").innerHTML=`
+<img src="${data?.foto || 'https://i.imgur.com/4Z7b6QZ.png'}"
+style="width:80px;height:80px;border-radius:50%;margin-bottom:10px;">
+
+<p><b>Usuario:</b> ${data?.username || email}</p>
+<p><b>Email:</b> ${email}</p>
+<p><b>Rol:</b> ${data?.admin?"ADMIN":data?.mod?"MOD":data?.vip?"VIP":"USER"}</p>
+<p><b>País:</b> ${data?.pais||"-"}</p>
+`;
+}
 
     window.guardarFoto = async ()=>{
 
@@ -297,24 +308,16 @@ let url = document.getElementById("fotoInput").value.trim();
 
 if(!email || !url) return alert("Pon una URL");
 
-await setDoc(doc(db,"usuarios",email),{
+let perfil = await obtenerPerfil(email);
+if(!perfil) return alert("Usuario no encontrado");
+
+await setDoc(doc(db,"usuarios",perfil.id),{
 foto:url
 },{ merge:true });
 
 alert("Foto guardada ✅");
-
 cargarPerfil();
 }
-
-document.getElementById("perfilData").innerHTML=`
-<img src="${data?.foto || 'https://i.imgur.com/4Z7b6QZ.png'}" 
-style="width:80px;height:80px;border-radius:50%;margin-bottom:10px;">
-
-<p><b>Usuario:</b> ${data?.username || email}</p>
-<p><b>Email:</b> ${email}</p>
-<p><b>Rol:</b> ${data?.admin?"ADMIN":data?.mod?"MOD":data?.vip?"VIP":"USER"}</p>
-<p><b>País:</b> ${data?.pais||"-"}</p>
-`;
 
 /* ONLINE */
 const onlineRef = collection(db,"online");
@@ -373,6 +376,7 @@ ${m.texto}
 </div>
 </div>
 `;
+
 chat.appendChild(div);
 }
 
