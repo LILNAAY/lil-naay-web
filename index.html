@@ -267,6 +267,108 @@ input{
     .btn-img img{
         width:70px;
     }
+    .music-section{
+    padding:40px 20px;
+    background:#050505;
+}
+
+.music-section h3{
+    margin-bottom:15px;
+    color:#ccc;
+    font-size:14px;
+}
+
+/* CARD */
+.music-card{
+    display:flex;
+    gap:20px;
+    background:#0a0a0a;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #111;
+    margin-bottom:30px;
+}
+
+.cover{
+    width:120px;
+    border-radius:8px;
+}
+
+.music-info{
+    flex:1;
+}
+
+.title{
+    font-size:18px;
+    margin:0;
+}
+
+.artist{
+    color:#aaa;
+    font-size:13px;
+}
+
+/* PLAYER */
+.player{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:10px 0;
+}
+
+.play{
+    background:#6a00ff;
+    border:none;
+    color:white;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    cursor:pointer;
+}
+
+.player input{
+    flex:1;
+}
+
+/* BOTÓN */
+.btn-more{
+    border:1px solid #6a00ff;
+    background:none;
+    color:white;
+    padding:8px 15px;
+    cursor:pointer;
+}
+
+.btn-more:hover{
+    background:#6a00ff;
+}
+
+/* VIDEOS */
+.videos{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.video{
+    width:150px;
+}
+
+.video img{
+    width:100%;
+    border-radius:6px;
+}
+
+.video p{
+    font-size:12px;
+    color:#ccc;
+}
+
+.center{
+    display:block;
+    margin:20px auto 0;
+}
+    
 }
 </style>
 </head>
@@ -347,6 +449,57 @@ input{
 <button onclick="cerrar()">Cerrar</button>
 </div>
 </div>
+
+<!-- SECCIÓN MÚSICA -->
+<div class="music-section">
+
+    <h3>PRÓXIMOS LANZAMIENTO PREVIW</h3>
+
+    <div class="music-card">
+        <img src="cover.jpg" class="cover">
+
+        <div class="music-info">
+            <p class="title">No Confío</p>
+            <p class="artist">LIL NAAY</p>
+
+            <div class="player">
+                <button class="play"><i class="fa fa-play"></i></button>
+                <input type="range" value="0">
+                <span class="time">0:00 / 2:48</span>
+            </div>
+
+            <button class="btn-more">VER MÁS MÚSICA</button>
+        </div>
+    </div>
+
+    <h3>VIDEOS DESTACADOS</h3>
+
+    <div class="videos">
+        <div class="video">
+            <img src="v1.jpg">
+            <p>No Confío (Video Oficial)</p>
+        </div>
+
+        <div class="video">
+            <img src="v2.jpg">
+            <p>Pensando en Ti</p>
+        </div>
+
+        <div class="video">
+            <img src="v3.jpg">
+            <p>Cero Amor</p>
+        </div>
+
+        <div class="video">
+            <img src="v4.jpg">
+            <p>Más de Mí</p>
+        </div>
+    </div>
+
+    <button class="btn-more center">VER MÁS VIDEOS</button>
+
+</div>
+    
 
 <div id="mensaje"></div>
 
