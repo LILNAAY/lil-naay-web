@@ -147,15 +147,17 @@ body{
     position:absolute;
     bottom:0;
     left:50%;
-    transform:translate(-135%, 0);
+    transform:translate(-135%, 0); /* 🔥 centrado real */
+
     height:85%;
     max-height:450px;
+
     object-fit:contain;
     z-index:2;
     opacity:0.9;
+
     pointer-events:none;
 }
-
 .hero-texto{
     pointer-events:none;
     position:absolute;
@@ -194,103 +196,6 @@ body{
     filter:drop-shadow(0 0 25px red);
 }
 
-/* ===== SECCIÓN PRO ===== */
-.music-section{
-    padding:60px 40px;
-    background:linear-gradient(to bottom,#050505,#0a0a0a);
-}
-
-.music-section h3{
-    margin-bottom:20px;
-    color:#e5e5e5;
-    font-size:13px;
-    letter-spacing:1px;
-}
-
-.music-card{
-    display:flex;
-    gap:25px;
-    background:#0b0b0b;
-    padding:20px;
-    border-radius:12px;
-    border:1px solid #1a1a1a;
-    margin-bottom:40px;
-    align-items:center;
-}
-
-.cover{
-    width:140px;
-    border-radius:10px;
-}
-
-.title{font-size:20px;}
-.artist{color:#888;}
-
-.player{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin:15px 0;
-}
-
-.play{
-    background:var(--rojo);
-    border:none;
-    color:white;
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    cursor:pointer;
-}
-
-.player input{
-    flex:1;
-}
-
-.videos{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:20px;
-}
-
-.video{
-    background:#0b0b0b;
-    border-radius:10px;
-    overflow:hidden;
-    border:1px solid #1a1a1a;
-    transition:0.3s;
-    cursor:pointer;
-}
-
-.video:hover{
-    transform:translateY(-5px);
-    border-color:red;
-}
-
-.video img{
-    width:100%;
-    height:120px;
-    object-fit:cover;
-}
-
-.video p{
-    font-size:13px;
-    padding:10px;
-}
-
-.btn-more{
-    background:#111;
-    color:#ccc;
-    padding:8px 16px;
-    border:none;
-    cursor:pointer;
-}
-
-.center{
-    display:block;
-    margin:30px auto;
-}
-
 /* MODAL */
 .modal{
     position:fixed;
@@ -322,6 +227,7 @@ input{
     border:none;
 }
 
+/* MENSAJE */
 #mensaje{
     position:fixed;
     bottom:20px;
@@ -331,7 +237,36 @@ input{
 
 /* RESPONSIVE */
 @media (max-width:768px){
-    .menu{display:none;}
+    .menu{
+        display:none;
+    }
+
+    .nav{
+        padding:10px 15px;
+    }
+
+    .login-top{
+        padding:6px 10px;
+        font-size:12px;
+    }
+
+    .contador-box{
+        padding:4px 8px;
+        font-size:12px;
+    }
+}
+
+@media (max-width:600px){
+    .hero-buttons{
+        right:50%;
+        transform:translateX(50%);
+        bottom:15px;
+        gap:10px;
+    }
+
+    .btn-img img{
+        width:70px;
+    }
 }
 </style>
 </head>
@@ -341,6 +276,7 @@ input{
 <!-- NAVBAR -->
 <div class="nav">
     <div class="logo">LIL NAAY</div>
+
     <div class="menu" id="menu">
         <a href="#" class="active">INICIO</a>
         <a href="#">MÚSICA</a>
@@ -373,85 +309,176 @@ input{
     </div>
 </div>
 
-<!-- MODALES (IGUAL) -->
-<div class="modal" id="registro">...</div>
-<div class="modal" id="login">...</div>
-<div class="modal" id="perfil">...</div>
-
-<!-- SECCIÓN -->
-<div class="music-section">
-
-<h3>PRÓXIMO LANZAMIENTO</h3>
-
-<div class="music-card">
-    <img src="cover.jpg" class="cover">
-
-    <div class="music-info">
-        <p class="title">No Confío</p>
-        <p class="artist">LIL NAAY</p>
-
-        <div class="player">
-            <button class="play" onclick="toggleAudio()">
-                <i class="fa fa-play" id="iconPlay"></i>
-            </button>
-            <input type="range" id="progress" value="0">
-            <span id="time">0:00</span>
-            <audio id="audio" src="preview.mp3"></audio>
-        </div>
-
-        <button class="btn-more">VER MÁS MÚSICA</button>
-    </div>
+<!-- MODALES -->
+<div class="modal" id="registro">
+<div class="box">
+<h3>Crear Cuenta</h3>
+<input id="rUser" placeholder="Usuario">
+<input id="rEmail" placeholder="Correo">
+<input id="rPass" type="password" placeholder="Contraseña">
+<input id="rPais" placeholder="País">
+<input id="rProvincia" placeholder="Provincia">
+<input id="rEdad" placeholder="Edad">
+<button onclick="registrar()">Crear</button>
+<button onclick="cerrar()">Cancelar</button>
+</div>
 </div>
 
-<h3>VIDEOS DESTACADOS</h3>
-
-<div class="videos">
-    <div class="video"><img src="v1.jpg"><p>No Confío</p></div>
-    <div class="video"><img src="v2.jpg"><p>Pensando en Ti</p></div>
-    <div class="video"><img src="v3.jpg"><p>Cero Amor</p></div>
-    <div class="video"><img src="v4.jpg"><p>Más de Mí</p></div>
+<div class="modal" id="login">
+<div class="box">
+<h3>Iniciar Sesión</h3>
+<input id="lEmail" placeholder="Correo">
+<input id="lPass" type="password" placeholder="Contraseña">
+<button onclick="loginUser()">Entrar</button>
+<p onclick="recuperar()" style="cursor:pointer;color:#ff4d4d;">¿Olvidaste tu contraseña?</p>
+<button onclick="cerrar()">Cancelar</button>
+</div>
 </div>
 
-<button class="btn-more center">VER MÁS VIDEOS</button>
-
+<div class="modal" id="perfil">
+<div class="box">
+<h3>👤 Mi Perfil</h3>
+<p><b>Usuario:</b> <span id="pUser"></span></p>
+<p><b>Email:</b> <span id="pEmail"></span></p>
+<p><b>País:</b> <span id="pPais"></span></p>
+<p><b>Provincia:</b> <span id="pProvincia"></span></p>
+<p><b>Edad:</b> <span id="pEdad"></span></p>
+<button onclick="logout()">Cerrar sesión</button>
+<button onclick="cerrar()">Cerrar</button>
+</div>
 </div>
 
 <div id="mensaje"></div>
 
 <script type="module">
-/* 🔥 TODO TU FIREBASE ORIGINAL AQUÍ (NO SE TOCÓ) */
-</script>
 
-<script>
-/* 🎧 PLAYER */
-const audio = document.getElementById("audio");
-const progress = document.getElementById("progress");
-const icon = document.getElementById("iconPlay");
-const time = document.getElementById("time");
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-function toggleAudio(){
-    if(audio.paused){
-        audio.play();
-        icon.classList.replace("fa-play","fa-pause");
+const app = initializeApp({
+apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+authDomain:"lil-naay.firebaseapp.com",
+projectId:"lil-naay"
+});
+
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+window.abrirRegistro=()=>registro.style.display="flex";
+window.abrirLogin=()=>login.style.display="flex";
+window.abrirPerfil=()=>cargarPerfil();
+window.cerrar=()=>["registro","login","perfil"].forEach(id=>document.getElementById(id).style.display="none");
+
+function msg(t,ok=true){
+mensaje.innerText=t;
+mensaje.style.display="block";
+mensaje.style.background=ok?"green":"red";
+setTimeout(()=>mensaje.style.display="none",3000);
+}
+
+function verificarSesion(){
+    let email = localStorage.getItem("usuario");
+    let menu = document.getElementById("menu");
+
+    if(!email){
+        menu.classList.add("bloqueado");
     }else{
-        audio.pause();
-        icon.classList.replace("fa-pause","fa-play");
+        menu.classList.remove("bloqueado");
     }
 }
 
-audio.addEventListener("timeupdate",()=>{
-    progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+window.registrar=async()=>{
+try{
+const cred=await createUserWithEmailAndPassword(auth,rEmail.value,rPass.value);
 
-    let min = Math.floor(audio.currentTime / 60);
-    let sec = Math.floor(audio.currentTime % 60);
-    if(sec < 10) sec = "0"+sec;
-
-    time.innerText = `${min}:${sec}`;
+await addDoc(collection(db,"usuarios"),{
+uid:cred.user.uid,
+usuario:rUser.value,
+email:rEmail.value,
+pais:rPais.value,
+provincia:rProvincia.value,
+edad:rEdad.value
 });
 
-progress.addEventListener("input",()=>{
-    audio.currentTime = (progress.value / 100) * audio.duration;
+await addDoc(collection(db,"suscriptores"),{
+email:rEmail.value,
+fecha:new Date()
 });
+
+localStorage.setItem("usuario",rEmail.value);
+msg("Cuenta creada");
+cerrar();
+cargarContador();
+verificarSesion();
+
+}catch(e){msg(e.message,false);}
+}
+
+window.loginUser=async()=>{
+try{
+await signInWithEmailAndPassword(auth,lEmail.value,lPass.value);
+localStorage.setItem("usuario",lEmail.value);
+msg("Bienvenido");
+cerrar();
+verificarSesion();
+}catch{msg("Datos incorrectos",false);}
+}
+
+window.recuperar=async()=>{
+if(!lEmail.value) return msg("Escribe tu correo",false);
+await sendPasswordResetEmail(auth,lEmail.value);
+msg("Correo enviado");
+}
+
+async function cargarPerfil(){
+let email=localStorage.getItem("usuario");
+if(!email) return msg("No has iniciado sesión",false);
+
+const snap=await getDocs(collection(db,"usuarios"));
+let user=snap.docs.find(d=>d.data().email===email);
+if(!user) return msg("No encontrado",false);
+
+let u=user.data();
+pUser.innerText=u.usuario;
+pEmail.innerText=u.email;
+pPais.innerText=u.pais;
+pProvincia.innerText=u.provincia;
+pEdad.innerText=u.edad;
+
+perfil.style.display="flex";
+}
+
+window.logout=async()=>{
+await signOut(auth);
+localStorage.removeItem("usuario");
+msg("Sesión cerrada");
+cerrar();
+verificarSesion();
+}
+
+window.entrarTienda=async()=>{
+let email=localStorage.getItem("usuario");
+if(!email){
+    msg("Debes iniciar sesión",false);
+    return;
+}
+
+const snap=await getDocs(collection(db,"suscriptores"));
+let ok=snap.docs.some(d=>d.data().email===email);
+
+if(ok) window.location.href="menu.html";
+else msg("No autorizado",false);
+}
+
+async function cargarContador(){
+const snap=await getDocs(collection(db,"suscriptores"));
+contadorNav.innerText=snap.size;
+}
+
+cargarContador();
+verificarSesion();
+
 </script>
 
 </body>
