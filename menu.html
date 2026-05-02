@@ -1096,6 +1096,29 @@ window.pagar = () => {
     actualizarCarrito();
 }
 
+// NUEVA FUNCIÓN AÑADIDA: Cargar productos
+window.cargarProductos = () => {
+    const productosContainer = document.getElementById("productos");
+    productosContainer.innerHTML = "";
+
+    const productosBase = [
+        { nombre: "Camiseta Oficial", precio: 25 },
+        { nombre: "Gorra Exclusiva", precio: 15 },
+        { nombre: "Hoodie Edición Limitada", precio: 45 }
+    ];
+
+    productosBase.forEach(item => {
+        productosContainer.innerHTML += `
+            <div class="product">
+                <img src="https://images.unsplash.com/photo-1523381294911-8d3cead13475?w=500" alt="Producto">
+                <h4>${item.nombre}</h4>
+                <p>$${item.precio}</p>
+                <button onclick="agregar('${item.nombre}', ${item.precio})">🛒 Comprar</button>
+            </div>
+        `;
+    });
+}
+
 // Inicialización
 cargarProductos();
 cargarMusica();
