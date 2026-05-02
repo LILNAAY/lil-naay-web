@@ -713,7 +713,7 @@ async function obtenerPerfil(email){
     return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
 }
 
-// Inicialización de los eventos de presencia
+// Inicialización del estado de presencia del usuario
 let presenciaRef = null;
 
 window.cargarPerfil = async () => {
@@ -729,6 +729,7 @@ window.cargarPerfil = async () => {
 
     checkAdmin(email);
 
+    // Registramos la entrada del usuario en "online" de forma persistente
     let usuarioObj = await obtenerPerfil(email);
     let username = usuarioObj ? usuarioObj.username : email.split('@')[0];
     
@@ -736,24 +737,24 @@ window.cargarPerfil = async () => {
     await setDoc(docRef, {
         email: email,
         usuario: username,
-        time: Date.now()
+        ultimaConexion: Date.now()
     });
-    presenciaRef = docRef;
+    presenciaRef = docRef; // Guardamos la referencia para removerlo si sale
 
-    // Al cerrar o salir de la ventana, lo removemos
+    // Si el usuario cierra o cambia de página, lo removemos de online
     window.addEventListener("beforeunload", async () => {
         if(presenciaRef) {
             await deleteDoc(presenciaRef);
         }
     });
 
-    // Actualizamos el tiempo periódicamente para detectar que sigue en la pestaña
+    // Periódicamente actualizamos "última conexión" para comprobar si siguen en la web
     setInterval(async () => {
         if(presenciaRef) {
             await setDoc(presenciaRef, {
                 email: email,
                 usuario: username,
-                time: Date.now()
+                ultimaConexion: Date.now()
             }, { merge: true });
         }
     }, 5000);
@@ -975,7 +976,7 @@ window.enviarMensaje = async () => {
     }
 }
 
-// Cargar mensajes en tiempo real
+// Cargar mensajes y controlar usuarios en tiempo real
 onSnapshot(query(collection(db, "chat"), orderBy("fecha")), async (snap) => {
     let chat = document.getElementById("chatBox");
     if(!chat) return;
@@ -991,6 +992,7 @@ onSnapshot(query(collection(db, "chat"), orderBy("fecha")), async (snap) => {
         let rolClass = "role-user";
         let badgeHtml = `<span class="badge badge-user">User</span>`;
 
+        // Añadimos clases según rol
         if (m.rol === "admin") {
             rolClass = "role-admin";
             badgeHtml = `<span class="badge badge-admin">ADMIN</span>`;
@@ -1015,20 +1017,19 @@ onSnapshot(query(collection(db, "chat"), orderBy("fecha")), async (snap) => {
     chat.scrollTop = chat.scrollHeight;
 });
 
-// Control de usuarios conectados basado en su propiedad 'time' en Firestore
+// Detectar cambios en la lista de usuarios online en Firestore
 onSnapshot(collection(db, "online"), (snap) => {
     let now = Date.now();
     let usuariosActivos = [];
     
     snap.forEach(doc => {
         let data = doc.data();
-        // Si la última conexión se actualizó hace menos de 10 segundos
-        if (now - data.time < 10000) {
+        // Contamos solo si su última conexión fue hace menos de 10 segundos
+        if (now - data.ultimaConexion < 10000) {
             usuariosActivos.push(data);
         }
     });
 
-    // Actualizamos el contador
     document.getElementById("onlineCount").innerText = `${usuariosActivos.length} online`;
 });
 
@@ -1056,7 +1057,46 @@ window.toggleChat = () => {
     box.style.display = box.style.display === "flex" ? "none" : "flex";
 }
 
-// Inicialización de funciones
+/* TIENDA Y CARRITO */
+let carrito = [];
+
+window.agregar = (nombre, precio) => {
+    carrito.push({ nombre, precio });
+    actualizarCarrito();
+    alert(`${nombre} añadido al carrito.`);
+}
+
+window.removerDelCarrito = (index) => {
+    carrito.splice(index, 1);
+    actualizarCarrito();
+}
+
+function actualizarCarrito() {
+    let lista = document.getElementById("carrito");
+    let totalSpan = document.getElementById("total");
+    lista.innerHTML = "";
+    let total = 0;
+
+    carrito.forEach((item, index) => {
+        total += item.precio;
+        lista.innerHTML += `
+            <li>
+                ${item.nombre} - $${item.precio}
+                <button class="remove-btn" onclick="removerDelCarrito(${index})">X</button>
+            </li>`;
+    });
+
+    totalSpan.innerText = total;
+}
+
+window.pagar = () => {
+    if(carrito.length === 0) return alert("Tu carrito está vacío.");
+    alert(`¡Pago completado con éxito! Total pagado: $${document.getElementById("total").innerText}`);
+    carrito = [];
+    actualizarCarrito();
+}
+
+// Inicialización
 cargarProductos();
 cargarMusica();
 cargarEventos();
