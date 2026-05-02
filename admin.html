@@ -195,6 +195,7 @@
         <input id="email" type="email" placeholder="Correo">
         <input id="pass" type="password" placeholder="Contraseña">
         <button onclick="login()">Entrar</button>
+        <p style="margin-top: 15px; font-size: 12px; color: var(--texto-secundario); cursor: pointer;" onclick="recuperarPass()">¿Olvidaste tu contraseña?</p>
     </div>
 
     <div id="panel" style="display:none;">
@@ -334,7 +335,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
         const app = initializeApp({
             apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
@@ -348,6 +349,14 @@
 
         window.login = () => {
             signInWithEmailAndPassword(auth, email.value, pass.value)
+                .catch(e => alert(e.message));
+        }
+
+        window.recuperarPass = () => {
+            const emailValue = document.getElementById("email").value;
+            if (!emailValue) return alert("Por favor, introduce tu correo en el campo de acceso.");
+            sendPasswordResetEmail(auth, emailValue)
+                .then(() => alert("Se ha enviado un correo para restablecer la contraseña."))
                 .catch(e => alert(e.message));
         }
 
@@ -393,12 +402,14 @@
             cargarCompras();
             cargarChatAdmin();
             cargarConfiguracion();
+            cargarPerfilInputs();
         }
 
         async function cargarUsuarios() {
             const uLista = document.getElementById("usuariosLista");
             uLista.innerHTML = "";
             const snap = await getDocs(collection(db, "usuarios"));
+            
             snap.forEach(async d => {
                 let u = d.data();
                 if (u.ban && u.banHasta < Date.now()) {
@@ -406,17 +417,45 @@
                 }
                 let baneado = u.ban && u.banHasta > Date.now();
                 let rol = u.admin ? "👑 Admin" : u.mod ? "🛡️ Mod" : u.vip ? "💎 VIP" : "👤 User";
+                
+                // Nuevos campos
+                let dispositivo = u.dispositivo || "Desconocido";
+                let edad = u.edad || "N/A";
+                let pais = u.pais || "N/A";
+                let verificado = u.verificado ? "✅ Verificado" : "❌ No verificado";
 
                 uLista.innerHTML += `
                 <li>
                     <b>${u.email || "⚠️ Sin correo"}</b><br>
-                    Rol: ${rol}<br>
-                    Estado: ${baneado ? "🚫 BANEADO" : "✅ Activo"}<br>
+                    Rol: ${rol} | Estado: ${baneado ? "🚫 BANEADO" : "✅ Activo"}<br>
+                    Verificación: ${verificado} | País: ${pais} | Edad: ${edad}<br>
+                    Dispositivo: ${dispositivo}<br>
                     <button onclick="cambiarRol('${u.email}')">🎭 Rol</button>
                     <button onclick="banearUsuario('${u.email}')">🚫 Ban</button>
                     <button onclick="asignarInsignia('${d.id}')">🏷️ Insignia</button>
+                    <button onclick="verificarUsuario('${d.id}')">✔️ Verificar</button>
+                    <button onclick="editarInfoExtra('${d.id}')">✏️ Editar Info</button>
                 </li>`;
             });
+        }
+
+        window.verificarUsuario = async (uid) => {
+            await updateDoc(doc(db, "usuarios", uid), { verificado: true });
+            alert("Usuario verificado.");
+            cargarUsuarios();
+        }
+
+        window.editarInfoExtra = async (uid) => {
+            let edad = prompt("Edad del usuario:");
+            let pais = prompt("País del usuario:");
+            let disp = prompt("Dispositivo (PC / Celular):");
+            await updateDoc(doc(db, "usuarios", uid), {
+                edad: edad,
+                pais: pais,
+                dispositivo: disp
+            });
+            alert("Información actualizada.");
+            cargarUsuarios();
         }
 
         window.cambiarRol = async (email) => {
@@ -588,9 +627,11 @@
         async function cargarCompras() {
             const comprasLista = document.getElementById("compras");
             comprasLista.innerHTML = "";
+            let i = 0;
             (await getDocs(collection(db, "compras"))).forEach(d => {
-                comprasLista.innerHTML += `<li>1 Compra registrada en el sistema.</li>`;
+                i++;
             });
+            comprasLista.innerHTML += `<li>Se han encontrado ${i} compra(s) registradas en el sistema.</li>`;
         }
 
         function cargarStats() {
@@ -635,18 +676,38 @@
         window.guardarPerfil = async () => {
             let nombre = document.getElementById("nombreAdmin").value;
             let insignia = document.getElementById("insigniaAdmin").value;
+            let fotoInput = document.getElementById("fotoAdmin").files[0];
+            
             if (nombre) localStorage.setItem("adminNombre", nombre);
             if (insignia) localStorage.setItem("adminInsignia", insignia);
-            alert("Perfil guardado correctamente.");
+
+            if (fotoInput) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem("adminFoto", e.target.result);
+                    alert("Perfil y foto guardados correctamente.");
+                };
+                reader.readAsDataURL(fotoInput);
+            } else {
+                alert("Perfil guardado correctamente.");
+            }
+        }
+
+        window.cargarPerfilInputs = () => {
+            document.getElementById("nombreAdmin").value = localStorage.getItem("adminNombre") || "";
+            document.getElementById("insigniaAdmin").value = localStorage.getItem("adminInsignia") || "";
         }
 
         window.guardarConfig = () => {
             localStorage.setItem("configTienda", document.getElementById("toggleTienda").checked);
+            localStorage.setItem("configMusica", document.getElementById("toggleMusica").checked);
+            localStorage.setItem("configEventos", document.getElementById("toggleEventos").checked);
         }
 
         window.cargarConfiguracion = () => {
-            const config = localStorage.getItem("configTienda");
-            document.getElementById("toggleTienda").checked = config === "true";
+            document.getElementById("toggleTienda").checked = localStorage.getItem("configTienda") === "true";
+            document.getElementById("toggleMusica").checked = localStorage.getItem("configMusica") === "true";
+            document.getElementById("toggleEventos").checked = localStorage.getItem("configEventos") === "true";
         }
     </script>
 </body>
