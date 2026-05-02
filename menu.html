@@ -112,7 +112,7 @@ body {
 }
 
 .section { display: none; }
-.active { display: block; }
+.section.active { display: block; } /* Corregido para que coincida con la clase activa */
 
 /* PRODUCTOS */
 .store {
@@ -844,6 +844,7 @@ async function cargarProductos() {
     });
 }
 
+// Exponemos agregar y pagar de manera explícita en window para su uso en los botones inline
 window.agregar = (n, p) => {
     carrito.push({ nombre: n, precio: p });
     localStorage.setItem("carrito", JSON.stringify(carrito));
