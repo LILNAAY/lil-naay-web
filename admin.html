@@ -11,7 +11,7 @@
         :root {
             --bg-principal: #070707;
             --bg-card: rgba(20, 20, 20, 0.7);
-            --rojo: #9333ea; /* Tono morado moderno de la imagen */
+            --rojo: #9333ea;
             --rojo-oscuro: #581c87;
             --borde-rojo: rgba(147, 51, 234, 0.2);
             --texto-principal: #ffffff;
@@ -284,7 +284,6 @@
             font-weight: 700;
         }
 
-        /* ACCESOS RÁPIDOS */
         .shortcuts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -331,6 +330,7 @@
                 <a onclick="mostrarSeccion('tienda')" id="link-tienda">🛍️ Tienda</a>
                 <a onclick="mostrarSeccion('eventos')" id="link-eventos">📅 Eventos</a>
                 <a onclick="mostrarSeccion('chat')" id="link-chat">💬 Chat</a>
+                <a onclick="mostrarSeccion('perfil')" id="link-perfil">👤 Mi Perfil</a>
                 <a onclick="mostrarSeccion('configuracion')" id="link-configuracion">⚙️ Configuración</a>
                 <div style="margin-top: auto;">
                     <a onclick="logout()" style="color: var(--rojo);">🚪 Salir</a>
@@ -340,7 +340,10 @@
             <div class="main-content">
                 <div class="navbar">
                     <h2>⚙️ Panel de Administración</h2>
-                    <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+                    <div>
+                        <button class="btn-logout" onclick="window.history.back()" style="margin-right: 10px;">⬅️ Regresar</button>
+                        <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+                    </div>
                 </div>
 
                 <div id="dashboardSection" class="section-panel active">
@@ -392,19 +395,20 @@
 
                 <div id="usuariosSection" class="section-panel">
                     <div class="data-card">
-                        <h3>👥 Control de Usuarios y Roles</h3>
+                        <h3>👥 Control de Usuarios, Roles e Insignias</h3>
                         <ul id="usuariosLista">Cargando lista...</ul>
                     </div>
                 </div>
 
                 <div id="contenidoSection" class="section-panel">
                     <div class="data-card">
-                        <h3>🎵 Subir Música o Video Exclusivo</h3>
+                        <h3>🎵 Subir Música o Video</h3>
                         <div class="form-grid">
-                            <input id="tituloContenido" class="form-input" placeholder="Título del archivo">
+                            <input id="tituloContenido" class="form-input" placeholder="Título del archivo o canción">
                             <input type="file" id="archivoContenido" class="form-input">
+                            <input id="linkImagenContenido" class="form-input" placeholder="URL de portada o imagen (opcional)">
                         </div>
-                        <button class="btn-action" onclick="subirContenido()">Subir Archivo</button>
+                        <button class="btn-action" onclick="subirContenido()">Subir a la Página</button>
                     </div>
                 </div>
 
@@ -452,6 +456,21 @@
                     </div>
                 </div>
 
+                <div id="perfilSection" class="section-panel">
+                    <div class="data-card">
+                        <h3>👤 Mi Perfil de Administrador</h3>
+                        <div class="form-grid">
+                            <input id="nombreAdmin" class="form-input" placeholder="Nombre de visualización">
+                            <input id="insigniaAdmin" class="form-input" placeholder="Insignia (ej. 👑, 🛡️)">
+                            <div style="grid-column: span 2;">
+                                <label style="font-size: 11px; color: #aaa;">Foto de perfil:</label>
+                                <input type="file" id="fotoAdmin" class="form-input" style="margin-top: 5px;">
+                            </div>
+                        </div>
+                        <button class="btn-action" onclick="guardarPerfil()">Guardar Perfil</button>
+                    </div>
+                </div>
+
                 <div id="configuracionSection" class="section-panel">
                     <div class="data-card">
                         <h3>⚙️ Activar / Desactivar Secciones de la Web</h3>
@@ -490,7 +509,7 @@
         window.logout = () => signOut(auth);
 
         window.mostrarSeccion = (sec) => {
-            ["dashboard", "usuarios", "contenido", "tienda", "eventos", "chat", "configuracion"]
+            ["dashboard", "usuarios", "contenido", "tienda", "eventos", "chat", "perfil", "configuracion"]
                 .forEach(x => {
                     const el = document.getElementById(x + "Section");
                     if (el) el.style.display = "none";
@@ -533,9 +552,34 @@
             leerConfiguracion();
         }
 
-        // Subida y lectura general
-        window.subirContenido = () => {
-            alert("¡Contenido subido correctamente a Firebase!");
+        // Subida de contenido a la base de datos para lectura del sitio web principal
+        window.subirContenido = async () => {
+            let titulo = document.getElementById("tituloContenido").value;
+            let imagenUrl = document.getElementById("linkImagenContenido").value;
+            let archivo = document.getElementById("archivoContenido").files[0];
+
+            if (!titulo) {
+                return alert("Por favor, ingresa un título para el contenido.");
+            }
+
+            if (archivo) {
+                let reader = new FileReader();
+                reader.onload = async function(e) {
+                    await addDoc(collection(db, "contenido"), {
+                        titulo: titulo,
+                        archivoBase64: e.target.result,
+                        imagen: imagenUrl || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17",
+                        fecha: Date.now()
+                    });
+                    alert("Contenido subido correctamente a la página principal/menú.");
+                    document.getElementById("tituloContenido").value = "";
+                    document.getElementById("linkImagenContenido").value = "";
+                    document.getElementById("archivoContenido").value = "";
+                };
+                reader.readAsDataURL(archivo);
+            } else {
+                alert("Por favor, selecciona un archivo (Música o Video).");
+            }
         }
 
         window.crearProducto = async () => {
@@ -553,9 +597,10 @@
                         precio: Number(precio),
                         imagen: e.target.result
                     });
-                    alert("Producto agregado desde dispositivo");
+                    alert("Producto agregado correctamente con imagen");
                     document.getElementById("nombreProducto").value = "";
                     document.getElementById("precioProducto").value = "";
+                    document.getElementById("imagenProducto").value = "";
                     cargarProductos();
                 };
                 reader.readAsDataURL(imagenInput);
@@ -581,7 +626,23 @@
 
         window.crearEvento = async () => {
             let nombre = document.getElementById("nombreEvento").value;
-            alert(`Evento ${nombre} guardado correctamente`);
+            let fecha = document.getElementById("fechaEvento").value;
+            let lugar = document.getElementById("lugarEvento").value;
+            
+            if (!nombre || !fecha || !lugar) {
+                return alert("Completa el nombre, la fecha y el lugar del evento.");
+            }
+
+            await addDoc(collection(db, "eventos"), {
+                nombre: nombre,
+                fecha: fecha,
+                lugar: lugar,
+                publicado: true
+            });
+            alert("Evento creado exitosamente.");
+            document.getElementById("nombreEvento").value = "";
+            document.getElementById("fechaEvento").value = "";
+            document.getElementById("lugarEvento").value = "";
         }
 
         window.enviarMensajeAdmin = async () => {
@@ -620,18 +681,48 @@
             const snap = await getDocs(collection(db, "usuarios"));
             snap.forEach(d => {
                 let u = d.data();
-                uLista.innerHTML += `<li style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04);">${u.email} | Roles: ${u.admin ? 'Admin' : 'Usuario'} <button onclick="banearUsuario('${d.id}')" style="background:none; color:#9333ea; margin-left:10px;">Banear</button></li>`;
+                uLista.innerHTML += `<li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <b>${u.email}</b><br>
+                    Rol actual: <span>${u.admin ? 'Admin' : u.mod ? 'Moderador' : u.vip ? 'VIP' : 'Usuario'}</span><br>
+                    <button onclick="asignarRol('${d.id}', 'admin')" style="background:none; color:#9333ea;">👑 Admin</button>
+                    <button onclick="asignarRol('${d.id}', 'mod')" style="background:none; color:#9333ea;">🛡️ Mod</button>
+                    <button onclick="asignarRol('${d.id}', 'vip')" style="background:none; color:#9333ea;">💎 VIP</button>
+                    <button onclick="asignarRol('${d.id}', 'user')" style="background:none; color:#9333ea;">👤 User</button>
+                    <button onclick="banearUsuario('${d.id}')" style="background:none; color:#ff4d4d; margin-left:8px;">Banear</button>
+                </li>`;
             });
         }
 
+        window.asignarRol = async (id, rol) => {
+            await updateDoc(doc(db, "usuarios", id), {
+                admin: rol === 'admin',
+                mod: rol === 'mod',
+                vip: rol === 'vip',
+                rol: rol
+            });
+            alert("Rol asignado con éxito");
+            cargarUsuarios();
+        }
+
         window.banearUsuario = async (id) => {
-            let minutos = prompt("Minutos de baneo:");
+            let minutos = prompt("Minutos de baneo (Ejemplo: 30 o 60):");
             if (!minutos) return;
             await updateDoc(doc(db, "usuarios", id), {
                 ban: true,
                 banHasta: Date.now() + (minutos * 60000)
             });
-            alert("Usuario baneado temporalmente");
+            alert("Usuario baneado temporalmente.");
+            cargarUsuarios();
+        }
+
+        window.guardarPerfil = () => {
+            let nombre = document.getElementById("nombreAdmin").value;
+            let insignia = document.getElementById("insigniaAdmin").value;
+
+            if (nombre) localStorage.setItem("adminNombre", nombre);
+            if (insignia) localStorage.setItem("adminInsignia", insignia);
+            
+            alert("Perfil actualizado correctamente.");
         }
 
         function cargarStats() {
