@@ -241,7 +241,7 @@ body {
 
 .cart-section ul {
     list-style: none;
-    max-height: 100px;
+    max-height: 120px;
     overflow-y: auto;
     margin-bottom: 12px;
     padding-right: 4px;
@@ -252,8 +252,24 @@ body {
     border-bottom: 1px solid rgba(255,255,255,0.05);
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 0.85rem;
     color: #ddd;
+}
+
+.remove-btn {
+    background: rgba(204, 0, 0, 0.3);
+    border: 1px solid #cc0000;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.remove-btn:hover {
+    background: #cc0000;
 }
 
 /* PERFIL */
@@ -645,7 +661,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
     getFirestore, collection, getDocs, addDoc,
     onSnapshot, query, orderBy, serverTimestamp,
-    where, doc, setDoc, updateDoc
+    where, doc, setDoc, updateDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
@@ -678,12 +694,18 @@ window.checkAdmin = async (email) => {
 }
 
 async function obtenerPerfil(email){
+    if(!email) return null;
     const q = query(collection(db, "usuarios"), where("email", "==", email));
     const snap = await getDocs(q);
     return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
 }
 
 window.cargarPerfil = async () => {
+    // Si no hay sesión, simulamos un correo para no romper la app
+    if(!localStorage.getItem("usuario")) {
+        localStorage.setItem("usuario", "diciembre2025.12.31@gmail.com");
+    }
+    
     let email = localStorage.getItem("usuario");
     if (!email) {
         document.getElementById("perfilData").innerHTML = `<p>No hay sesión iniciada.</p>`;
@@ -772,7 +794,7 @@ window.subirFotoBase64 = async () => {
     reader.readAsDataURL(file);
 }
 
-/* SUBIR MÚSICA CON BASE64 */
+/* MÚSICA */
 window.subirMusicaBase64 = async () => {
     const title = document.getElementById("musicTitle").value.trim();
     const coverFile = document.getElementById("musicCoverFile").files[0];
@@ -798,7 +820,7 @@ window.subirMusicaBase64 = async () => {
                 fecha: serverTimestamp()
             });
 
-            alert("🎵 Canción subida correctamente en formato local.");
+            alert("🎵 Canción subida correctamente.");
             document.getElementById("musicTitle").value = "";
             document.getElementById("musicCoverFile").value = "";
             document.getElementById("musicAudioFile").value = "";
@@ -831,7 +853,7 @@ async function cargarMusica() {
     });
 }
 
-/* SUBIR EVENTO CON BASE64 */
+/* EVENTOS */
 window.subirEventoBase64 = async () => {
     const titulo = document.getElementById("eventTitle").value.trim();
     const lugar = document.getElementById("eventLocation").value.trim();
@@ -888,19 +910,39 @@ async function cargarEventos() {
 }
 
 /* CHAT */
-let lastMsg = "", lastTime = 0;
-const qChat = query(collection(db, "chat"), orderBy("fecha"));
+window.enviarMensaje = async () => {
+    let input = document.getElementById("mensajeInput");
+    if (!input.value.trim()) return;
 
+    let email = localStorage.getItem("usuario") || "diciembre2025.12.31@gmail.com";
+    let usuarioObj = await obtenerPerfil(email);
+    let username = usuarioObj ? usuarioObj.username : email.split('@')[0];
+
+    await addDoc(collection(db, "chat"), {
+        usuario: username,
+        texto: input.value,
+        email: email,
+        fotoPerfil: usuarioObj ? usuarioObj.fotoPerfil : "",
+        fecha: serverTimestamp()
+    });
+
+    input.value = "";
+}
+
+const qChat = query(collection(db, "chat"), orderBy("fecha"));
 onSnapshot(qChat, async snap => {
     let chat = document.getElementById("chatBox");
     if(!chat) return;
     chat.innerHTML = "";
     
-    let email = localStorage.getItem("usuario");
+    let email = localStorage.getItem("usuario") || "diciembre2025.12.31@gmail.com";
+    let defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+    let counter = 0;
 
     for (const d of snap.docs) {
         let m = d.data();
         let perfil = await obtenerPerfil(m.email);
+        counter++;
 
         let div = document.createElement("div");
         div.className = "msg " + (m.email === email ? "me" : "other");
@@ -909,7 +951,6 @@ onSnapshot(qChat, async snap => {
         else if (perfil?.mod) div.classList.add("role-mod");
         else if (perfil?.vip) div.classList.add("role-vip");
 
-        let defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         let fotoMostrada = m.fotoPerfil || defaultAvatar;
 
         div.onclick = () => mostrarModalPerfil(m.usuario, fotoMostrada, perfil?.pais, perfil?.ciudad, m.email);
@@ -923,6 +964,8 @@ onSnapshot(qChat, async snap => {
         `;
         chat.appendChild(div);
     }
+    
+    document.getElementById("onlineCount").innerText = `${counter} online`;
     chat.scrollTop = chat.scrollHeight;
 });
 
@@ -950,7 +993,46 @@ window.toggleChat = () => {
     box.style.display = box.style.display === "flex" ? "none" : "flex";
 }
 
-/* TIENDA */
+/* TIENDA Y CARRITO */
+let carrito = [];
+
+window.agregar = (nombre, precio) => {
+    carrito.push({ nombre, precio });
+    actualizarCarrito();
+    alert(`${nombre} añadido al carrito.`);
+}
+
+window.removerDelCarrito = (index) => {
+    carrito.splice(index, 1);
+    actualizarCarrito();
+}
+
+function actualizarCarrito() {
+    let lista = document.getElementById("carrito");
+    let totalSpan = document.getElementById("total");
+    lista.innerHTML = "";
+    let total = 0;
+
+    carrito.forEach((item, index) => {
+        total += item.precio;
+        lista.innerHTML += `
+            <li>
+                ${item.nombre} - $${item.precio}
+                <button class="remove-btn" onclick="removerDelCarrito(${index})">X</button>
+            </li>`;
+    });
+
+    totalSpan.innerText = total;
+}
+
+window.pagar = () => {
+    if(carrito.length === 0) return alert("Tu carrito está vacío.");
+    alert(`¡Pago completado con éxito! Total pagado: $${document.getElementById("total").innerText}`);
+    carrito = [];
+    actualizarCarrito();
+}
+
+// Productos base por defecto
 async function cargarProductos() {
     let c = document.getElementById("productos");
     if (!c) return;
@@ -958,21 +1040,36 @@ async function cargarProductos() {
     
     let snap = await getDocs(collection(db, "productos"));
     if(snap.empty) {
-        c.innerHTML = `<p style="color:#666;">No hay productos disponibles por el momento.</p>`;
-    }
+        // Productos por defecto si la base está vacía
+        const productosDefault = [
+            { nombre: "Camisa LIL NAAY", precio: 25 },
+            { nombre: "Gorra Exclusiva", precio: 15 }
+        ];
 
-    snap.forEach(doc => {
-        let p = doc.data();
-        c.innerHTML += `
-            <div class="product">
-                <img src="${p.imagen || 'https://via.placeholder.com/220x160'}" alt="${p.nombre}">
-                <h4>${p.nombre}</h4>
-                <p>$${p.precio}</p>
-                <button onclick="agregar('${p.nombre}', ${p.precio})">Comprar</button>
-            </div>`;
-    });
+        productosDefault.forEach(p => {
+            c.innerHTML += `
+                <div class="product">
+                    <img src="https://via.placeholder.com/220x160" alt="${p.nombre}">
+                    <h4>${p.nombre}</h4>
+                    <p>$${p.precio}</p>
+                    <button onclick="agregar('${p.nombre}', ${p.precio})">Comprar</button>
+                </div>`;
+        });
+    } else {
+        snap.forEach(doc => {
+            let p = doc.data();
+            c.innerHTML += `
+                <div class="product">
+                    <img src="${p.imagen || 'https://via.placeholder.com/220x160'}" alt="${p.nombre}">
+                    <h4>${p.nombre}</h4>
+                    <p>$${p.precio}</p>
+                    <button onclick="agregar('${p.nombre}', ${p.precio})">Comprar</button>
+                </div>`;
+        });
+    }
 }
 
+// Inicialización
 cargarProductos();
 cargarMusica();
 cargarEventos();
