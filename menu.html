@@ -334,7 +334,7 @@ body {
     box-shadow: 0 6px 20px rgba(204, 0, 0, 0.4);
 }
 
-/* CHAT */
+/* CHAT KICK / RESPONSIVO */
 .chat-toggle {
     position: fixed;
     bottom: 20px;
@@ -359,31 +359,48 @@ body {
     position: fixed;
     bottom: 85px;
     right: 20px;
-    width: 300px;
-    height: 380px;
-    background: rgba(10, 10, 10, 0.9);
+    width: 320px;
+    height: 420px;
+    background: rgba(10, 10, 10, 0.95);
     backdrop-filter: blur(16px);
     border-radius: 16px;
     display: none;
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(255,0,0,0.2);
+    border: 1px solid rgba(255,0,0,0.3);
     z-index: 999;
 }
 
-.chat-header {
-    background: rgba(20, 0, 0, 0.8);
-    padding: 12px;
-    display: flex;
-    justify-content: space-between;
-    font-weight: 600;
-    font-size: 0.85rem;
-    border-bottom: 1px solid rgba(255,0,0,0.15);
-    cursor: move;
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 768px) {
+    .chat-box {
+        width: 100%;
+        height: 80%;
+        bottom: 0;
+        right: 0;
+        border-radius: 16px 16px 0 0;
+    }
 }
 
-.online { color: #00ff66; font-size: 11px; font-weight: 600; }
+.chat-header {
+    background: rgba(20, 0, 0, 0.9);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255,0,0,0.2);
+}
+
+.online { 
+    color: #00ff66; 
+    font-size: 11px; 
+    font-weight: 600; 
+    background: rgba(0, 255, 102, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
 
 .chat-messages {
     flex: 1;
@@ -391,57 +408,68 @@ body {
     padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
-/* BURBUJAS */
+/* DISEÑO DE BURBUJAS ESTILO KICK */
 .msg {
-    max-width: 85%;
-    padding: 10px 12px;
-    border-radius: 12px;
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(20, 20, 20, 0.6);
+    border-radius: 8px;
     font-size: 0.8rem;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: pre-wrap;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
+    color: #eee;
+    border-left: 4px solid #666; /* Color por defecto */
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .msg:hover {
-    transform: scale(1.01);
+    background: rgba(30, 30, 30, 0.8);
 }
 
-.msg b {
-    display: block;
-    font-size: 0.75rem;
-    opacity: 0.9;
-    margin-bottom: 3px;
+.msg-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
 }
-
-.me {
-    background: linear-gradient(135deg, #cc0000, #ff1a1a);
-    align-self: flex-end;
-    color: white;
-}
-
-.other {
-    background: rgba(35, 35, 35, 0.8);
-    align-self: flex-start;
-    color: #eee;
-}
-
-.role-admin { border-left: 4px solid #ff3333; }
-.role-mod { border-left: 4px solid #00ffff; }
-.role-vip { border-left: 4px solid #ffd700; }
 
 .avatar-chat {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 6px;
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.username {
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+/* Insignias */
+.badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.badge-admin { background: #ff1a1a; color: white; border: 1px solid #ff4d4d; }
+.badge-mod { background: #00e676; color: white; border: 1px solid #69f0ae; }
+.badge-vip { background: #ffaa00; color: white; border: 1px solid #ffd700; }
+.badge-user { background: #555; color: white; }
+
+.role-admin { border-left-color: #ff1a1a; }
+.role-mod { border-left-color: #00e676; }
+.role-vip { border-left-color: #ffaa00; }
+.role-user { border-left-color: #666; }
+
+.msg-text {
+    word-break: break-word;
+    color: #ddd;
 }
 
 /* MODAL DE USUARIO */
@@ -501,21 +529,20 @@ body {
 /* INPUT */
 .chat-input {
     display: flex;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    background: rgba(10, 10, 10, 0.9);
-    padding: 6px;
-    gap: 4px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background: rgba(5, 5, 5, 0.95);
+    padding: 8px;
+    gap: 6px;
 }
 
 .chat-input input {
     flex: 1;
-    padding: 8px 10px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(5, 5, 5, 0.9);
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(10, 10, 10, 0.8);
     color: white;
     border-radius: 8px;
     outline: none;
-    transition: border-color 0.2s;
     font-size: 0.8rem;
 }
 
@@ -526,13 +553,12 @@ body {
 .chat-input button {
     background: linear-gradient(135deg, #cc0000, #ff1a1a);
     border: none;
-    padding: 8px 12px;
+    padding: 6px 14px;
     color: white;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
     transition: opacity 0.2s;
-    font-size: 0.8rem;
 }
 
 .chat-input button:hover {
@@ -641,14 +667,14 @@ body {
 
 <div class="chat-box" id="chatBoxDrag">
     <div class="chat-header">
-        <span>💬 Chat</span>
+        <span>💬 Chat en vivo</span>
         <span class="online" id="onlineCount">0 online</span>
     </div>
 
     <div id="chatBox" class="chat-messages"></div>
 
     <div class="chat-input">
-        <input id="mensajeInput" placeholder="Escribe...">
+        <input id="mensajeInput" placeholder="Escribe..." autocomplete="off">
         <button onclick="enviarMensaje()">➤</button>
     </div>
 </div>
@@ -661,7 +687,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
     getFirestore, collection, getDocs, addDoc,
     onSnapshot, query, orderBy, serverTimestamp,
-    where, doc, setDoc, updateDoc, deleteDoc
+    where, doc, setDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
@@ -701,7 +727,6 @@ async function obtenerPerfil(email){
 }
 
 window.cargarPerfil = async () => {
-    // Si no hay sesión, simulamos un correo para no romper la app
     if(!localStorage.getItem("usuario")) {
         localStorage.setItem("usuario", "diciembre2025.12.31@gmail.com");
     }
@@ -909,7 +934,7 @@ async function cargarEventos() {
     });
 }
 
-/* CHAT */
+/* CHAT MEJORADO KICK Y USUARIOS EN LÍNEA */
 window.enviarMensaje = async () => {
     let input = document.getElementById("mensajeInput");
     if (!input.value.trim()) return;
@@ -918,17 +943,21 @@ window.enviarMensaje = async () => {
     let usuarioObj = await obtenerPerfil(email);
     let username = usuarioObj ? usuarioObj.username : email.split('@')[0];
 
-    await addDoc(collection(db, "chat"), {
-        usuario: username,
-        texto: input.value,
-        email: email,
-        fotoPerfil: usuarioObj ? usuarioObj.fotoPerfil : "",
-        fecha: serverTimestamp()
-    });
-
-    input.value = "";
+    try {
+        await addDoc(collection(db, "chat"), {
+            usuario: username,
+            texto: input.value,
+            email: email,
+            fotoPerfil: usuarioObj ? usuarioObj.fotoPerfil : "",
+            fecha: serverTimestamp()
+        });
+        input.value = "";
+    } catch (e) {
+        console.error("Error enviando mensaje: ", e);
+    }
 }
 
+// Lógica de visualización del chat
 const qChat = query(collection(db, "chat"), orderBy("fecha"));
 onSnapshot(qChat, async snap => {
     let chat = document.getElementById("chatBox");
@@ -937,35 +966,55 @@ onSnapshot(qChat, async snap => {
     
     let email = localStorage.getItem("usuario") || "diciembre2025.12.31@gmail.com";
     let defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-    let counter = 0;
-
+    let usuariosUnicos = new Set();
+    
+    // Mostramos todos los mensajes sin duplicar
     for (const d of snap.docs) {
         let m = d.data();
         let perfil = await obtenerPerfil(m.email);
-        counter++;
+        
+        if (m.email) {
+            usuariosUnicos.add(m.email);
+        }
 
         let div = document.createElement("div");
-        div.className = "msg " + (m.email === email ? "me" : "other");
+        
+        let rolClass = "role-user";
+        let badgeHtml = `<span class="badge badge-user">User</span>`;
 
-        if (perfil?.admin) div.classList.add("role-admin");
-        else if (perfil?.mod) div.classList.add("role-mod");
-        else if (perfil?.vip) div.classList.add("role-vip");
+        if (perfil?.admin) {
+            rolClass = "role-admin";
+            badgeHtml = `<span class="badge badge-admin">ADMIN</span>`;
+        } else if (perfil?.mod) {
+            rolClass = "role-mod";
+            badgeHtml = `<span class="badge badge-mod">MOD</span>`;
+        } else if (perfil?.vip) {
+            rolClass = "role-vip";
+            badgeHtml = `<span class="badge badge-vip">VIP</span>`;
+        }
+
+        div.className = `msg ${rolClass}`;
 
         let fotoMostrada = m.fotoPerfil || defaultAvatar;
 
         div.onclick = () => mostrarModalPerfil(m.usuario, fotoMostrada, perfil?.pais, perfil?.ciudad, m.email);
 
         div.innerHTML = `
-            <div style="display:flex; align-items:center; gap:6px;">
+            <div class="msg-header">
                 <img src="${fotoMostrada}" class="avatar-chat">
-                <b>${m.usuario}</b>
+                <span class="username">${m.usuario}</span>
+                ${badgeHtml}
             </div>
-            <p style="margin-top: 5px;">${m.texto}</p>
+            <div class="msg-text">${m.texto}</div>
         `;
         chat.appendChild(div);
     }
     
-    document.getElementById("onlineCount").innerText = `${counter} online`;
+    // Muestra usuarios reales conectados de la colección "online" de Firebase
+    const snapOnline = await getDocs(collection(db, "online"));
+    let countOnline = snapOnline.size || 0;
+    document.getElementById("onlineCount").innerText = `${countOnline} online`;
+    
     chat.scrollTop = chat.scrollHeight;
 });
 
@@ -1040,7 +1089,6 @@ async function cargarProductos() {
     
     let snap = await getDocs(collection(db, "productos"));
     if(snap.empty) {
-        // Productos por defecto si la base está vacía
         const productosDefault = [
             { nombre: "Camisa LIL NAAY", precio: 25 },
             { nombre: "Gorra Exclusiva", precio: 15 }
