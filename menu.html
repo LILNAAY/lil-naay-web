@@ -334,7 +334,7 @@ body {
     box-shadow: 0 6px 20px rgba(204, 0, 0, 0.4);
 }
 
-/* CHAT KICK / RESPONSIVO */
+/* CHAT KICK */
 .chat-toggle {
     position: fixed;
     bottom: 20px;
@@ -372,7 +372,6 @@ body {
     z-index: 999;
 }
 
-/* Ajuste para pantallas pequeñas */
 @media (max-width: 768px) {
     .chat-box {
         width: 100%;
@@ -411,7 +410,7 @@ body {
     gap: 10px;
 }
 
-/* DISEÑO DE BURBUJAS ESTILO KICK */
+/* BURBUJAS */
 .msg {
     width: 100%;
     padding: 8px 12px;
@@ -419,7 +418,7 @@ body {
     border-radius: 8px;
     font-size: 0.8rem;
     color: #eee;
-    border-left: 4px solid #666; /* Color por defecto */
+    border-left: 4px solid #666;
     transition: transform 0.2s, background 0.2s;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
@@ -472,7 +471,7 @@ body {
     color: #ddd;
 }
 
-/* MODAL DE USUARIO */
+/* MODAL */
 .modal-perfil {
     position: fixed;
     top: 50%;
@@ -526,7 +525,6 @@ body {
     border-color: rgba(255,255,255,0.3);
 }
 
-/* INPUT */
 .chat-input {
     display: flex;
     border-top: 1px solid rgba(255,255,255,0.1);
@@ -565,7 +563,6 @@ body {
     opacity: 0.9;
 }
 
-/* NOTIFICACIÓN */
 #noti {
     position: fixed;
     top: 15px;
@@ -580,7 +577,6 @@ body {
     font-size: 0.85rem;
 }
 
-/* FOOTER */
 .footer { text-align: center; padding: 12px; background: rgba(5, 5, 5, 0.8); margin-top: auto; color: #555; font-size: 0.75rem; }
 </style>
 </head>
@@ -616,38 +612,29 @@ body {
 
     <div id="musica" class="section">
         <h2>🎵 Música</h2>
-        
         <div class="admin-panel" id="panelMusicaAdmin" style="display:none;">
             <h4>➕ Agregar nueva música</h4>
             <input type="text" id="musicTitle" class="input-field" placeholder="Título de la canción" style="width:100%; margin:4px 0 10px;">
-            
             <label style="font-size: 11px; color:#ff3333;">Portada de la canción:</label>
             <input type="file" id="musicCoverFile" accept="image/*" style="margin:4px 0 10px; display:block;">
-            
             <label style="font-size: 11px; color:#ff3333;">Archivo de audio (mp3):</label>
             <input type="file" id="musicAudioFile" accept="audio/*" style="margin:4px 0 10px; display:block;">
-
             <button class="btn-action" onclick="subirMusicaBase64()">Subir Música</button>
         </div>
-
         <div class="items-grid" id="listaMusica"></div>
     </div>
 
     <div id="eventos" class="section">
         <h2>🎉 Eventos</h2>
-        
         <div class="admin-panel" id="panelEventosAdmin" style="display:none;">
             <h4>➕ Crear nuevo evento</h4>
             <input type="text" id="eventTitle" class="input-field" placeholder="Nombre del evento" style="width:100%; margin:4px 0 6px;">
             <input type="text" id="eventLocation" class="input-field" placeholder="Lugar / Ciudad" style="width:100%; margin:4px 0 6px;">
             <input type="date" id="eventDate" class="input-field" style="width:100%; margin:4px 0 10px;">
-            
             <label style="font-size: 11px; color:#ff3333;">Imagen o Banner del evento:</label>
             <input type="file" id="eventImageFile" accept="image/*" style="margin:6px 0 10px; display:block;">
-
             <button class="btn-action" onclick="subirEventoBase64()">Crear Evento</button>
         </div>
-
         <div class="items-grid" id="listaEventos"></div>
     </div>
 
@@ -687,7 +674,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
     getFirestore, collection, getDocs, addDoc,
     onSnapshot, query, orderBy, serverTimestamp,
-    where, doc, setDoc, updateDoc
+    where, doc, setDoc, deleteDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
@@ -726,6 +713,9 @@ async function obtenerPerfil(email){
     return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
 }
 
+// Inicialización del estado de presencia del usuario
+let presenciaRef = null;
+
 window.cargarPerfil = async () => {
     if(!localStorage.getItem("usuario")) {
         localStorage.setItem("usuario", "diciembre2025.12.31@gmail.com");
@@ -738,6 +728,36 @@ window.cargarPerfil = async () => {
     }
 
     checkAdmin(email);
+
+    // Registramos la entrada del usuario en "online" de forma persistente
+    let usuarioObj = await obtenerPerfil(email);
+    let username = usuarioObj ? usuarioObj.username : email.split('@')[0];
+    
+    const docRef = doc(db, "online", email.replace(/[.@]/g, '_'));
+    await setDoc(docRef, {
+        email: email,
+        usuario: username,
+        ultimaConexion: Date.now()
+    });
+    presenciaRef = docRef; // Guardamos la referencia para removerlo si sale
+
+    // Si el usuario cierra o cambia de página, lo removemos de online
+    window.addEventListener("beforeunload", async () => {
+        if(presenciaRef) {
+            await deleteDoc(presenciaRef);
+        }
+    });
+
+    // Periódicamente actualizamos "última conexión" para comprobar si siguen en la web
+    setInterval(async () => {
+        if(presenciaRef) {
+            await setDoc(presenciaRef, {
+                email: email,
+                usuario: username,
+                ultimaConexion: Date.now()
+            }, { merge: true });
+        }
+    }, 5000);
 
     let data = await obtenerPerfil(email);
     let defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
@@ -800,7 +820,6 @@ window.subirFotoBase64 = async () => {
     const reader = new FileReader();
     reader.onload = async function(e) {
         let url = e.target.result;
-
         let email = localStorage.getItem("usuario");
         let userDoc = await obtenerPerfil(email);
 
@@ -934,7 +953,7 @@ async function cargarEventos() {
     });
 }
 
-/* CHAT MEJORADO KICK Y USUARIOS EN LÍNEA */
+/* CHAT */
 window.enviarMensaje = async () => {
     let input = document.getElementById("mensajeInput");
     if (!input.value.trim()) return;
@@ -953,51 +972,36 @@ window.enviarMensaje = async () => {
         });
         input.value = "";
     } catch (e) {
-        console.error("Error enviando mensaje: ", e);
+        console.error("Error al enviar mensaje:", e);
     }
 }
 
-// Lógica de visualización del chat
-const qChat = query(collection(db, "chat"), orderBy("fecha"));
-onSnapshot(qChat, async snap => {
+// Cargar mensajes y controlar usuarios en tiempo real
+onSnapshot(query(collection(db, "chat"), orderBy("fecha")), async (snap) => {
     let chat = document.getElementById("chatBox");
     if(!chat) return;
     chat.innerHTML = "";
     
     let email = localStorage.getItem("usuario") || "diciembre2025.12.31@gmail.com";
     let defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-    let usuariosUnicos = new Set();
-    
-    // Mostramos todos los mensajes sin duplicar
-    for (const d of snap.docs) {
-        let m = d.data();
-        let perfil = await obtenerPerfil(m.email);
-        
-        if (m.email) {
-            usuariosUnicos.add(m.email);
-        }
 
+    snap.forEach(d => {
+        let m = d.data();
         let div = document.createElement("div");
         
         let rolClass = "role-user";
         let badgeHtml = `<span class="badge badge-user">User</span>`;
 
-        if (perfil?.admin) {
+        // Añadimos clases según rol
+        if (m.rol === "admin") {
             rolClass = "role-admin";
             badgeHtml = `<span class="badge badge-admin">ADMIN</span>`;
-        } else if (perfil?.mod) {
-            rolClass = "role-mod";
-            badgeHtml = `<span class="badge badge-mod">MOD</span>`;
-        } else if (perfil?.vip) {
-            rolClass = "role-vip";
-            badgeHtml = `<span class="badge badge-vip">VIP</span>`;
         }
-
+        
         div.className = `msg ${rolClass}`;
-
         let fotoMostrada = m.fotoPerfil || defaultAvatar;
 
-        div.onclick = () => mostrarModalPerfil(m.usuario, fotoMostrada, perfil?.pais, perfil?.ciudad, m.email);
+        div.onclick = () => mostrarModalPerfil(m.usuario, fotoMostrada, '', '', m.email);
 
         div.innerHTML = `
             <div class="msg-header">
@@ -1008,14 +1012,25 @@ onSnapshot(qChat, async snap => {
             <div class="msg-text">${m.texto}</div>
         `;
         chat.appendChild(div);
-    }
-    
-    // Muestra usuarios reales conectados de la colección "online" de Firebase
-    const snapOnline = await getDocs(collection(db, "online"));
-    let countOnline = snapOnline.size || 0;
-    document.getElementById("onlineCount").innerText = `${countOnline} online`;
+    });
     
     chat.scrollTop = chat.scrollHeight;
+});
+
+// Detectar cambios en la lista de usuarios online en Firestore
+onSnapshot(collection(db, "online"), (snap) => {
+    let now = Date.now();
+    let usuariosActivos = [];
+    
+    snap.forEach(doc => {
+        let data = doc.data();
+        // Contamos solo si su última conexión fue hace menos de 10 segundos
+        if (now - data.ultimaConexion < 10000) {
+            usuariosActivos.push(data);
+        }
+    });
+
+    document.getElementById("onlineCount").innerText = `${usuariosActivos.length} online`;
 });
 
 window.mostrarModalPerfil = (usuario, foto, pais, ciudad, email) => {
@@ -1079,42 +1094,6 @@ window.pagar = () => {
     alert(`¡Pago completado con éxito! Total pagado: $${document.getElementById("total").innerText}`);
     carrito = [];
     actualizarCarrito();
-}
-
-// Productos base por defecto
-async function cargarProductos() {
-    let c = document.getElementById("productos");
-    if (!c) return;
-    c.innerHTML = "";
-    
-    let snap = await getDocs(collection(db, "productos"));
-    if(snap.empty) {
-        const productosDefault = [
-            { nombre: "Camisa LIL NAAY", precio: 25 },
-            { nombre: "Gorra Exclusiva", precio: 15 }
-        ];
-
-        productosDefault.forEach(p => {
-            c.innerHTML += `
-                <div class="product">
-                    <img src="https://via.placeholder.com/220x160" alt="${p.nombre}">
-                    <h4>${p.nombre}</h4>
-                    <p>$${p.precio}</p>
-                    <button onclick="agregar('${p.nombre}', ${p.precio})">Comprar</button>
-                </div>`;
-        });
-    } else {
-        snap.forEach(doc => {
-            let p = doc.data();
-            c.innerHTML += `
-                <div class="product">
-                    <img src="${p.imagen || 'https://via.placeholder.com/220x160'}" alt="${p.nombre}">
-                    <h4>${p.nombre}</h4>
-                    <p>$${p.precio}</p>
-                    <button onclick="agregar('${p.nombre}', ${p.precio})">Comprar</button>
-                </div>`;
-        });
-    }
 }
 
 // Inicialización
