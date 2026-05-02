@@ -20,7 +20,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    overflow: hidden; /* Evita barras de desplazamiento en la ventana principal */
+    overflow: hidden;
 }
 
 /* NAV */
@@ -108,11 +108,57 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
-    overflow-y: auto; /* Permite scroll solo si el contenido es demasiado grande */
+    overflow-y: auto;
 }
 
 .section { display: none; }
-.section.active { display: block; } /* Corregido para que coincida con la clase activa */
+.section.active { display: block; }
+
+/* PANEL DE ADMINISTRACIÓN */
+.admin-panel {
+    background: rgba(20, 0, 0, 0.5);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+/* LISTAS DE ELEMENTOS */
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 15px;
+}
+
+.card-media {
+    background: rgba(15, 15, 15, 0.6);
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-media img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.card-media h4 {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.card-media p {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
 
 /* PRODUCTOS */
 .store {
@@ -290,7 +336,7 @@ body {
 
 .chat-toggle:hover {
     transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 10px 25px rgba(255,0,0,0.7);
+    box-shadow: 0 10px 25px rgba(255,0,0,7);
 }
 
 .chat-box {
@@ -526,11 +572,41 @@ body {
         </div>
     </div>
 
-    <div id="musica" class="section"><h2>🎵 Música</h2></div>
+    <div id="musica" class="section">
+        <h2>🎵 Música</h2>
+        
+        <div class="admin-panel" id="panelMusicaAdmin" style="display:none;">
+            <h4>➕ Agregar nueva música</h4>
+            <input type="text" id="musicTitle" class="input-field" placeholder="Título de la canción" style="width:100%; margin:4px 0 10px;">
+            
+            <label style="font-size: 11px; color:#ff3333;">Portada de la canción:</label>
+            <input type="file" id="musicCoverFile" accept="image/*" style="margin:4px 0 10px; display:block;">
+            
+            <label style="font-size: 11px; color:#ff3333;">Archivo de audio (mp3):</label>
+            <input type="file" id="musicAudioFile" accept="audio/*" style="margin:4px 0 10px; display:block;">
+
+            <button class="btn-action" onclick="subirMusicaBase64()">Subir Música</button>
+        </div>
+
+        <div class="items-grid" id="listaMusica"></div>
+    </div>
 
     <div id="eventos" class="section">
         <h2>🎉 Eventos</h2>
-        <div style="color: #666; margin-top: 15px;">Próximamente 🔥</div>
+        
+        <div class="admin-panel" id="panelEventosAdmin" style="display:none;">
+            <h4>➕ Crear nuevo evento</h4>
+            <input type="text" id="eventTitle" class="input-field" placeholder="Nombre del evento" style="width:100%; margin:4px 0 6px;">
+            <input type="text" id="eventLocation" class="input-field" placeholder="Lugar / Ciudad" style="width:100%; margin:4px 0 6px;">
+            <input type="date" id="eventDate" class="input-field" style="width:100%; margin:4px 0 10px;">
+            
+            <label style="font-size: 11px; color:#ff3333;">Imagen o Banner del evento:</label>
+            <input type="file" id="eventImageFile" accept="image/*" style="margin:6px 0 10px; display:block;">
+
+            <button class="btn-action" onclick="subirEventoBase64()">Crear Evento</button>
+        </div>
+
+        <div class="items-grid" id="listaEventos"></div>
     </div>
 
     <div id="perfil" class="section">
@@ -573,14 +649,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
-    apiKey: "TU_API_KEY",
+    apiKey: "TU_API_KEY_AQUI",
     authDomain: "lil-naay.firebaseapp.com",
-    projectId: "lil-naay"
+    projectId: "lil-naay",
+    storageBucket: "lil-naay.appspot.com"
 });
 
 const db = getFirestore(app);
 
-/* SECCIONES */
 window.mostrar = (sec, btn) => {
     document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
     document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
@@ -589,7 +665,18 @@ window.mostrar = (sec, btn) => {
     if(btn) btn.classList.add("active");
 }
 
-/* PERFIL */
+/* CARGAR PANELES ADMINISTRADOR */
+window.checkAdmin = async (email) => {
+    if (!email) return;
+    const q = query(collection(db, "usuarios"), where("email", "==", email), where("admin", "==", true));
+    const snap = await getDocs(q);
+
+    if (!snap.empty) {
+        document.getElementById("panelMusicaAdmin").style.display = "block";
+        document.getElementById("panelEventosAdmin").style.display = "block";
+    }
+}
+
 async function obtenerPerfil(email){
     const q = query(collection(db, "usuarios"), where("email", "==", email));
     const snap = await getDocs(q);
@@ -602,6 +689,8 @@ window.cargarPerfil = async () => {
         document.getElementById("perfilData").innerHTML = `<p>No hay sesión iniciada.</p>`;
         return;
     }
+
+    checkAdmin(email);
 
     let data = await obtenerPerfil(email);
     let defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
@@ -621,7 +710,7 @@ window.cargarPerfil = async () => {
         <label style="font-size:11px;">Ciudad:</label><br>
         <input type="text" id="inputCiudad" class="input-field" value="${data?.ciudad || ''}" placeholder="Ciudad"><br>
 
-        <input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="subirFoto()">
+        <input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="subirFotoBase64()">
         <button class="btn-action" onclick="document.getElementById('fotoInput').click()">📷 Cambiar Imagen</button>
         <button class="btn-action" style="background: linear-gradient(135deg, #006622, #009933);" onclick="guardarDatosPerfil()">Guardar Cambios</button>
     `;
@@ -656,54 +745,147 @@ window.guardarDatosPerfil = async () => {
     cargarPerfil();
 }
 
-window.subirFoto = async () => {
+window.subirFotoBase64 = async () => {
     let fileInput = document.getElementById("fotoInput");
     let file = fileInput.files[0];
     if (!file) return;
-    
-    let email = localStorage.getItem("usuario");
-    if (!email) return alert("Inicia sesión primero");
 
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = async function(e) {
-        let fotoBase64 = e.target.result;
+        let url = e.target.result;
+
+        let email = localStorage.getItem("usuario");
         let userDoc = await obtenerPerfil(email);
 
         if (!userDoc) {
             await addDoc(collection(db, "usuarios"), {
                 email: email,
                 username: email.split('@')[0],
-                fotoPerfil: fotoBase64
+                fotoPerfil: url
             });
         } else {
-            await setDoc(doc(db, "usuarios", userDoc.id), { fotoPerfil: fotoBase64 }, { merge: true });
+            await setDoc(doc(db, "usuarios", userDoc.id), { fotoPerfil: url }, { merge: true });
         }
         alert("Foto actualizada con éxito.");
         cargarPerfil();
-    }
+    };
     reader.readAsDataURL(file);
 }
 
-/* ONLINE */
-const onlineRef = collection(db, "online");
-setInterval(async () => {
-    let email = localStorage.getItem("usuario");
-    if(!email) return;
-    await setDoc(doc(onlineRef, email), {
-        time: Date.now()
-    });
-}, 5000);
+/* SUBIR MÚSICA CON BASE64 */
+window.subirMusicaBase64 = async () => {
+    const title = document.getElementById("musicTitle").value.trim();
+    const coverFile = document.getElementById("musicCoverFile").files[0];
+    const audioFile = document.getElementById("musicAudioFile").files[0];
 
-onSnapshot(onlineRef, snap => {
-    let count = 0;
-    let now = Date.now();
-    snap.forEach(d => {
-        if (now - d.data().time < 10000) count++;
+    if (!title || !coverFile || !audioFile) {
+        return alert("Por favor, rellena todos los campos y selecciona los dos archivos.");
+    }
+
+    let readerCover = new FileReader();
+    let readerAudio = new FileReader();
+
+    readerCover.onload = function(e1) {
+        let coverBase64 = e1.target.result;
+        
+        readerAudio.onload = async function(e2) {
+            let audioBase64 = e2.target.result;
+
+            await addDoc(collection(db, "musica"), {
+                titulo: title,
+                portada: coverBase64,
+                audio: audioBase64,
+                fecha: serverTimestamp()
+            });
+
+            alert("🎵 Canción subida correctamente en formato local.");
+            document.getElementById("musicTitle").value = "";
+            document.getElementById("musicCoverFile").value = "";
+            document.getElementById("musicAudioFile").value = "";
+            cargarMusica();
+        };
+        readerAudio.readAsDataURL(audioFile);
+    };
+    readerCover.readAsDataURL(coverFile);
+}
+
+async function cargarMusica() {
+    const lista = document.getElementById("listaMusica");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db, "musica"));
+    if (snap.empty) {
+        lista.innerHTML = `<p style="color:#666; margin: 10px;">No hay música disponible actualmente.</p>`;
+        return;
+    }
+
+    snap.forEach(doc => {
+        let m = doc.data();
+        lista.innerHTML += `
+            <div class="card-media">
+                <img src="${m.portada}" alt="Portada">
+                <h4>${m.titulo}</h4>
+                <audio controls style="width:100%; margin-top:5px; height: 32px;" src="${m.audio}"></audio>
+            </div>
+        `;
     });
-    
-    let onlineCount = document.getElementById("onlineCount");
-    if (onlineCount) onlineCount.innerText = count + " online";
-});
+}
+
+/* SUBIR EVENTO CON BASE64 */
+window.subirEventoBase64 = async () => {
+    const titulo = document.getElementById("eventTitle").value.trim();
+    const lugar = document.getElementById("eventLocation").value.trim();
+    const fechaEvento = document.getElementById("eventDate").value;
+    const bannerFile = document.getElementById("eventImageFile").files[0];
+
+    if (!titulo || !lugar || !fechaEvento || !bannerFile) {
+        return alert("Por favor, completa todos los campos del evento.");
+    }
+
+    let readerBanner = new FileReader();
+    readerBanner.onload = async function(e) {
+        let bannerBase64 = e.target.result;
+
+        await addDoc(collection(db, "eventos"), {
+            titulo: titulo,
+            lugar: lugar,
+            fechaEvento: fechaEvento,
+            banner: bannerBase64,
+            fechaSubida: serverTimestamp()
+        });
+
+        alert("🎉 Evento creado exitosamente.");
+        document.getElementById("eventTitle").value = "";
+        document.getElementById("eventLocation").value = "";
+        document.getElementById("eventDate").value = "";
+        document.getElementById("eventImageFile").value = "";
+        cargarEventos();
+    };
+    readerBanner.readAsDataURL(bannerFile);
+}
+
+async function cargarEventos() {
+    const lista = document.getElementById("listaEventos");
+    lista.innerHTML = "";
+
+    const snap = await getDocs(collection(db, "eventos"));
+    if (snap.empty) {
+        lista.innerHTML = `<p style="color:#666; margin: 10px;">No hay eventos disponibles por ahora.</p>`;
+        return;
+    }
+
+    snap.forEach(doc => {
+        let e = doc.data();
+        lista.innerHTML += `
+            <div class="card-media">
+                <img src="${e.banner}" alt="Banner del Evento">
+                <h4>${e.titulo}</h4>
+                <p>📍 ${e.lugar}</p>
+                <p>📅 ${e.fechaEvento}</p>
+            </div>
+        `;
+    });
+}
 
 /* CHAT */
 let lastMsg = "", lastTime = 0;
@@ -741,16 +923,6 @@ onSnapshot(qChat, async snap => {
         `;
         chat.appendChild(div);
     }
-
-    if (snap.docs.length > 0) {
-        let ultimo = snap.docs[snap.docs.length - 1].data();
-        let noti = document.getElementById("noti");
-        if (ultimo.texto !== lastMsg) {
-            noti.style.display = "block";
-            setTimeout(() => noti.style.display = "none", 2500);
-            lastMsg = ultimo.texto;
-        }
-    }
     chat.scrollTop = chat.scrollHeight;
 });
 
@@ -773,61 +945,18 @@ window.cerrarModal = () => {
     document.getElementById("userModal").style.display = "none";
 }
 
-/* ENVIAR MENSAJE */
-window.enviarMensaje = async () => {
-    let input = document.getElementById("mensajeInput");
-    let texto = input.value.trim();
-    let email = localStorage.getItem("usuario");
-
-    if (!texto || !email) return;
-
-    let perfil = await obtenerPerfil(email);
-
-    /* BAN */
-    if (perfil?.ban && Date.now() < perfil.banHasta) {
-        return alert("🚫 Estás baneado");
-    }
-
-    /* ANTI SPAM */
-    if (texto === lastMsg && Date.now() - lastTime < 3000) {
-        return alert("Spam 🚫");
-    }
-
-    lastMsg = texto;
-    lastTime = Date.now();
-
-    await addDoc(collection(db, "chat"), {
-        usuario: perfil?.username || email,
-        email: email,
-        texto: texto,
-        fotoPerfil: perfil?.fotoPerfil || null,
-        fecha: serverTimestamp()
-    });
-
-    input.value = "";
-}
-
-/* ENTER */
-document.getElementById("mensajeInput").addEventListener("keypress", e => {
-    if (e.key === "Enter") enviarMensaje();
-});
-
-/* CHAT UI */
 window.toggleChat = () => {
     let box = document.getElementById("chatBoxDrag");
     box.style.display = box.style.display === "flex" ? "none" : "flex";
 }
 
 /* TIENDA */
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
 async function cargarProductos() {
     let c = document.getElementById("productos");
     if (!c) return;
     c.innerHTML = "";
-
+    
     let snap = await getDocs(collection(db, "productos"));
-
     if(snap.empty) {
         c.innerHTML = `<p style="color:#666;">No hay productos disponibles por el momento.</p>`;
     }
@@ -844,48 +973,9 @@ async function cargarProductos() {
     });
 }
 
-// Exponemos agregar y pagar de manera explícita en window para su uso en los botones inline
-window.agregar = (n, p) => {
-    carrito.push({ nombre: n, precio: p });
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-    mostrarCarrito();
-}
-
-function mostrarCarrito() {
-    let lista = document.getElementById("carrito");
-    if(!lista) return;
-    lista.innerHTML = "";
-    let total = 0;
-
-    if (carrito.length === 0) {
-        lista.innerHTML = `<li style="color:#666">El carrito está vacío</li>`;
-    } else {
-        carrito.forEach((p) => {
-            lista.innerHTML += `<li><span>${p.nombre}</span> <span>$${p.precio}</span></li>`;
-            total += p.precio;
-        });
-    }
-
-    document.getElementById("total").innerText = total;
-}
-
-window.pagar = async () => {
-    if (carrito.length === 0) return alert("Tu carrito está vacío");
-
-    await addDoc(collection(db, "compras"), {
-        productos: carrito,
-        fecha: new Date()
-    });
-
-    carrito = [];
-    localStorage.removeItem("carrito");
-    mostrarCarrito();
-    alert("🎉 ¡Compra realizada con éxito!");
-}
-
-/* INIT */
 cargarProductos();
-mostrarCarrito();
+cargarMusica();
+cargarEventos();
 cargarPerfil();
 
 </script>
