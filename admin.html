@@ -1,671 +1,478 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - LIL NAAY</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<title>Admin LIL NAAY</title>
 
-    <style>
-        :root {
-            --bg-principal: #0a0a0a;
-            --rojo: #ff1a1a;
-            --rojo-oscuro: #8b0000;
-            --texto: #ffffff;
-            --texto-secundario: #cccccc;
-        }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-            color: var(--texto);
-        }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#0a0a0a;color:white;}
 
-        body {
-            background: var(--bg-principal);
-        }
+.login{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
 
-        /* LOGIN */
-        .login {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+input{
+padding:12px;
+margin:6px;
+width:260px;
+border:none;
+border-radius:8px;
+background:#1a1a1a;
+color:white;
+}
 
-        input {
-            padding: 12px;
-            margin: 6px;
-            width: 260px;
-            border: none;
-            border-radius: 8px;
-            background: #1a1a1a;
-            color: var(--texto);
-            outline: none;
-        }
+button{
+padding:10px;
+background:linear-gradient(45deg,#ff0000,#8b0000);
+border:none;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
 
-        button {
-            padding: 10px;
-            background: linear-gradient(45deg, var(--rojo), var(--rojo-oscuro));
-            border: none;
-            color: var(--texto);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
-        }
+#panel{display:flex;}
 
-        button:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
+.sidebar{
+width:220px;
+height:100vh;
+background:linear-gradient(180deg,#0d0d0d,#1a0000);
+padding:20px;
+}
 
-        /* PANEL */
-        #panel {
-            display: flex;
-            height: 100vh;
-        }
+.sidebar h2{color:#ff4d4d;margin-bottom:30px;}
 
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #0d0d0d, #1a0000);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-        }
+.sidebar a{
+display:block;
+padding:10px;
+margin:10px 0;
+color:#ccc;
+cursor:pointer;
+}
 
-        .sidebar h2 {
-            color: #ff4d4d;
-            margin-bottom: 20px;
-        }
+.sidebar a:hover{
+background:#ff000020;
+color:white;
+}
 
-        .sidebar a {
-            display: block;
-            padding: 10px;
-            color: var(--texto-secundario);
-            cursor: pointer;
-            border-radius: 6px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
+.main{flex:1;padding:20px;}
 
-        .sidebar a:hover, .sidebar a.active {
-            background: rgba(255, 0, 0, 0.2);
-            color: var(--texto);
-            border-left: 3px solid var(--rojo);
-        }
+.navbar{
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
+}
 
-        .main {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-            background: #070707;
-        }
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #111;
-            padding: 15px 25px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 0, 0, 0.2);
-            margin-bottom: 25px;
-        }
+.card{
+background:#111;
+padding:20px;
+border-radius:12px;
+border:1px solid rgba(255,0,0,0.2);
+}
 
-        /* SECCIONES Y CONTENEDOR */
-        .section {
-            display: none;
-        }
+li{font-size:13px;margin-bottom:8px;}
+.stats{color:#ff4d4d;margin:5px 0;}
 
-        .section.active {
-            display: block;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background: #111;
-            padding: 22px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 0, 0, 0.15);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            margin-bottom: 15px;
-        }
-
-        li {
-            font-size: 13px;
-            margin-bottom: 10px;
-            list-style: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 8px;
-        }
-
-        .stats {
-            color: #ff4d4d;
-            margin: 5px 0;
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        #noti {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--rojo);
-            padding: 12px 20px;
-            border-radius: 8px;
-            display: none;
-            z-index: 10000;
-            font-weight: 700;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        @media (min-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-    </style>
+#noti{
+position:fixed;
+top:20px;
+right:20px;
+background:red;
+padding:10px;
+border-radius:8px;
+display:none;
+}
+</style>
 </head>
 
 <body>
 
-    <div id="noti">🔔 Nuevo mensaje</div>
+<div id="noti">🔔 Nuevo mensaje</div>
 
-    <div id="loginBox" class="login">
-        <h2>🔐 Acceso Admin</h2>
-        <input id="email" type="email" placeholder="Correo">
-        <input id="pass" type="password" placeholder="Contraseña">
-        <button onclick="login()">Entrar</button>
-    </div>
+<!-- LOGIN -->
+<div id="loginBox" class="login">
+<h2>🔐 Acceso Admin</h2>
+<input id="email" placeholder="Correo">
+<input id="pass" type="password" placeholder="Contraseña">
+<button onclick="login()">Entrar</button>
+</div>
 
-    <div id="panel" style="display:none;">
+<!-- PANEL -->
+<div id="panel" style="display:none;">
 
-        <div class="sidebar">
-            <h2>🔥 LIL NAAY</h2>
-            <a onclick="mostrarSeccion('dashboard')" class="active" id="link-dashboard">📊 Dashboard</a>
-            <a onclick="mostrarSeccion('usuarios')" id="link-usuarios">👥 Usuarios</a>
-            <a onclick="mostrarSeccion('contenido')" id="link-contenido">🎵 Contenido</a>
-            <a onclick="mostrarSeccion('compras')" id="link-compras">💳 Compras</a>
-            <a onclick="mostrarSeccion('productos')" id="link-productos">🛍️ Productos</a>
-            <a onclick="mostrarSeccion('eventos')" id="link-eventos">📅 Eventos</a>
-            <a onclick="mostrarSeccion('chat')" id="link-chat">💬 Chat</a>
-            <a onclick="mostrarSeccion('perfil')" id="link-perfil">👤 Mi Perfil</a>
-            <a onclick="mostrarSeccion('config')" id="link-config">⚙️ Configuración</a>
-            <a onclick="logout()">🚪 Salir</a>
-        </div>
+<div class="sidebar">
+<h2>🔥 LIL NAAY</h2>
+<a onclick="mostrarSeccion('dashboard')">📊 Dashboard</a>
+<a onclick="mostrarSeccion('usuarios')">👥 Usuarios</a>
+<a onclick="mostrarSeccion('compras')">💳 Compras</a>
+<a onclick="mostrarSeccion('productos')">🛍️ Productos</a>
+<a onclick="mostrarSeccion('chat')">💬 Chat</a>
+<a onclick="logout()">🚪 Salir</a>
+</div>
 
-        <div class="main">
+<div class="main">
 
-            <div class="navbar">
-                <h2>⚙️ Panel Admin</h2>
-                <div>
-                    <button onclick="window.history.back()" style="margin-right: 8px;">⬅️ Regresar</button>
-                    <button onclick="logout()">Cerrar sesión</button>
-                </div>
-            </div>
+<div class="navbar">
+<h2>⚙️ Panel Admin</h2>
+<button onclick="logout()">Cerrar sesión</button>
+</div>
 
-            <div id="dashboardSection" class="section active">
-                <div class="container">
-                    <div class="card">
-                        <h3>📊 Stats Generales</h3>
-                        <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
-                        <div class="stats">Compras: <span id="totalCompras">0</span></div>
-                        <div class="stats">Productos: <span id="totalProductos">0</span></div>
-                        <div class="stats">Chat: <span id="totalChat">0</span></div>
-                        <canvas id="grafico" style="max-height:220px; margin-top: 15px;"></canvas>
-                    </div>
-                </div>
-            </div>
+<!-- DASHBOARD -->
+<div id="dashboardSection" class="section">
+<div class="container">
+<div class="card">
+<h3>📊 Stats</h3>
+<div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
+<div class="stats">Compras: <span id="totalCompras">0</span></div>
+<div class="stats">Productos: <span id="totalProductos">0</span></div>
+<div class="stats">Chat: <span id="totalChat">0</span></div>
+<canvas id="grafico"></canvas>
+</div>
+</div>
+</div>
 
-            <div id="usuariosSection" class="section">
-                <div class="card">
-                    <h3>👥 Usuarios Registrados</h3>
-                    <br>
-                    <ul id="usuariosLista"></ul>
-                </div>
-            </div>
+<!-- USUARIOS -->
+<div id="usuariosSection" class="section" style="display:none;">
+<div class="card">
+<ul id="usuariosLista"></ul>
+</div>
+</div>
 
-            <div id="comprasSection" class="section">
-                <div class="card">
-                    <h3>💳 Registro de Compras</h3>
-                    <br>
-                    <ul id="compras">Cargando compras...</ul>
-                </div>
-            </div>
+<!-- COMPRAS -->
+<div id="comprasSection" class="section" style="display:none;">
+<div class="card">
+<ul id="compras"></ul>
+</div>
+</div>
 
-            <div id="contenidoSection" class="section">
-                <div class="card">
-                    <h3>🎵 Subir Contenido</h3>
-                    <div class="form-grid">
-                        <input id="tituloContenido" placeholder="Título de la música o video">
-                        <input type="file" id="archivoContenido" style="padding: 6px; background: rgba(255,255,255,0.05); border-radius: 6px;">
-                        <input id="urlImagenContenido" placeholder="URL de imagen / portada (opcional)">
-                    </div>
-                    <button class="btn-action" style="margin-top: 15px;" onclick="subirContenido()">Subir archivo</button>
-                </div>
-            </div>
+<!-- PRODUCTOS -->
+<div id="productosSection" class="section" style="display:none;">
+<div class="card"><ul id="productos"></ul></div>
 
-            <div id="productosSection" class="section">
-                <div class="card">
-                    <h3>🛍️ Productos Existentes</h3>
-                    <ul id="productos"></ul>
-                </div>
+<div class="card">
+<input id="nombre" placeholder="Nombre">
+<input id="precio" placeholder="Precio">
+<input id="imagen" placeholder="Imagen">
+<button onclick="crearProducto()">Crear</button>
+</div>
+</div>
 
-                <div class="card">
-                    <h3>➕ Crear Nuevo Producto</h3>
-                    <div class="form-grid">
-                        <input id="nombre" placeholder="Nombre">
-                        <input id="precio" placeholder="Precio">
-                        <input type="file" id="imagenProducto" style="padding: 6px; background: rgba(255,255,255,0.05); border-radius: 6px;">
-                    </div>
-                    <button onclick="crearProducto()" style="margin-top: 15px;">Crear Producto</button>
-                </div>
-            </div>
+<!-- CHAT -->
+<div id="chatSection" class="section" style="display:none;">
+<div class="card">
+<ul id="chatAdmin"></ul>
+<input id="mensajeAdmin" placeholder="Escribir mensaje...">
+<button onclick="enviarMensajeAdmin()">Enviar</button>
+</div>
+</div>
 
-            <div id="eventosSection" class="section">
-                <div class="card">
-                    <h3>📅 Crear Próximo Evento</h3>
-                    <div class="form-grid">
-                        <input id="nombreEvento" placeholder="Nombre del evento">
-                        <input id="fechaEvento" type="date">
-                        <input id="lugarEvento" placeholder="Ciudad o lugar">
-                    </div>
-                    <button onclick="crearEvento()" style="margin-top: 15px;">Añadir Evento</button>
-                </div>
-            </div>
+</div>
+</div>
 
-            <div id="chatSection" class="section">
-                <div class="card">
-                    <h3>💬 Moderación de Chat</h3>
-                    <ul id="chatAdmin" style="max-height: 250px; overflow-y: auto;"></ul>
-                    <div class="form-grid" style="grid-template-columns: 1fr auto;">
-                        <input id="mensajeAdmin" placeholder="Escribe un anuncio o mensaje...">
-                        <button onclick="enviarMensajeAdmin()">Enviar Anuncio</button>
-                    </div>
-                </div>
-            </div>
+<script type="module">
 
-            <div id="perfilSection" class="section">
-                <div class="card">
-                    <h3>👤 Perfil de Administrador</h3>
-                    <div class="form-grid">
-                        <input id="nombreAdmin" placeholder="Nombre para la web">
-                        <input id="insigniaAdmin" placeholder="Insignia personalizada (Ej: 👑, 🛡️)">
-                        <input type="file" id="fotoAdmin" style="padding: 6px; background: rgba(255,255,255,0.05); border-radius: 6px;">
-                    </div>
-                    <button onclick="guardarPerfil()" style="margin-top: 15px;">Guardar Perfil</button>
-                </div>
-            </div>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+getFirestore, collection, getDocs, addDoc,
+deleteDoc, doc, updateDoc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-            <div id="configSection" class="section">
-                <div class="card">
-                    <h3>⚙️ Activación de Áreas de la Página</h3>
-                    <br>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <label><input type="checkbox" id="toggleTienda" onchange="guardarConfig()"> Activar Tienda</label>
-                        <label><input type="checkbox" id="toggleMusica" onchange="guardarConfig()"> Activar Reproductor</label>
-                        <label><input type="checkbox" id="toggleEventos" onchange="guardarConfig()"> Activar Eventos</label>
-                    </div>
-                </div>
-            </div>
+import {
+getAuth, signInWithEmailAndPassword,
+onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-        </div>
-    </div>
+const app = initializeApp({
+apiKey:"AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
+authDomain:"lil-naay.firebaseapp.com",
+projectId:"lil-naay"
+});
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-        const app = initializeApp({
-            apiKey: "AIzaSyDG6pY9OmphVL91N3ZGY0yED5iA0Sopm3I",
-            authDomain: "lil-naay.firebaseapp.com",
-            projectId: "lil-naay"
-        });
+let ultimoMensaje = "";
+let chart;
 
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        let ultimoMensaje = "";
-        let chart;
+/* LOGIN */
+window.login = ()=>{
+signInWithEmailAndPassword(auth,email.value,pass.value)
+.catch(e=>alert(e.message));
+}
 
-        // AUTH
-        window.login = () => {
-            signInWithEmailAndPassword(auth, email.value, pass.value)
-                .catch(e => alert(e.message));
-        }
+window.logout = ()=>signOut(auth);
 
-        window.logout = () => signOut(auth);
+/* SECCIONES */
+window.mostrarSeccion = s=>{
+["dashboard","usuarios","compras","productos","chat"]
+.forEach(x=>document.getElementById(x+"Section").style.display="none");
+document.getElementById(s+"Section").style.display="block";
+}
 
-        // SECCIONES
-        window.mostrarSeccion = (s) => {
-            ["dashboard", "usuarios", "contenido", "compras", "productos", "eventos", "chat", "perfil", "config"]
-                .forEach(x => document.getElementById(x + "Section").style.display = "none");
-            document.getElementById(s + "Section").style.display = "block";
-            
-            // Actualiza la barra lateral
-            document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
-            document.getElementById("link-" + s).classList.add("active");
-        }
+/* ENVIAR MENSAJE ADMIN */
+window.enviarMensajeAdmin = async ()=>{
+if(!mensajeAdmin.value) return;
 
-        onAuthStateChanged(auth, async user => {
-            if (!user) {
-                document.getElementById("loginBox").style.display = "flex";
-                document.getElementById("panel").style.display = "none";
-                return;
-            }
+await addDoc(collection(db,"chat"),{
+usuario:"ADMIN",
+email:auth.currentUser.email,
+texto:mensajeAdmin.value,
+rol:"admin",
+fecha:Date.now()
+});
 
-            const snap = await getDocs(collection(db, "usuarios"));
-            let ok = false;
-            snap.forEach(d => {
-                if (d.id === user.uid && d.data().admin) ok = true;
-            });
+mensajeAdmin.value="";
+}
 
-            if (!ok) {
-                alert("No tienes permisos de administrador.");
-                signOut(auth);
-                return;
-            }
+/* AUTH */
+onAuthStateChanged(auth, async user=>{
+if(!user){
+loginBox.style.display="flex";
+panel.style.display="none";
+return;
+}
 
-            document.getElementById("loginBox").style.display = "none";
-            document.getElementById("panel").style.display = "flex";
-            cargarTodo();
-        });
+const snap = await getDocs(collection(db,"usuarios"));
+let ok=false;
 
-        function cargarTodo() {
-            cargarStats();
-            cargarUsuarios();
-            cargarProductos();
-            cargarCompras();
-            cargarChatAdmin();
-            cargarConfiguracion();
-        }
+snap.forEach(d=>{
+if(d.id===user.uid && d.data().admin) ok=true;
+});
 
-        // CONTROL DE USUARIOS
-        async function cargarUsuarios() {
-            const uLista = document.getElementById("usuariosLista");
-            uLista.innerHTML = "";
-            const snap = await getDocs(collection(db, "usuarios"));
-            
-            snap.forEach(async d => {
-                let u = d.data();
+if(!ok){
+alert("No admin");
+logout();
+return;
+}
 
-                if (u.ban && u.banHasta < Date.now()) {
-                    await updateDoc(doc(db, "usuarios", d.id), { ban: false });
-                }
+loginBox.style.display="none";
+panel.style.display="flex";
+cargarTodo();
+});
 
-                let baneado = u.ban && u.banHasta > Date.now();
-                let rol = u.admin ? "👑 Admin" : u.mod ? "🛡️ Mod" : u.vip ? "💎 VIP" : "👤 User";
+/* CARGAR TODO */
+function cargarTodo(){
+cargarStats();
+cargarUsuarios();
+cargarProductos();
+cargarCompras();
+cargarChatAdmin();
+}
 
-                uLista.innerHTML += `
-                <li>
-                    <b>${u.email || "⚠️ Sin correo"}</b><br>
-                    Rol: ${rol}<br>
-                    Estado: ${baneado ? "🚫 BANEADO" : "✅ Activo"}<br>
-                    <button onclick="cambiarRol('${u.email}')">🎭 Rol</button>
-                    <button onclick="banearUsuario('${u.email}')">🚫 Ban</button>
-                </li>`;
-            });
-        }
+/* USUARIOS */
+async function cargarUsuarios(){
+usuariosLista.innerHTML="";
 
-        window.cambiarRol = async (email) => {
-            let rol = prompt("Escribe el rol a asignar (admin / mod / vip / user)");
-            if (!rol) return;
-            const snap = await getDocs(collection(db, "usuarios"));
-            snap.forEach(async d => {
-                if (d.data().email === email) {
-                    await updateDoc(doc(db, "usuarios", d.id), {
-                        admin: rol === "admin",
-                        mod: rol === "mod",
-                        vip: rol === "vip"
-                    });
-                }
-            });
-            alert("Rol actualizado correctamente.");
-            cargarUsuarios();
-        }
+const snap = await getDocs(collection(db,"usuarios"));
 
-        window.banearUsuario = async (email) => {
-            let min = prompt("Duración del ban en minutos:");
-            if (!min) return;
-            const snap = await getDocs(collection(db, "usuarios"));
-            snap.forEach(async d => {
-                if (d.data().email === email) {
-                    await updateDoc(doc(db, "usuarios", d.id), {
-                        ban: true,
-                        banHasta: Date.now() + (min * 60000)
-                    });
-                }
-            });
-            alert("Usuario baneado.");
-            cargarUsuarios();
-        }
+snap.forEach(async d=>{
+let u = d.data();
 
-        // CONTENIDO
-        window.subirContenido = async () => {
-            const titulo = document.getElementById("tituloContenido").value;
-            const archivoInput = document.getElementById("archivoContenido").files[0];
-            const urlImg = document.getElementById("urlImagenContenido").value;
+if(u.ban && u.banHasta < Date.now()){
+await updateDoc(doc(db,"usuarios",d.id),{ban:false});
+}
 
-            if (!titulo) return alert("Por favor, ingresa un título");
-            if (!archivoInput) return alert("Sube un archivo desde tu dispositivo");
+let baneado = u.ban && u.banHasta > Date.now();
 
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                await addDoc(collection(db, "contenido"), {
-                    titulo: titulo,
-                    archivoBase64: e.target.result,
-                    imagen: urlImg || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17",
-                    fecha: Date.now()
-                });
-                alert("Contenido subido correctamente a la página principal.");
-                document.getElementById("tituloContenido").value = "";
-                document.getElementById("archivoContenido").value = "";
-                document.getElementById("urlImagenContenido").value = "";
-            };
-            reader.readAsDataURL(archivoInput);
-        }
+let rol =
+u.admin ? "👑 Admin" :
+u.mod ? "🛡️ Mod" :
+u.vip ? "💎 VIP" :
+"👤 User";
 
-        // PRODUCTOS
-        window.crearProducto = async () => {
-            const nombre = document.getElementById("nombre").value;
-            const precio = document.getElementById("precio").value;
-            const imagenInput = document.getElementById("imagenProducto").files[0];
+usuariosLista.innerHTML += `
+<li>
+${u.email || "⚠️ Sin correo"}
+<br>
+Rol: ${rol}
+<br>
+Estado: ${baneado ? "🚫 BANEADO" : "✅ Activo"}
+<br>
+<button onclick="cambiarRol('${u.email}')">🎭 Rol</button>
+<button onclick="banearUsuario('${u.email}')">🚫 Ban</button>
+</li>`;
+});
+}
 
-            if (!nombre || !precio) return alert("Completa el nombre y el precio");
-            if (!imagenInput) return alert("Sube una imagen desde tu PC o celular");
+/* CHAT */
+function cargarChatAdmin(){
+onSnapshot(collection(db,"chat"),snap=>{
+chatAdmin.innerHTML="";
 
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                await addDoc(collection(db, "productos"), {
-                    nombre: nombre,
-                    precio: Number(precio),
-                    imagen: e.target.result
-                });
-                alert("Producto creado y subido con éxito");
-                document.getElementById("nombre").value = "";
-                document.getElementById("precio").value = "";
-                document.getElementById("imagenProducto").value = "";
-                cargarProductos();
-            };
-            reader.readAsDataURL(imagenInput);
-        }
+snap.forEach(docSnap=>{
+let m = docSnap.data();
+let id = docSnap.id;
 
-        async function cargarProductos() {
-            const productosLista = document.getElementById("productos");
-            productosLista.innerHTML = "";
-            (await getDocs(collection(db, "productos"))).forEach(d => {
-                let p = d.data(), id = d.id;
-                productosLista.innerHTML += `
-                <li>${p.nombre} - $${p.precio} 
-                    <button onclick="eliminarProducto('${id}')" style="background:transparent;border:none;color:red;cursor:pointer">❌</button>
-                </li>`;
-            });
-        }
+let color =
+m.rol==="admin"?"red":
+m.rol==="mod"?"cyan":
+m.rol==="vip"?"gold":"white";
 
-        window.eliminarProducto = async (id) => {
-            await deleteDoc(doc(db, "productos", id));
-            cargarProductos();
-        }
+chatAdmin.innerHTML += `
+<li style="color:${color}">
+<b>${m.usuario}</b>: ${m.texto}
+<br>
+<button onclick="eliminarMensaje('${id}')">🗑️</button>
+</li>`;
+});
 
-        // EVENTOS
-        window.crearEvento = async () => {
-            let nombre = document.getElementById("nombreEvento").value;
-            let fecha = document.getElementById("fechaEvento").value;
-            let lugar = document.getElementById("lugarEvento").value;
+let docs = snap.docs;
+if(docs.length){
+let ultimo = docs[docs.length-1].data();
+if(ultimo.texto !== ultimoMensaje){
+mostrarNoti();
+ultimoMensaje = ultimo.texto;
+}
+}
 
-            if (!nombre || !fecha || !lugar) return alert("Rellena todos los campos del evento");
+});
+}
 
-            await addDoc(collection(db, "eventos"), {
-                nombre: nombre,
-                fecha: fecha,
-                lugar: lugar
-            });
-            alert("Evento creado correctamente.");
-            document.getElementById("nombreEvento").value = "";
-            document.getElementById("fechaEvento").value = "";
-            document.getElementById("lugarEvento").value = "";
-        }
+function mostrarNoti(){
+noti.style.display="block";
+setTimeout(()=>noti.style.display="none",3000);
+}
 
-        // CHAT
-        function cargarChatAdmin() {
-            onSnapshot(collection(db, "chat"), snap => {
-                const chatAdmin = document.getElementById("chatAdmin");
-                chatAdmin.innerHTML = "";
+/* MODERACION */
+window.eliminarMensaje=id=>deleteDoc(doc(db,"chat",id));
 
-                snap.forEach(docSnap => {
-                    let m = docSnap.data();
-                    chatAdmin.innerHTML += `
-                    <li style="color: ${m.rol === 'admin' ? '#ff4d4d' : 'white'}">
-                        <b>${m.usuario}</b>: ${m.texto}
-                        <button onclick="eliminarMensaje('${docSnap.id}')" style="background:none;border:none;color:red;cursor:pointer">🗑️</button>
-                    </li>`;
-                });
+window.cambiarRol = async email=>{
+let rol = prompt("admin / mod / vip / user");
+if(!rol) return;
 
-                let docs = snap.docs;
-                if (docs.length) {
-                    let ultimo = docs[docs.length - 1].data();
-                    if (ultimo.texto !== ultimoMensaje) {
-                        mostrarNoti();
-                        ultimoMensaje = ultimo.texto;
-                    }
-                }
-            });
-        }
+const snap = await getDocs(collection(db,"usuarios"));
 
-        window.enviarMensajeAdmin = async () => {
-            const mensajeAdmin = document.getElementById("mensajeAdmin");
-            if (!mensajeAdmin.value) return;
+snap.forEach(async d=>{
+if(d.data().email===email){
+await updateDoc(doc(db,"usuarios",d.id),{
+admin: rol==="admin",
+mod: rol==="mod",
+vip: rol==="vip"
+});
+}
+});
 
-            await addDoc(collection(db, "chat"), {
-                usuario: "ADMIN",
-                email: auth.currentUser.email,
-                texto: mensajeAdmin.value,
-                rol: "admin",
-                fecha: Date.now()
-            });
-            mensajeAdmin.value = "";
-        }
+alert("Rol actualizado");
+}
 
-        window.eliminarMensaje = async (id) => {
-            await deleteDoc(doc(db, "chat", id));
-        }
+window.banearUsuario = async email=>{
+let min = prompt("Minutos BAN");
+if(!min) return;
 
-        function mostrarNoti() {
-            const noti = document.getElementById("noti");
-            noti.style.display = "block";
-            setTimeout(() => noti.style.display = "none", 3000);
-        }
+const snap = await getDocs(collection(db,"usuarios"));
 
-        // COMPRAS
-        async function cargarCompras() {
-            const comprasLista = document.getElementById("compras");
-            comprasLista.innerHTML = "";
-            const snap = await getDocs(collection(db, "compras"));
-            snap.forEach(d => {
-                let comp = d.data();
-                let productosList = comp.productos || [];
-                comprasLista.innerHTML += `<li>${productosList.length} Productos comprados.</li>`;
-            });
-        }
+snap.forEach(async d=>{
+if(d.data().email===email){
+await updateDoc(doc(db,"usuarios",d.id),{
+ban:true,
+banHasta:Date.now()+min*60000
+});
+}
+});
 
-        // ESTADÍSTICAS
-        function cargarStats() {
-            let u = 0, c = 0, p = 0, ch = 0;
-            
-            onSnapshot(collection(db, "usuarios"), snap => {
-                u = snap.size;
-                document.getElementById("totalUsuarios").innerText = u;
-                actualizarGrafico(u, c, p, ch);
-            });
-            onSnapshot(collection(db, "compras"), snap => {
-                c = snap.size;
-                document.getElementById("totalCompras").innerText = c;
-                actualizarGrafico(u, c, p, ch);
-            });
-            onSnapshot(collection(db, "productos"), snap => {
-                p = snap.size;
-                document.getElementById("totalProductos").innerText = p;
-                actualizarGrafico(u, c, p, ch);
-            });
-            onSnapshot(collection(db, "chat"), snap => {
-                ch = snap.size;
-                document.getElementById("totalChat").innerText = ch;
-                actualizarGrafico(u, c, p, ch);
-            });
-        }
+alert("Usuario baneado");
+}
 
-        function actualizarGrafico(u, c, p, ch) {
-            if (chart) chart.destroy();
-            chart = new Chart(document.getElementById("grafico"), {
-                type: "bar",
-                data: {
-                    labels: ["Usuarios", "Compras", "Productos", "Chat"],
-                    datasets: [{
-                        label: "Datos Generales",
-                        data: [u, c, p, ch],
-                        backgroundColor: ["#ff4d4d", "#ff1a1a", "#cc0000", "#8b0000"]
-                    }]
-                }
-            });
-        }
+/* STATS */
+function cargarStats(){
 
-        // PERFIL Y CONFIGURACIONES
-        window.guardarPerfil = async () => {
-            let nombre = document.getElementById("nombreAdmin").value;
-            let insignia = document.getElementById("insigniaAdmin").value;
-            if (nombre) localStorage.setItem("adminNombre", nombre);
-            if (insignia) localStorage.setItem("adminInsignia", insignia);
-            alert("Perfil de administrador guardado localmente.");
-        }
+let usuarios=0, compras=0, productos=0, chat=0;
 
-        window.guardarConfig = () => {
-            localStorage.setItem("configTienda", document.getElementById("toggleTienda").checked);
-        }
+onSnapshot(collection(db,"usuarios"),snap=>{
+usuarios = snap.size;
+totalUsuarios.innerText = usuarios;
+actualizar();
+});
 
-        window.cargarConfiguracion = () => {
-            const config = localStorage.getItem("configTienda");
-            document.getElementById("toggleTienda").checked = config === "true";
-        }
-    </script>
+onSnapshot(collection(db,"compras"),snap=>{
+compras = snap.size;
+totalCompras.innerText = compras;
+actualizar();
+});
+
+onSnapshot(collection(db,"productos"),snap=>{
+productos = snap.size;
+totalProductos.innerText = productos;
+actualizar();
+});
+
+onSnapshot(collection(db,"chat"),snap=>{
+chat = snap.size;
+totalChat.innerText = chat;
+actualizar();
+});
+
+function actualizar(){
+if(chart) chart.destroy();
+
+chart = new Chart(document.getElementById("grafico"),{
+type:"bar",
+data:{
+labels:["Usuarios","Compras","Productos","Chat"],
+datasets:[{
+label:"Datos en vivo",
+data:[usuarios,compras,productos,chat]
+}]
+}
+});
+}
+
+}
+
+/* PRODUCTOS */
+async function cargarProductos(){
+productos.innerHTML="";
+
+(await getDocs(collection(db,"productos"))).forEach(d=>{
+let p=d.data(),id=d.id;
+
+productos.innerHTML += `
+<li>${p.nombre} $${p.precio}
+<button onclick="eliminarProducto('${id}')">🗑️</button>
+</li>`;
+});
+}
+
+window.eliminarProducto=id=>deleteDoc(doc(db,"productos",id));
+
+window.crearProducto=async()=>{
+await addDoc(collection(db,"productos"),{
+nombre:nombre.value,
+precio:Number(precio.value),
+imagen:imagen.value
+});
+
+nombre.value="";
+precio.value="";
+imagen.value="";
+
+cargarProductos();
+}
+
+/* COMPRAS */
+async function cargarCompras(){
+compras.innerHTML="";
+
+(await getDocs(collection(db,"compras")))
+.forEach(d=>{
+compras.innerHTML += `<li>${d.data().productos.length} productos</li>`;
+});
+}
+
+</script>
 
 </body>
 </html>
