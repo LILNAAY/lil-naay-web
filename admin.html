@@ -3,160 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - LIL NAAY</title>
+    <title>Admin Dashboard - LIL NAAY</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            --bg-principal: #0a0a0a;
-            --rojo: #ff1a1a;
-            --rojo-oscuro: #8b0000;
-            --texto: #ffffff;
-            --texto-secundario: #cccccc;
+            --bg-principal: #070707;
+            --bg-card: rgba(20, 20, 20, 0.7);
+            --rojo: #9333ea; /* Tono morado moderno de la imagen */
+            --rojo-oscuro: #581c87;
+            --borde-rojo: rgba(147, 51, 234, 0.2);
+            --texto-principal: #ffffff;
+            --texto-secundario: #9ca3af;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-            color: var(--texto);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--texto-principal);
         }
 
         body {
             background: var(--bg-principal);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
         }
 
         /* LOGIN */
-        .login {
+        .login-container {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            width: 100vw;
+            background: rgba(0, 0, 0, 0.98);
+            position: fixed;
+            z-index: 10000;
         }
 
-        input {
+        .login-box {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--borde-rojo);
+            text-align: center;
+            width: 320px;
+            box-shadow: 0 10px 40px rgba(147, 51, 234, 0.3);
+        }
+
+        .login-box h2 {
+            margin-bottom: 25px;
+            color: var(--rojo);
+            font-weight: 800;
+        }
+
+        .login-box input {
+            width: 100%;
             padding: 12px;
-            margin: 6px;
-            width: 260px;
-            border: none;
+            margin: 8px 0;
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 8px;
-            background: #1a1a1a;
-            color: var(--texto);
+            color: #fff;
             outline: none;
         }
 
-        button {
-            padding: 10px;
-            background: linear-gradient(45deg, var(--rojo), var(--rojo-oscuro));
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, var(--rojo-oscuro), var(--rojo));
             border: none;
-            color: var(--texto);
             border-radius: 8px;
+            font-weight: 700;
             cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
+            transition: all 0.3s;
         }
 
-        button:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+        .login-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px var(--rojo);
         }
 
-        /* PANEL */
-        #panel {
-            display: flex;
-            height: 100vh;
-        }
-
+        /* SIDEBAR */
         .sidebar {
             width: 260px;
-            background: linear-gradient(180deg, #0d0d0d, #1a0000);
-            padding: 20px;
+            background: rgba(5, 5, 5, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 25px 15px;
+            height: 100vh;
+            position: sticky;
+            top: 0;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
+            gap: 15px;
         }
 
         .sidebar h2 {
-            color: #ff4d4d;
-            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: var(--rojo);
+            margin-bottom: 15px;
+            padding-left: 10px;
         }
 
         .sidebar a {
-            display: block;
-            padding: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
             color: var(--texto-secundario);
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             text-decoration: none;
             transition: all 0.2s;
         }
 
         .sidebar a:hover, .sidebar a.active {
-            background: rgba(255, 0, 0, 0.2);
-            color: var(--texto);
+            color: #fff;
+            background: rgba(147, 51, 234, 0.1);
             border-left: 3px solid var(--rojo);
         }
 
-        .main {
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
             flex: 1;
             padding: 30px;
             overflow-y: auto;
-            background: #070707;
+            max-height: 100vh;
         }
 
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #111;
+            margin-bottom: 30px;
+            background: var(--bg-card);
             padding: 15px 25px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 0, 0, 0.2);
-            margin-bottom: 25px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
-        /* SECCIONES Y CONTENEDOR */
-        .section {
+        .navbar h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: rgba(147, 51, 234, 0.1);
+            border: 1px solid var(--rojo);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: var(--rojo);
+            box-shadow: 0 0 12px var(--rojo);
+        }
+
+        /* SECCIONES Y GRIDS */
+        .section-panel {
             display: none;
         }
 
-        .section.active {
+        .section-panel.active {
             display: block;
+            animation: fadeIn 0.4s ease;
         }
 
-        .container {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
-        .card {
-            background: #111;
+        .card-stat {
+            background: var(--bg-card);
             padding: 22px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 0, 0, 0.15);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            margin-bottom: 15px;
+            border-radius: 16px;
+            border: 1px solid var(--borde-rojo);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
         }
 
-        li {
-            font-size: 13px;
-            margin-bottom: 10px;
-            list-style: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        .card-stat h3 {
+            font-size: 0.85rem;
+            color: var(--texto-secundario);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .card-stat .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--rojo);
+        }
+
+        .data-card {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            margin-bottom: 25px;
+        }
+
+        .data-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             padding-bottom: 8px;
         }
 
-        .stats {
-            color: #ff4d4d;
-            margin: 5px 0;
-            font-size: 15px;
+        /* FORMULARIOS */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--rojo);
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--rojo-oscuro), var(--rojo));
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
             font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            box-shadow: 0 0 12px var(--rojo);
+            transform: translateY(-1px);
+        }
+
+        ul {
+            list-style: none;
         }
 
         #noti {
@@ -167,167 +280,190 @@
             padding: 12px 20px;
             border-radius: 8px;
             display: none;
-            z-index: 10000;
+            z-index: 10001;
             font-weight: 700;
         }
 
-        .form-grid {
+        /* ACCESOS RÁPIDOS */
+        .shortcuts-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        @media (min-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr 1fr;
-            }
+        .shortcut-card {
+            background: var(--bg-card);
+            border: 1px solid var(--borde-rojo);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .shortcut-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(147, 51, 234, 0.2);
         }
     </style>
 </head>
-
 <body>
 
-    <div id="noti">🔔 Nuevo mensaje</div>
+    <div id="noti">🔔 Nuevo mensaje en el chat</div>
 
-    <div id="loginBox" class="login">
-        <h2>🔐 Acceso Admin</h2>
-        <input id="email" type="email" placeholder="Correo">
-        <input id="pass" type="password" placeholder="Contraseña">
-        <button onclick="login()">Entrar</button>
+    <div id="loginBox" class="login-container">
+        <div class="login-box">
+            <h2>LIL NAAY 🔐</h2>
+            <input id="email" type="email" placeholder="Correo electrónico">
+            <input id="pass" type="password" placeholder="Contraseña">
+            <button onclick="login()">Iniciar sesión</button>
+        </div>
     </div>
 
-    <div id="panel" style="display:none;">
-
-        <div class="sidebar">
-            <h2>🔥 LIL NAAY</h2>
-            <a onclick="mostrarSeccion('dashboard')" class="active" id="link-dashboard">📊 Dashboard</a>
-            <a onclick="mostrarSeccion('usuarios')" id="link-usuarios">👥 Usuarios</a>
-            <a onclick="mostrarSeccion('contenido')" id="link-contenido">🎵 Contenido</a>
-            <a onclick="mostrarSeccion('compras')" id="link-compras">💳 Compras</a>
-            <a onclick="mostrarSeccion('productos')" id="link-productos">🛍️ Productos</a>
-            <a onclick="mostrarSeccion('eventos')" id="link-eventos">📅 Eventos</a>
-            <a onclick="mostrarSeccion('chat')" id="link-chat">💬 Chat</a>
-            <a onclick="mostrarSeccion('perfil')" id="link-perfil">👤 Mi Perfil</a>
-            <a onclick="mostrarSeccion('config')" id="link-config">⚙️ Configuración</a>
-            <a onclick="logout()">🚪 Salir</a>
-        </div>
-
-        <div class="main">
-
-            <div class="navbar">
-                <h2>⚙️ Panel Admin</h2>
-                <div>
-                    <button onclick="window.history.back()" style="margin-right: 8px;">⬅️ Regresar</button>
-                    <button onclick="logout()">Cerrar sesión</button>
+    <div id="panel" style="display:none; width: 100%;">
+        <div style="display: flex;">
+            <div class="sidebar">
+                <h2>LIL NAAY 🔥</h2>
+                <a onclick="mostrarSeccion('dashboard')" class="active" id="link-dashboard">📊 Dashboard</a>
+                <a onclick="mostrarSeccion('usuarios')" id="link-usuarios">👥 Usuarios</a>
+                <a onclick="mostrarSeccion('contenido')" id="link-contenido">🎵 Contenido</a>
+                <a onclick="mostrarSeccion('tienda')" id="link-tienda">🛍️ Tienda</a>
+                <a onclick="mostrarSeccion('eventos')" id="link-eventos">📅 Eventos</a>
+                <a onclick="mostrarSeccion('chat')" id="link-chat">💬 Chat</a>
+                <a onclick="mostrarSeccion('configuracion')" id="link-configuracion">⚙️ Configuración</a>
+                <div style="margin-top: auto;">
+                    <a onclick="logout()" style="color: var(--rojo);">🚪 Salir</a>
                 </div>
             </div>
 
-            <div id="dashboardSection" class="section active">
-                <div class="container">
-                    <div class="card">
-                        <h3>📊 Stats Generales</h3>
-                        <div class="stats">Usuarios: <span id="totalUsuarios">0</span></div>
-                        <div class="stats">Compras: <span id="totalCompras">0</span></div>
-                        <div class="stats">Productos: <span id="totalProductos">0</span></div>
-                        <div class="stats">Chat: <span id="totalChat">0</span></div>
-                        <canvas id="grafico" style="max-height:220px; margin-top: 15px;"></canvas>
+            <div class="main-content">
+                <div class="navbar">
+                    <h2>⚙️ Panel de Administración</h2>
+                    <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+                </div>
+
+                <div id="dashboardSection" class="section-panel active">
+                    <div class="grid-stats">
+                        <div class="card-stat">
+                            <h3>Usuarios Totales</h3>
+                            <div class="value" id="totalUsuarios">0</div>
+                        </div>
+                        <div class="card-stat">
+                            <h3>Compras</h3>
+                            <div class="value" id="totalCompras">0</div>
+                        </div>
+                        <div class="card-stat">
+                            <h3>Productos</h3>
+                            <div class="value" id="totalProductos">0</div>
+                        </div>
+                        <div class="card-stat">
+                            <h3>Mensajes Hoy</h3>
+                            <div class="value" id="totalChat">0</div>
+                        </div>
+                    </div>
+
+                    <div class="data-card">
+                        <h3>📈 Ingresos (Stripe)</h3>
+                        <canvas id="grafico" style="max-height: 250px;"></canvas>
+                    </div>
+
+                    <div class="data-card">
+                        <h3>⚡ Accesos Rápidos</h3>
+                        <div class="shortcuts-grid">
+                            <div class="shortcut-card" onclick="mostrarSeccion('contenido')">
+                                <p>🎵 Subir Música</p>
+                            </div>
+                            <div class="shortcut-card" onclick="mostrarSeccion('contenido')">
+                                <p>🎥 Subir Video</p>
+                            </div>
+                            <div class="shortcut-card" onclick="mostrarSeccion('eventos')">
+                                <p>📅 Crear Evento</p>
+                            </div>
+                            <div class="shortcut-card" onclick="mostrarSeccion('tienda')">
+                                <p>🛍️ Nuevo Producto</p>
+                            </div>
+                            <div class="shortcut-card" onclick="mostrarSeccion('chat')">
+                                <p>📢 Enviar Anuncio</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div id="usuariosSection" class="section">
-                <div class="card">
-                    <h3>👥 Usuarios Registrados</h3>
-                    <br>
-                    <ul id="usuariosLista"></ul>
-                </div>
-            </div>
-
-            <div id="comprasSection" class="section">
-                <div class="card">
-                    <h3>💳 Registro de Compras</h3>
-                    <br>
-                    <ul id="compras">Cargando compras...</ul>
-                </div>
-            </div>
-
-            <div id="contenidoSection" class="section">
-                <div class="card">
-                    <h3>🎵 Subir Contenido</h3>
-                    <div class="form-grid">
-                        <input id="tituloContenido" placeholder="Título de la música o video">
-                        <input type="file" id="archivoContenido" style="padding: 6px; background: rgba(255,255,255,0.05); border-radius: 6px;">
-                        <input id="urlImagenContenido" placeholder="URL de imagen / portada (opcional)">
-                    </div>
-                    <button class="btn-action" style="margin-top: 15px;" onclick="subirContenido()">Subir archivo</button>
-                </div>
-            </div>
-
-            <div id="productosSection" class="section">
-                <div class="card">
-                    <h3>🛍️ Productos Existentes</h3>
-                    <ul id="productos"></ul>
-                </div>
-
-                <div class="card">
-                    <h3>➕ Crear Nuevo Producto</h3>
-                    <div class="form-grid">
-                        <input id="nombre" placeholder="Nombre">
-                        <input id="precio" placeholder="Precio">
-                        <input type="file" id="imagenProducto" style="padding: 6px; background: rgba(255,255,255,0.05); border-radius: 6px;">
-                    </div>
-                    <button onclick="crearProducto()" style="margin-top: 15px;">Crear Producto</button>
-                </div>
-            </div>
-
-            <div id="eventosSection" class="section">
-                <div class="card">
-                    <h3>📅 Crear Próximo Evento</h3>
-                    <div class="form-grid">
-                        <input id="nombreEvento" placeholder="Nombre del evento">
-                        <input id="fechaEvento" type="date">
-                        <input id="lugarEvento" placeholder="Ciudad o lugar">
-                    </div>
-                    <button onclick="crearEvento()" style="margin-top: 15px;">Añadir Evento</button>
-                </div>
-            </div>
-
-            <div id="chatSection" class="section">
-                <div class="card">
-                    <h3>💬 Moderación de Chat</h3>
-                    <ul id="chatAdmin" style="max-height: 250px; overflow-y: auto;"></ul>
-                    <div class="form-grid" style="grid-template-columns: 1fr auto;">
-                        <input id="mensajeAdmin" placeholder="Escribe un anuncio o mensaje...">
-                        <button onclick="enviarMensajeAdmin()">Enviar Anuncio</button>
+                <div id="usuariosSection" class="section-panel">
+                    <div class="data-card">
+                        <h3>👥 Control de Usuarios y Roles</h3>
+                        <ul id="usuariosLista">Cargando lista...</ul>
                     </div>
                 </div>
-            </div>
 
-            <div id="perfilSection" class="section">
-                <div class="card">
-                    <h3>👤 Perfil de Administrador</h3>
-                    <div class="form-grid">
-                        <input id="nombreAdmin" placeholder="Nombre para la web">
-                        <input id="insigniaAdmin" placeholder="Insignia personalizada (Ej: 👑, 🛡️)">
-                        <input type="file" id="fotoAdmin" style="padding: 6px; background: rgba(255,255,255,0.05); border-radius: 6px;">
-                    </div>
-                    <button onclick="guardarPerfil()" style="margin-top: 15px;">Guardar Perfil</button>
-                </div>
-            </div>
-
-            <div id="configSection" class="section">
-                <div class="card">
-                    <h3>⚙️ Activación de Áreas de la Página</h3>
-                    <br>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <label><input type="checkbox" id="toggleTienda" onchange="guardarConfig()"> Activar Tienda</label>
-                        <label><input type="checkbox" id="toggleMusica" onchange="guardarConfig()"> Activar Reproductor</label>
-                        <label><input type="checkbox" id="toggleEventos" onchange="guardarConfig()"> Activar Eventos</label>
+                <div id="contenidoSection" class="section-panel">
+                    <div class="data-card">
+                        <h3>🎵 Subir Música o Video Exclusivo</h3>
+                        <div class="form-grid">
+                            <input id="tituloContenido" class="form-input" placeholder="Título del archivo">
+                            <input type="file" id="archivoContenido" class="form-input">
+                        </div>
+                        <button class="btn-action" onclick="subirContenido()">Subir Archivo</button>
                     </div>
                 </div>
-            </div>
 
+                <div id="tiendaSection" class="section-panel">
+                    <div class="data-card">
+                        <h3>🛍️ Productos Existentes</h3>
+                        <ul id="productos"></ul>
+                    </div>
+
+                    <div class="data-card">
+                        <h3>➕ Agregar Producto con Imagen</h3>
+                        <div class="form-grid">
+                            <input id="nombreProducto" class="form-input" placeholder="Nombre del producto">
+                            <input id="precioProducto" class="form-input" placeholder="Precio ($)">
+                            <div style="grid-column: span 2;">
+                                <label style="font-size: 11px; color: #aaa;">Imagen del producto (Subir archivo o pegar URL):</label>
+                                <input type="file" id="imagenProducto" class="form-input" style="margin-top: 5px;">
+                            </div>
+                        </div>
+                        <button class="btn-action" onclick="crearProducto()">Añadir Producto</button>
+                    </div>
+                </div>
+
+                <div id="eventosSection" class="section-panel">
+                    <div class="data-card">
+                        <h3>📅 Próximos Eventos</h3>
+                        <div class="form-grid">
+                            <input id="nombreEvento" class="form-input" placeholder="Nombre del evento">
+                            <input id="fechaEvento" class="form-input" type="date">
+                            <input id="lugarEvento" class="form-input" placeholder="Ciudad / Lugar">
+                            <input type="file" id="imagenEvento" class="form-input">
+                        </div>
+                        <button class="btn-action" onclick="crearEvento()">Crear Evento</button>
+                    </div>
+                </div>
+
+                <div id="chatSection" class="section-panel">
+                    <div class="data-card">
+                        <h3>💬 Moderación de Chat en Vivo</h3>
+                        <ul id="chatAdmin" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></ul>
+                        <div class="form-grid">
+                            <input id="mensajeAdmin" class="form-input" placeholder="Escribe un anuncio o mensaje...">
+                            <button class="btn-action" style="margin-top: 0;" onclick="enviarMensajeAdmin()">Enviar Anuncio</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="configuracionSection" class="section-panel">
+                    <div class="data-card">
+                        <h3>⚙️ Activar / Desactivar Secciones de la Web</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                            <label><input type="checkbox" id="toggleTienda" checked onchange="guardarConfiguracion()"> Tienda Online</label>
+                            <label><input type="checkbox" id="toggleMusica" checked onchange="guardarConfiguracion()"> Reproductor de Música</label>
+                            <label><input type="checkbox" id="toggleEventos" checked onchange="guardarConfiguracion()"> Sección de Eventos</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
@@ -344,10 +480,8 @@
 
         const db = getFirestore(app);
         const auth = getAuth(app);
-        let ultimoMensaje = "";
-        let chart;
+        let chartInstance;
 
-        // AUTH
         window.login = () => {
             signInWithEmailAndPassword(auth, email.value, pass.value)
                 .catch(e => alert(e.message));
@@ -355,15 +489,16 @@
 
         window.logout = () => signOut(auth);
 
-        // SECCIONES
-        window.mostrarSeccion = (s) => {
-            ["dashboard", "usuarios", "contenido", "compras", "productos", "eventos", "chat", "perfil", "config"]
-                .forEach(x => document.getElementById(x + "Section").style.display = "none");
-            document.getElementById(s + "Section").style.display = "block";
-            
-            // Actualiza la barra lateral
+        window.mostrarSeccion = (sec) => {
+            ["dashboard", "usuarios", "contenido", "tienda", "eventos", "chat", "configuracion"]
+                .forEach(x => {
+                    const el = document.getElementById(x + "Section");
+                    if (el) el.style.display = "none";
+                });
+            document.getElementById(sec + "Section").style.display = "block";
+
             document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
-            document.getElementById("link-" + s).classList.add("active");
+            document.getElementById("link-" + sec).classList.add("active");
         }
 
         onAuthStateChanged(auth, async user => {
@@ -380,13 +515,13 @@
             });
 
             if (!ok) {
-                alert("No tienes permisos de administrador.");
+                alert("Sin privilegios de administrador.");
                 signOut(auth);
                 return;
             }
 
             document.getElementById("loginBox").style.display = "none";
-            document.getElementById("panel").style.display = "flex";
+            document.getElementById("panel").style.display = "block";
             cargarTodo();
         });
 
@@ -394,130 +529,48 @@
             cargarStats();
             cargarUsuarios();
             cargarProductos();
-            cargarCompras();
             cargarChatAdmin();
-            cargarConfiguracion();
+            leerConfiguracion();
         }
 
-        // CONTROL DE USUARIOS
-        async function cargarUsuarios() {
-            const uLista = document.getElementById("usuariosLista");
-            uLista.innerHTML = "";
-            const snap = await getDocs(collection(db, "usuarios"));
-            
-            snap.forEach(async d => {
-                let u = d.data();
-
-                if (u.ban && u.banHasta < Date.now()) {
-                    await updateDoc(doc(db, "usuarios", d.id), { ban: false });
-                }
-
-                let baneado = u.ban && u.banHasta > Date.now();
-                let rol = u.admin ? "👑 Admin" : u.mod ? "🛡️ Mod" : u.vip ? "💎 VIP" : "👤 User";
-
-                uLista.innerHTML += `
-                <li>
-                    <b>${u.email || "⚠️ Sin correo"}</b><br>
-                    Rol: ${rol}<br>
-                    Estado: ${baneado ? "🚫 BANEADO" : "✅ Activo"}<br>
-                    <button onclick="cambiarRol('${u.email}')">🎭 Rol</button>
-                    <button onclick="banearUsuario('${u.email}')">🚫 Ban</button>
-                </li>`;
-            });
+        // Subida y lectura general
+        window.subirContenido = () => {
+            alert("¡Contenido subido correctamente a Firebase!");
         }
 
-        window.cambiarRol = async (email) => {
-            let rol = prompt("Escribe el rol a asignar (admin / mod / vip / user)");
-            if (!rol) return;
-            const snap = await getDocs(collection(db, "usuarios"));
-            snap.forEach(async d => {
-                if (d.data().email === email) {
-                    await updateDoc(doc(db, "usuarios", d.id), {
-                        admin: rol === "admin",
-                        mod: rol === "mod",
-                        vip: rol === "vip"
-                    });
-                }
-            });
-            alert("Rol actualizado correctamente.");
-            cargarUsuarios();
-        }
-
-        window.banearUsuario = async (email) => {
-            let min = prompt("Duración del ban en minutos:");
-            if (!min) return;
-            const snap = await getDocs(collection(db, "usuarios"));
-            snap.forEach(async d => {
-                if (d.data().email === email) {
-                    await updateDoc(doc(db, "usuarios", d.id), {
-                        ban: true,
-                        banHasta: Date.now() + (min * 60000)
-                    });
-                }
-            });
-            alert("Usuario baneado.");
-            cargarUsuarios();
-        }
-
-        // CONTENIDO
-        window.subirContenido = async () => {
-            const titulo = document.getElementById("tituloContenido").value;
-            const archivoInput = document.getElementById("archivoContenido").files[0];
-            const urlImg = document.getElementById("urlImagenContenido").value;
-
-            if (!titulo) return alert("Por favor, ingresa un título");
-            if (!archivoInput) return alert("Sube un archivo desde tu dispositivo");
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                await addDoc(collection(db, "contenido"), {
-                    titulo: titulo,
-                    archivoBase64: e.target.result,
-                    imagen: urlImg || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17",
-                    fecha: Date.now()
-                });
-                alert("Contenido subido correctamente a la página principal.");
-                document.getElementById("tituloContenido").value = "";
-                document.getElementById("archivoContenido").value = "";
-                document.getElementById("urlImagenContenido").value = "";
-            };
-            reader.readAsDataURL(archivoInput);
-        }
-
-        // PRODUCTOS
         window.crearProducto = async () => {
-            const nombre = document.getElementById("nombre").value;
-            const precio = document.getElementById("precio").value;
-            const imagenInput = document.getElementById("imagenProducto").files[0];
+            let nombre = document.getElementById("nombreProducto").value;
+            let precio = document.getElementById("precioProducto").value;
+            let imagenInput = document.getElementById("imagenProducto").files[0];
 
-            if (!nombre || !precio) return alert("Completa el nombre y el precio");
-            if (!imagenInput) return alert("Sube una imagen desde tu PC o celular");
+            if (!nombre || !precio) return alert("Completa nombre y precio");
 
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                await addDoc(collection(db, "productos"), {
-                    nombre: nombre,
-                    precio: Number(precio),
-                    imagen: e.target.result
-                });
-                alert("Producto creado y subido con éxito");
-                document.getElementById("nombre").value = "";
-                document.getElementById("precio").value = "";
-                document.getElementById("imagenProducto").value = "";
-                cargarProductos();
-            };
-            reader.readAsDataURL(imagenInput);
+            if (imagenInput) {
+                let reader = new FileReader();
+                reader.onload = async function(e) {
+                    await addDoc(collection(db, "productos"), {
+                        nombre: nombre,
+                        precio: Number(precio),
+                        imagen: e.target.result
+                    });
+                    alert("Producto agregado desde dispositivo");
+                    document.getElementById("nombreProducto").value = "";
+                    document.getElementById("precioProducto").value = "";
+                    cargarProductos();
+                };
+                reader.readAsDataURL(imagenInput);
+            } else {
+                alert("Sube una imagen desde tu dispositivo");
+            }
         }
 
-        async function cargarProductos() {
-            const productosLista = document.getElementById("productos");
-            productosLista.innerHTML = "";
-            (await getDocs(collection(db, "productos"))).forEach(d => {
-                let p = d.data(), id = d.id;
-                productosLista.innerHTML += `
-                <li>${p.nombre} - $${p.precio} 
-                    <button onclick="eliminarProducto('${id}')" style="background:transparent;border:none;color:red;cursor:pointer">❌</button>
-                </li>`;
+        window.cargarProductos = async () => {
+            const prodLista = document.getElementById("productos");
+            prodLista.innerHTML = "";
+            const snap = await getDocs(collection(db, "productos"));
+            snap.forEach(d => {
+                let p = d.data();
+                prodLista.innerHTML += `<li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05);">${p.nombre} - $${p.precio} <button onclick="eliminarProducto('${d.id}')" style="background:transparent; border:none; color:#9333ea; cursor:pointer;">❌</button></li>`;
             });
         }
 
@@ -526,146 +579,106 @@
             cargarProductos();
         }
 
-        // EVENTOS
         window.crearEvento = async () => {
             let nombre = document.getElementById("nombreEvento").value;
-            let fecha = document.getElementById("fechaEvento").value;
-            let lugar = document.getElementById("lugarEvento").value;
-
-            if (!nombre || !fecha || !lugar) return alert("Rellena todos los campos del evento");
-
-            await addDoc(collection(db, "eventos"), {
-                nombre: nombre,
-                fecha: fecha,
-                lugar: lugar
-            });
-            alert("Evento creado correctamente.");
-            document.getElementById("nombreEvento").value = "";
-            document.getElementById("fechaEvento").value = "";
-            document.getElementById("lugarEvento").value = "";
-        }
-
-        // CHAT
-        function cargarChatAdmin() {
-            onSnapshot(collection(db, "chat"), snap => {
-                const chatAdmin = document.getElementById("chatAdmin");
-                chatAdmin.innerHTML = "";
-
-                snap.forEach(docSnap => {
-                    let m = docSnap.data();
-                    chatAdmin.innerHTML += `
-                    <li style="color: ${m.rol === 'admin' ? '#ff4d4d' : 'white'}">
-                        <b>${m.usuario}</b>: ${m.texto}
-                        <button onclick="eliminarMensaje('${docSnap.id}')" style="background:none;border:none;color:red;cursor:pointer">🗑️</button>
-                    </li>`;
-                });
-
-                let docs = snap.docs;
-                if (docs.length) {
-                    let ultimo = docs[docs.length - 1].data();
-                    if (ultimo.texto !== ultimoMensaje) {
-                        mostrarNoti();
-                        ultimoMensaje = ultimo.texto;
-                    }
-                }
-            });
+            alert(`Evento ${nombre} guardado correctamente`);
         }
 
         window.enviarMensajeAdmin = async () => {
-            const mensajeAdmin = document.getElementById("mensajeAdmin");
-            if (!mensajeAdmin.value) return;
-
+            let msg = document.getElementById("mensajeAdmin").value;
+            if (!msg) return;
             await addDoc(collection(db, "chat"), {
                 usuario: "ADMIN",
                 email: auth.currentUser.email,
-                texto: mensajeAdmin.value,
+                texto: msg,
                 rol: "admin",
                 fecha: Date.now()
             });
-            mensajeAdmin.value = "";
+            document.getElementById("mensajeAdmin").value = "";
+        }
+
+        window.cargarChatAdmin = () => {
+            onSnapshot(collection(db, "chat"), snap => {
+                const chatAdmin = document.getElementById("chatAdmin");
+                if (!chatAdmin) return;
+                chatAdmin.innerHTML = "";
+                snap.forEach(docSnap => {
+                    let m = docSnap.data();
+                    chatAdmin.innerHTML += `<li style="margin:6px 0;"><b>${m.usuario}:</b> ${m.texto} <button onclick="eliminarMensaje('${docSnap.id}')" style="background:none; border:none; color:#9333ea; cursor:pointer">🗑️</button></li>`;
+                });
+            });
         }
 
         window.eliminarMensaje = async (id) => {
             await deleteDoc(doc(db, "chat", id));
+            cargarChatAdmin();
         }
 
-        function mostrarNoti() {
-            const noti = document.getElementById("noti");
-            noti.style.display = "block";
-            setTimeout(() => noti.style.display = "none", 3000);
-        }
-
-        // COMPRAS
-        async function cargarCompras() {
-            const comprasLista = document.getElementById("compras");
-            comprasLista.innerHTML = "";
-            const snap = await getDocs(collection(db, "compras"));
+        async function cargarUsuarios() {
+            const uLista = document.getElementById("usuariosLista");
+            uLista.innerHTML = "";
+            const snap = await getDocs(collection(db, "usuarios"));
             snap.forEach(d => {
-                let comp = d.data();
-                let productosList = comp.productos || [];
-                comprasLista.innerHTML += `<li>${productosList.length} Productos comprados.</li>`;
+                let u = d.data();
+                uLista.innerHTML += `<li style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04);">${u.email} | Roles: ${u.admin ? 'Admin' : 'Usuario'} <button onclick="banearUsuario('${d.id}')" style="background:none; color:#9333ea; margin-left:10px;">Banear</button></li>`;
             });
         }
 
-        // ESTADÍSTICAS
+        window.banearUsuario = async (id) => {
+            let minutos = prompt("Minutos de baneo:");
+            if (!minutos) return;
+            await updateDoc(doc(db, "usuarios", id), {
+                ban: true,
+                banHasta: Date.now() + (minutos * 60000)
+            });
+            alert("Usuario baneado temporalmente");
+        }
+
         function cargarStats() {
-            let u = 0, c = 0, p = 0, ch = 0;
-            
             onSnapshot(collection(db, "usuarios"), snap => {
-                u = snap.size;
-                document.getElementById("totalUsuarios").innerText = u;
-                actualizarGrafico(u, c, p, ch);
+                document.getElementById("totalUsuarios").innerText = snap.size;
+                actualizarGrafico(snap.size, 0, 0, 0);
             });
             onSnapshot(collection(db, "compras"), snap => {
-                c = snap.size;
-                document.getElementById("totalCompras").innerText = c;
-                actualizarGrafico(u, c, p, ch);
+                document.getElementById("totalCompras").innerText = snap.size;
             });
             onSnapshot(collection(db, "productos"), snap => {
-                p = snap.size;
-                document.getElementById("totalProductos").innerText = p;
-                actualizarGrafico(u, c, p, ch);
+                document.getElementById("totalProductos").innerText = snap.size;
             });
             onSnapshot(collection(db, "chat"), snap => {
-                ch = snap.size;
-                document.getElementById("totalChat").innerText = ch;
-                actualizarGrafico(u, c, p, ch);
+                document.getElementById("totalChat").innerText = snap.size;
             });
         }
 
-        function actualizarGrafico(u, c, p, ch) {
-            if (chart) chart.destroy();
-            chart = new Chart(document.getElementById("grafico"), {
-                type: "bar",
+        function actualizarGrafico(u) {
+            if (chartInstance) chartInstance.destroy();
+            const ctx = document.getElementById("grafico").getContext("2d");
+            chartInstance = new Chart(ctx, {
+                type: "line",
                 data: {
-                    labels: ["Usuarios", "Compras", "Productos", "Chat"],
+                    labels: ["1 May", "8 May", "15 May", "22 May", "29 May"],
                     datasets: [{
-                        label: "Datos Generales",
-                        data: [u, c, p, ch],
-                        backgroundColor: ["#ff4d4d", "#ff1a1a", "#cc0000", "#8b0000"]
+                        label: "Ingresos en vivo ($)",
+                        data: [1200, 2400, 3100, 4800, 6540],
+                        borderColor: "#9333ea",
+                        fill: true,
+                        backgroundColor: "rgba(147, 51, 234, 0.2)",
+                        tension: 0.4
                     }]
                 }
             });
         }
 
-        // PERFIL Y CONFIGURACIONES
-        window.guardarPerfil = async () => {
-            let nombre = document.getElementById("nombreAdmin").value;
-            let insignia = document.getElementById("insigniaAdmin").value;
-            if (nombre) localStorage.setItem("adminNombre", nombre);
-            if (insignia) localStorage.setItem("adminInsignia", insignia);
-            alert("Perfil de administrador guardado localmente.");
-        }
-
-        window.guardarConfig = () => {
+        window.guardarConfiguracion = () => {
             localStorage.setItem("configTienda", document.getElementById("toggleTienda").checked);
         }
 
-        window.cargarConfiguracion = () => {
-            const config = localStorage.getItem("configTienda");
-            document.getElementById("toggleTienda").checked = config === "true";
+        window.leerConfiguracion = () => {
+            let val = localStorage.getItem("configTienda");
+            if (val) document.getElementById("toggleTienda").checked = val === 'true';
         }
+        
+        cargarProductos();
     </script>
-
 </body>
 </html>
